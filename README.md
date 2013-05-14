@@ -74,11 +74,11 @@ for heavy user, specialized relationship
 * callbackUrl을 셋팅 했을때 access token key, secret 얻기 (twitter2.js의 105 라인 수정)
 * jsOAuth 1.3.6 346라인 File이 뭐지?
 * Ti.Cloud multi user support :인스턴스의 생성대신 account.js에서 매번 로긴 
+* github등록  
 
 
 ## work now
 * notification
 * listView
-* github등록  
 
   
