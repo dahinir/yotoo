@@ -1,0 +1,15 @@
+<Alloy>
+	<Window id="composeTweetWindow">
+		<View id="navBarView" >
+			<ActivityIndicator id="activityIndicator" />
+			<Button id="cancelButton" class="leftNavButton" />
+			<Label id="titleLabel" />
+			<Button id="sendTweetButton" class="rightNavButton" />
+		</View>
+		<TextArea id="tweetTextArea" />
+		<View id="toolbarView">
+			<Button id="addPhotoButton">photo</Button>
+			<Label id="charCountLabel" />
+		</View>
+	</Window>
+</Alloy>

@@ -1,0 +1,25 @@
+<Alloy>
+	<!--
+	<TabGroup id="index">
+		<Tab id="timelineTab">
+			<Require src="timelineWindow" /> 
+		</Tab>
+		<Tab id="mentionsTab">
+			<Require src="mentionsWindow" />
+		</Tab>
+		<Tab title="dummyTab">
+			<Window>
+				<View>
+					<Label platform="android">Label (android)</Label>
+					<Button id="helloBtn" onClick="sayHello">Say Hello</Button>
+					<Button id="callXhr">XHR Call</Button>
+				</View>
+			</Window>
+		</Tab>
+		<Tab id="profileTab">
+			<Require src="profileWindow" />
+		</Tab>
+
+	</TabGroup>
+	-->
+</Alloy>

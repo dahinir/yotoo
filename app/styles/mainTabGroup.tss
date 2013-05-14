@@ -1,0 +1,19 @@
+"Label":{
+	borderWidth :1,
+	top:5,
+	left:5
+},
+
+".test01" :{
+	horizontalWrap :false
+},
+".test02" :{
+	horizontalWrap :true
+},
+
+
+
+
+".container": {
+	backgroundColor: "white"
+}

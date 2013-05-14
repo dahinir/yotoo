@@ -1,0 +1,9 @@
+<Alloy>
+	<TableViewRow id="accountRow">
+		<ImageView id="profileImage" />
+		<Label id="screenName" class="boldHeaderText" />
+		<Label id="name" class="boldHeaderText" />
+		
+		<Label id="meta" class="smallText" visible="false" />
+	</TableViewRow>
+</Alloy>

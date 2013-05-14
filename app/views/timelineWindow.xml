@@ -1,0 +1,10 @@
+<Alloy>
+	<Window id="timelineWindow" class="appWindow">
+		<View id="navBarView" >
+			<Require id="listAccountsButton" src="listAccountsButton" />
+			<Label id="titleLabel" />
+			<Require id="newTweetButton" src="newTweetButton" />
+		</View>
+		<Require id="tweetsView" src="tweetsView" />
+	</Window>
+</Alloy>

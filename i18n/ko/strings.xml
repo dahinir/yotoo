@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<resources>
+	<string name="yotoo">요투!</string>
+	<string name="username">Nombre de usuario</string>
+	<string name="password">Contraseña</string>
+</resources>

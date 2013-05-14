@@ -1,0 +1,53 @@
+<Alloy>
+	<!-- <Collection src="user" /> -->
+	<TabGroup id="mainTabGroup">
+		<!-- Explicit Window declaration -->
+		<Tab id="timelineTab">
+			<Require id="timelineWindow" src="timelineWindow" />
+		</Tab>
+
+		<Tab id="mentionsTab">
+			<Require id="mentionsWindow" src="mentionsWindow" />
+		</Tab>
+
+		<Tab title="searchTab">
+			<Window id="testWindow" layout="vertical">
+				<View height="70" width="320" layout="vertical" borderWidth="1" backgroundColor="#F33">
+					<Button id="testButton" >testButton</Button>
+					<Button id="testButton2" >testButton2</Button>
+				</View>
+				<View id="testView" top="0" borderWidth="1">
+					<Label platform="android">Label (android)</Label>
+				</View>
+			</Window>
+		</Tab>
+		
+		<Tab title="favoritTab">
+			<Window id="win1">
+				<ScrollableView id="scrollableView" showPagingControl="true">
+					<View layout="horizontal">
+						<Label class="test01">Alonglabelwithafewlinebreaksandunicode(UTF8)symbolsAlonglabelwithafewlinebreaksandunicode(UT</Label>
+						<Label class="test01">aAwith</Label>
+						<Label class="test01">aAlongabelwithAongabelwith</Label>
+					</View>
+					<View layout="horizontal">
+						<Label class="test02">Alonglabelwithafewlinebreaksandunicode(UTF8)symbolsAlonglabelwithafewlinebreaksandunicode(UT</Label>
+						<Label class="test02">aAwith</Label>
+						<Label class="test02">aAlongabelwithAongabelwith</Label>
+					</View>
+					<View id="view1" backgroundColor="#123" />
+					<View id="view2" backgroundColor="#246" />
+					<View id="view3" backgroundColor="#48b" />
+					<ScrollView id="scrollView" showVerticalScrollIndicator="true" showHorizontalScrollIndicator="true" height="30%" width="80%">
+						<View id="view" backgroundColor="#369" borderRaduis="10" top="10" height="2000" width="1000" />
+					</ScrollView>
+				</ScrollableView>
+			</Window>
+		</Tab>
+		
+
+		<Tab id="profileTab">
+			<Require id="profileWindow" src="profileWindow" />
+		</Tab>
+	</TabGroup>
+</Alloy>

@@ -1,0 +1,90 @@
+/*
+ *  BorderRadius is absolutely a performance killer! (around 2011s) 
+ */
+
+"#tweetRow": {
+	height: 'auto'
+},
+"#profileImage": {
+	top : 7,
+	bottom : 10,
+	left : 6,
+	height : 48,
+	width : 48,
+	// borderRadius : 5,
+	borderWidth : 1,
+	borderColor : "#333"
+},
+"#screenName": {
+	top: 6,
+	left: 61,
+	height: 18,
+	color:'#000',
+	font: {
+	//	fontFamily:fontFamily,
+		fontSize: 16,
+		fontWeight:'bold'
+	}
+},
+"#createdAt": {
+	top: 6,
+	right: 6,
+	width : 20,	// 'auto'
+	textAlign: 'right',
+	color:'#888',
+	font: {
+		fontSize : 9,
+		fontWeight:'bold'
+	}
+},
+"#text": {
+	top: 24,
+	bottom: 10,
+	left: 61,
+	right: 6,
+	height: Ti.UI.SIZE,
+	// borderWidth: 1
+	textAlign: 'left',
+	font: {
+		fontSize: 15
+	}
+},
+"#retweeterProfileImage": {
+	bottom : 6,
+	left : 33,
+	height : 24,
+	width : 24,
+	// borderRadius : 3,
+	borderWidth : 1,
+	borderColor : "#333"
+},
+"#retweetedBy": {
+	bottom: 6,
+	left: 61,
+	// right: 6,
+	height: 'auto',
+	textAlign: 'left',
+	color:'#888',
+	font: { fontSize : 10}
+},
+"#retweetedBy[platform=ios]": {
+	font: {	
+		fontSize : 10,
+		fontStyle : "italic"
+	}
+},
+"#retweetCount": {
+	bottom: 6,
+	left: 61,
+	// right: 6,
+	height: 'auto',
+	textAlign: 'left',
+	color:'#888',
+	font: { fontSize : 10}
+},
+"#retweetCount[platform=ios]": {
+	font: {	
+		fontSize : 10,
+		fontStyle : "italic"
+	}
+}

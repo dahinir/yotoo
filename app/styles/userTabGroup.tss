@@ -1,0 +1,21 @@
+"#userTabGroup" :{
+	top: 300
+	// layout: "vertical"
+},
+"#tabBar" :{
+	top: 0,
+	height: 40,
+	layout: "horizontal",
+	backgroundColor: "#777"
+},
+".customTab" :{
+	top: 5,
+	left: 13,
+	width: 45,
+	borderRadius: 7,
+	color: '#222',
+	font: {
+		fontSize: 10,
+		fontWeight:'bold'
+	}
+}

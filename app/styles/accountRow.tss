@@ -1,0 +1,27 @@
+"#accountRow": {
+	height: 'auto'
+},
+"#profileImage": {
+	top : "6dp",
+	bottom : "6dp",
+	left : "6dp",
+	height : "45dp",
+	width : "45dp",
+	borderRadius : "5dp"
+},
+"#name": {
+
+},
+"#screenName": {
+  top: "6dp",
+  left: "57dp",
+  height: "18dp"
+},
+
+"#meta": {
+	bottom: "6dp",
+	left: "57dp",
+	right: "6dp",
+	height: 'auto',
+	textAlign: 'left'
+}

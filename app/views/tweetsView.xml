@@ -1,0 +1,31 @@
+<Alloy>
+	<!-- <Collection id="tweets" src="tweet" instance="true"/> -->
+	<TableView id="tweetsTable" searchHidden="true" visible="false" >
+		<!-- dataCollection="$.tweets" dataTransform="tweetTransform" dataFilter="tweetsFilter" -->
+			
+		<!-- for pull to refresh table header -->
+		<HeaderPullView platform="ios" >
+			<View id="tableHeader" backgroundColor="#e2e7ed" width="320" height="60" >
+				<View id="border" backgroundColor="#576c89" height="2" bottom="0" />
+				<ImageView id="arrowImage" backgroundImage="/images/whiteArrow.png" width="23" height="60" bottom="10" left="20" />
+				<Label id="statusLabel" text="Pull to reload" left="55" width="200" bottom="30" height="auto" color="#576c89" textAligh="center" shadowColor="#999" />
+				<Label id="lastUpdatedLabel" text="Last Updated:" left="55" width="200" bottom="15" height="auto" color="#576c89" textAligh="center" shadowColor="#999" />				
+				<ActivityIndicator id="actIndicator" left="20" bottom="13" width="30" height="30" />
+			</View>
+		</HeaderPullView>
+			
+		<Search>
+			<SearchBar />
+		</Search>
+		
+		<!-- <TableViewSection id="sectionFruit" headerTitle="Fruit" /> -->
+		<!-- <Require src="tweetRow" /> -->
+		<!-- <TableViewRow title="{id_str}" /> -->
+		
+		<FooterView>
+			<View backgroundColor="#666" height="10" >
+				<Label>footer view</Label>
+			</View>
+		</FooterView>
+	</TableView>
+</Alloy>

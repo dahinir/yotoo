@@ -1,0 +1,10 @@
+<Alloy>
+	<Window id="userWindow" class="appWindow">
+		<View id="navBarView" >
+			<Button id="cancelButton" class="leftNavButton" />
+			<Label id="titleLabel" />
+		</View>
+		<Require id="userView" src="userView" />
+	</Window>
+</Alloy>
+

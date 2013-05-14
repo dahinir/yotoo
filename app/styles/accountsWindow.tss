@@ -1,0 +1,38 @@
+"#accountsWindow": {
+	modal: false,
+	height: Ti.UI.SIZE,
+	width: Ti.UI.SIZE,
+	fullscreen: false,
+	// bubbleParent : true,
+	// translucent : true,
+	backgroundColor: "transparent"
+},
+
+"#backgroundView": {
+	opacity: 0.3,
+	backgroundColor:"black"
+},
+
+"#accountsView": {
+	height: 300,
+	width: 270,
+	borderColor: "black",
+	borderWidth: 1,
+	borderRadius: 5,
+	opacity: 1.0,
+	backgroundColor: "#666"
+},
+
+"#accountsTable": {
+	top: 10,
+	height: 220,
+	width: 250,
+	borderColor: "#400",
+	borderWidth: 2,
+	borderRadius: 7
+},
+
+"#addAccountButton": {
+	bottom: 5,
+	right: 5
+}

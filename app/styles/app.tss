@@ -1,0 +1,125 @@
+//Besides, JSON values and Titanium SDK constants, 
+//the TSS can handle the localization function Ti.Locale.getString() 
+//and its shorthand L() as well as
+//expr(), which can contain any valid JavaScript, executed at runtime.
+
+// density == Ti.Platform.DisplayCaps.density
+// pixel == dp * ( density / 160 ) 
+
+"Window": {
+	navBarHidden: true,
+	backgroundColor: "#fff"
+	// backgroundImage:'images/back.png',
+	// softInputMode:(Ti.UI.Android) ? Ti.UI.Android.SOFT_INPUT_ADJUST_RESIZE : ''
+},
+"Window[platform=android]": {
+    softInputMode: Ti.UI.Android.SOFT_INPUT_ADJUST_RESIZE 
+},
+".appWindow":{
+	layout: "vertical"
+},
+"Button": {
+	// backgroundImage:'images/button_bg.png',
+	// height:expr(10+20),
+	height: 30,
+	// width:'auto',
+	// color:'#000',
+	// font: {
+		// fontSize:18,
+		// fontWeight:'bold'
+	// }
+},
+"Label": {
+	color: '#000000',
+	font: {
+		// fontFamily: fontFamily,
+		fontSize:12
+	},
+	height:'auto'
+},
+"ImageView": {
+	defaultImage : "/images/defaultImageView.png"
+},
+"TableView": {
+	// backgroundImage:'images/back.png'
+	// separatorStyle:Ti.UI.iPhone.TableViewSeparatorStyle.NONE
+},
+"TableViewRow": {
+	// backgroundImage:'images/tweet_bg.png',
+	// selectedBackgroundColor: darkBlue, //I know, this is dumb, but it's currently inconsistent x-platform
+	// backgroundSelectedColor: darkBlue,
+	height:110
+	//height:'auto',	// added by dahinir
+	// className:'tvRow'
+},
+"TextField": {
+	height:55,
+	borderStyle:Ti.UI.INPUT_BORDERSTYLE_ROUNDED,
+	color:'#000000'
+},
+"TextArea": {
+},
+"ActivityIndicator":{
+	color: 'green',
+	font: {fontFamily:'Helvetica Neue', fontSize:26, fontWeight:'bold'},
+	message: 'Loading...',
+	// style: Ti.UI.iPhone.ActivityIndicatorStyle.DARK,
+	top: 10,
+	left: 10,
+	height: Ti.UI.SIZE,
+	width: Ti.UI.SIZE
+},
+
+// navigation bar
+"#navBarView":{
+	top: 0,
+	width: "100%",
+	height: 46,
+	// borderRadius: "3dp",
+	backgroundColor: "#333",
+    backgroundGradient: {
+        type: 'linear',
+        startPoint: { x: '50%', y: '0%' },
+        endPoint: { x: '50%', y: '100%' },
+        colors: [ { color: '#CCC', offset: 0.0}, { color: '#333', offset: 1.0 } ]
+    }
+},
+".leftNavButton":{
+	top: 8,
+	left: 8
+},
+".rightNavButton":{
+	top: 8,
+	right: 8
+},
+"#listAccountsButton":{
+},
+"#newTweetButton":{
+},
+"#cancelButton":{
+},
+"#sendTweetButton":{
+},
+// navigation bar end
+
+
+".boldHeaderText": {
+	color:'#000000',
+	font: {
+	//	fontFamily:fontFamily,
+		fontSize:14,
+		fontWeight:'bold'
+	},
+	height:'auto'
+},
+".smallText": {
+	color:'#888888',
+	font: {
+	//	fontFamily:fontFamily,
+		fontSize:10,
+		fontWeight:'bold'
+	},
+	height:'auto'
+}
+
+

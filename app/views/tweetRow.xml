@@ -1,0 +1,15 @@
+<Alloy>
+	<TableViewRow id="tweetRow" className="generalTweetRow" >
+		<Label id="id_str" visible="false" />
+		<Label platform="android">Label (android)</Label>
+
+		<ImageView id="profileImage" defaultImage="/images/defaultImageView.png" />
+		<Label id="screenName" />
+		<Label id="createdAt" />
+		<Label id="text" />
+		
+		<ImageView id="retweeterProfileImage" visible="false" defaultImage="/images/defaultImageView.png" />
+		<Label id="retweetedBy" visible="false" />
+		<Label id="retweetCount" visible="false" />
+	</TableViewRow>
+</Alloy>

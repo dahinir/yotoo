@@ -1,0 +1,28 @@
+<Alloy>
+	<View id="userTabGroup">
+		<View id="tabBar">
+			<!-- <Label backgroundColor="#555" borderRadius="5">this | is | attachable | tab</Label> -->
+			<Button id="timelineTabButton" class="customTab">timeline</Button>
+			<Button id="tweetsTabButton" class="customTab">tweets</Button>
+			<Button id="photoTabButton" class="customTab">photo</Button>
+			<Button id="mentionTabButton" class="customTab">mention</Button>
+			<Button id="favoriteTabButton" class="customTab">favorite</Button>
+			<Label id="toTheTop" right="20">(1)</Label>
+		</View>
+		<!-- <Require id="tweetsView" src="tweetsView" /> -->
+		<!--
+		<TableView id="test">
+			<TableViewRow title="hihi" />
+			<TableViewRow title="hihi" />
+			<TableViewRow title="hihi" />
+			<TableViewRow title="hihi" />
+			<TableViewRow title="hihi" />
+			<TableViewRow title="hihi" />
+			<TableViewRow title="hihi" />
+			<TableViewRow title="hihi" />
+			<TableViewRow title="hihi" />
+			<TableViewRow title="hihi" />
+		</TableView>
+		-->
+	</View>
+</Alloy>

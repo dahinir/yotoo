@@ -1,0 +1,50 @@
+<Alloy>
+	<!-- <Model id="user" src="user" instance="true" /> -->
+
+	<ScrollView id="userView">
+		<ImageView id="profileBannerImage" />
+		<ScrollableView id="userScrollableView" showPagingControl="true">
+			<View>
+				<ImageView id="profileImage" />
+				<Label id="name" />
+				<ImageView id="verified" image="/images/twitter_verifiedAccountIcon.png" visible="false" />
+				<Label id="screenName" />
+			</View>
+			<View>
+				<Label id="description" />
+			</View>
+		</ScrollableView>
+		
+		<Label id="relationshipIndicator" visible="false" />
+		<Label id="relationshipIndicatorShadow" > </Label>
+		
+		<View id="temporally" layout="vertical" top="160" >
+			<Label id="followersCount" />
+			<Label id="followingCount" />
+			<!-- followingButton 은 moreTaskButton을 눌렀을때 사용자와의 관계명령이라는 인터페이스를 주기 위해 생략하는걸로 -->
+			<Button id="followingButton" visible="false" />
+			<Button id="moreTaskButton" visible="false" >(moreTask)</Button>
+		</View>
+<!--
+		<Require id="userTabGroup" src="attachableTabGroup">
+		<View id="attachableTabGroup" top="300" layout="vertical" >
+			<View id="tabBar" top="0" height="40" layout="horizontal" backgroundColor="#666">
+				<Label backgroundColor="#555" borderRadius="5"> this | is | attachable | tab </Label>
+				<Label id="toTheTop" right="20">(1)</Label>
+			</View>
+			<TableView id="test">
+				<TableViewRow title="hihi" />
+				<TableViewRow title="hihi" />
+				<TableViewRow title="hihi" />
+				<TableViewRow title="hihi" />
+				<TableViewRow title="hihi" />
+				<TableViewRow title="hihi" />
+				<TableViewRow title="hihi" />
+				<TableViewRow title="hihi" />
+				<TableViewRow title="hihi" />
+				<TableViewRow title="hihi" />
+			</TableView>
+		</View>
+-->
+	</ScrollView>
+</Alloy>

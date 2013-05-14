@@ -1,0 +1,8 @@
+<Alloy>
+	<Window id="profileWindow" class="appWindow">
+		<View id="navBarView" >
+			<Label id="titleLabel" />
+		</View>
+		<Require id="userView" src="userView" />
+	</Window>
+</Alloy>

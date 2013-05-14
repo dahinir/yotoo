@@ -1,0 +1,31 @@
+"#composeTweetWindow": {
+	modal: true
+	// layout: "vertical"
+},
+"#tweetTextArea": {
+	// height: expr((Ti.Platform.displayCaps.platformHeight*0.5)-80),
+	// width: Ti.Platform.displayCaps.platformWidth,
+	font: {fontSize:16},
+	// top: 0,
+	left: 0,
+	right: 0,
+	width: "100%",
+	borderRadius: 20,
+	backgroundColor: "#ccc",
+	keyboardType: Ti.UI.KEYBOARD_DEFAULT,
+	returnKeyType: Ti.UI.RETURNKEY_DEFAULT,
+	suppressReturn: false
+},
+"#charCountLabel": {
+	// top: expr((Ti.Platform.displayCaps.platformHeight*0.5)-33),
+	// left: expr(Ti.Platform.displayCaps.platformWidth-60),
+	color: "#000"
+},
+"#toolbarView": {
+	layout: "horizontal",
+	backgroundColor: "#555",
+	height: 45,
+	width: "100%",
+	borderRadius: 20,
+	bottom: 216	// softkeyboard size
+}
