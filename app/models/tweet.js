@@ -105,6 +105,7 @@ exports.definition = {
     		},
     		*/
 			// rapodor: we gonna be rich model, so attetch Birdhouse.js
+			/*
 			getTweets: function (purpose, params, callback) {
 				// Ti.API.info("get from twitter.com: "+ purpose);
 				// var twitterAPI = this.ownerAccount.twitterAPI;
@@ -121,6 +122,7 @@ exports.definition = {
 				twitterApi.getFromServer(purpose, destinationParams, callback);
 				// return "babe";
 			},
+			*/
 			/**
 			 * @method fetchFromServer
 			 * Fetch some tweets from the Twitter.com

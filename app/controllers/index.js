@@ -14,7 +14,7 @@ accounts.fetch();
 Ti.API.debug("[index.js] " + accounts.length + " loged in accounts loaded");
 Alloy.Globals.accounts = accounts;
 
-// Backbone events //
+/* Backbone events */
 // on changed current account, reponse UI, create mainTabGroup is only in this.
 accounts.on('change:active', function(e){
 	var account = e;
@@ -95,31 +95,6 @@ if( !ENV_PRODUCTION ){
 	accounts.cloud.debug = true;  // optional; if you add this line, set it to false for production
 }
 
-// accounts.cloud.PushNotifications.subscribe({
-    // channel: 'friend_request',
-    // device_token: myPushDeviceToken
-// }, function (e) {
-    // if (e.success) {
-        // alert('Success');
-    // } else {
-        // alert('Error:\n' +
-            // ((e.error && e.message) || JSON.stringify(e)));
-    // }
-// });
 
-// test //
-/*
-var tweets = Alloy.Globals.accounts.getCurrentAccount().createCollection('tweet');
-Ti.API.info("tweets.length: "+ tweets.length);
-tweets.fetchFromServer({
-	purpose: 'timeline',
-	count: 1,
-	onSuccess: function(){
-		Ti.API.info('success to fetch '+tweets.length + "tweets.");
-		Ti.API.info( );
-	},
-	onFailure: function(){Ti.API.info('failure');}
-});
-*/
 
 

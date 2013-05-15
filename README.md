@@ -59,12 +59,14 @@ for heavy user, specialized relationship
 * tweetsView.js 업데이트 바텀 트윗 결과가 없는것으로 판명나면 바텀트윗업데이트를 발생시키는 이벤트리스너를 삭제하고 푸터뷰를 변경한다(유저가 인지할수 있게)
 * 아주 간단히 트윗 속도를 알려주자: (트윗수/(오늘-계정생성일)) 
 * 로긴 취소 했을때 웹뷰 close
+* 로긴 실패하고 다시 로긴 성공했을때..
 * 트윗 보내고 결과 json 읽기 
 * GET help/configuration returns new t.co length :사진 포함 트윗할때 글자수 마이너스(현재 공백 미포함 22 정도 된)  
 * 사진 포함 트윗할때 사진주소가 위치 수정 가능하게.
 * Ti.Network.HTTPClient.cache 상황에 맞게 true
 * twitter streaming api adapter :node.js socket.io.js nTwitter.js등을 이용해야 하나.. , socket.io는 Ti용 모듈을 누가 만들어 놓긴 했네(https://github.com/nowelium/socket.io-titanium)
 * account.js 의 changeCurrentAccount()에 cloud 로긴 하는것 네트웤 상황 안좋을때 대응 sessionId만 캐쉬하면 될것 같다.(..디폴트를 캐쉬로 하자)
+
 
 
 ## done
