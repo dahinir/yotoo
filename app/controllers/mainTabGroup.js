@@ -22,9 +22,14 @@ exports.init = function(args){
 };
 
 $.mainTabGroup.addEventListener('focus', function(e){
-	Ti.API.info("mainTabGroup focused, index:" + e.index);
+	// Ti.API.debug("[mainTabGroup] focused, index:" + e.index);
 	ownerAccount.set('status_active_tab_index', e.index);
 	ownerAccount.save();
+});
+$.mainTabGroup.addEventListener('postlayout', function(e){
+	Ti.API.debug("[mainTabGroup] postlayout");
+	// slow down.. animate this..
+	$.mainTabGroup.borderWidth = 0;
 });
 // var timelineTab = Ti.UI.createTab();
 // timelineTab.add(Alloy.createController('timelineWindow',{

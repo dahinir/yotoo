@@ -80,5 +80,6 @@ for heavy user, specialized relationship
 ## work now
 * notification
 * listView
+* http://docs.appcelerator.com/titanium/latest/#!/guide/Alloy_Sync_Adapters_and_Migrations 의 커스텀 씽크!
 
   

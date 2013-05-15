@@ -2,22 +2,22 @@ exports.definition = {
 	config: {
 		columns: {
 			// twitter column
-			"id_str":"string",
-			"name":"string",
-			"screen_name":"string",
-			"profile_image_url_https":"string",
-			"profile_background_image_url": "string",
+			"id_str":"TEXT",
+			"name":"TEXT",
+			"screen_name":"TEXT",
+			"profile_image_url_https":"TEXT",
+			"profile_background_image_url": "TEXT",
 			
 			// token for login			
-			"access_token":"string",
-			"access_token_secret":"string",
+			"access_token":"TEXT",
+			"access_token_secret":"TEXT",
 			
 			// for yotoo
-			"active":"boolean",
-			"status_active_tab_index":"int"
+			"active":"INTEGER",
+			"status_active_tab_index":"INTEGER"
 		},
 		adapter: {
-			// idAttribute: "id_str",
+			idAttribute: "id_str", // 64bit.. but TEXT
 			type: "sql",
 			collection_name: "account"
 		}

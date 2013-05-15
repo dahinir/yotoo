@@ -1,14 +1,14 @@
 "Label":{
-	borderWidth :1,
+	borderWidth: 1,
 	top:5,
 	left:5
 },
 
 ".test01" :{
-	horizontalWrap :false
+	horizontalWrap: false
 },
 ".test02" :{
-	horizontalWrap :true
+	horizontalWrap: true
 },
 
 
@@ -16,4 +16,11 @@
 
 ".container": {
 	backgroundColor: "white"
+},
+
+
+"#mainTabGroup":{
+	borderWidth: 1,
+	borderColor: "green",
+	borderRadius: 2
 }
