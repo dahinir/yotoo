@@ -67,7 +67,7 @@ for heavy user, specialized relationship
 * twitter streaming api adapter :node.js socket.io.js nTwitter.js등을 이용해야 하나.. , socket.io는 Ti용 모듈을 누가 만들어 놓긴 했네(https://github.com/nowelium/socket.io-titanium)
 * http://docs.appcelerator.com/titanium/latest/#!/guide/Alloy_Sync_Adapters_and_Migrations 의 커스텀 씽크!
 * "멱등 버튼" 처리. 예를 들어 "sign in"버튼을 두번 누르면 두개의 로긴창이 뜬다.
-
+* ACL aka access controll list
 
 
 ## done
@@ -78,11 +78,12 @@ for heavy user, specialized relationship
 * jsOAuth 1.3.6 346라인 File이 뭐지?
 * Ti.Cloud multi user support :인스턴스의 생성대신 account.js에서 매번 로긴 
 * github등록  
+* notification (client)
 
 
 ## work now
-* notification
 * account.js 의 changeCurrentAccount()에 cloud 로긴 하는것 네트웤 상황 안좋을때 대응 sessionId만 캐쉬하면 될것 같다.(..디폴트를 캐쉬로 하자)
 * listView
+* push notification (server by Node.ACS)
 
   

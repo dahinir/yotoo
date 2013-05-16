@@ -3,7 +3,7 @@ exports.definition = {
 		columns: {
 			// twitter column
 			"id_str":"TEXT",
-			"id_str_ACS": "TEXT",
+			"id_str_acs": "TEXT",
 			"name":"TEXT",
 			"screen_name":"TEXT",
 			"profile_image_url_https":"TEXT",
@@ -86,7 +86,7 @@ exports.definition = {
 				    if (e.success) {
 				        var user = e.users[0];
 				        Ti.API.debug('[account.js] Cloud login success! id: ' + user.id + ' first name: ' + user.first_name +' last name: ' + user.last_name);
-				        currentAccount.set("id_str_ACS", user.id);
+				        currentAccount.set("id_str_acs", user.id);
 				        currentAccount.save();
 				    } else {
 				        alert('Error:\n' + ((e.error && e.message) || JSON.stringify(e)));

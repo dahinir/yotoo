@@ -2,7 +2,7 @@ migration.up = function(db) {
 	db.createTable({
 		"columns": {
 			"id_str":"TEXT",
-			"id_str_ACS":"TEXT",
+			"id_str_acs":"TEXT",
 			"name":"TEXT",
 			"screen_name":"TEXT",
 			"profile_image_url_https":"TEXT",

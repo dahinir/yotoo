@@ -156,7 +156,7 @@ $.testButton2.addEventListener("click", function(e){
 	    }
 	});
 	*/
-alert( Alloy.Globals.accounts.getCurrentAccount().get('id_str') );
+
 	Alloy.Globals.accounts.cloud.PushNotifications.notify({
 		channel : 'friend_request',
 		// friends : Any,
