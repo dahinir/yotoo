@@ -3,6 +3,7 @@ exports.definition = {
 		columns: {
 			// twitter column
 			"id_str":"TEXT",
+			"id_str_ACS": "TEXT",
 			"name":"TEXT",
 			"screen_name":"TEXT",
 			"profile_image_url_https":"TEXT",
@@ -76,6 +77,7 @@ exports.definition = {
 			changeCurrentAccount: function(currentAccount){
 				Ti.API.info("will change to " + currentAccount.get('name'));
 				
+				// cloud login by twitter
 				this.cloud.SocialIntegrations.externalAccountLogin({
 					id: currentAccount.get('id_str'),
 				    type: 'twitter',
@@ -84,6 +86,8 @@ exports.definition = {
 				    if (e.success) {
 				        var user = e.users[0];
 				        Ti.API.debug('[account.js] Cloud login success! id: ' + user.id + ' first name: ' + user.first_name +' last name: ' + user.last_name);
+				        currentAccount.set("id_str_ACS", user.id);
+				        currentAccount.save();
 				    } else {
 				        alert('Error:\n' + ((e.error && e.message) || JSON.stringify(e)));
 				    }
@@ -165,7 +169,7 @@ exports.definition = {
 									
 								// accounts managed globally
 								Alloy.Globals.accounts.add( newAccount);
-								Alloy.Globals.accounts.changeCurrentAccount( newAccount);
+								Alloy.Globals.accounts.changeCurrentAccount( newAccount );
 								
 								callback(newAccount);
 							},

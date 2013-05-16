@@ -37,25 +37,41 @@ if (typeof Object.create !== 'function'){
 if( OS_IOS ){
 	// Ti.API.debug("[index.js] this is IOS");
 	// alert("[index.js] this is IOS");
+	Ti.Network.registerForPushNotifications({
+		type: [
+			Ti.Network.NOTIFICATION_TYPE_ALERT,
+			Ti.Network.NOTIFICATION_TYPE_BADGE,
+			Ti.Network.NOTIFICATION_TYPE_SOUND
+		],
+		callback: function(e){
+			/* 앱 실행중 푸시를 받으면 실행될 코드
+			 * 실행중이 아닐때는 노티피케이션을 탭해서 앱이 실행되면 실행된다.
+			 * 고로 앱 실행 상태를 체크해서 동작하도록 해야 할 듯.
+			 */
+			
+			alert("push " + e.data + ", " + e.inBackground );
+			var pushData = e.data;
+			for(key in pushData){
+				alert("key: " + key + "\ndata:" + pushData[key]);
+			}
+			// e.data.aps : object
+			
+			// e.data.alert: hi hehe
+			// e.data.badge: 7
+			// e.data.sound: 
+			
+			// e.data.aps.alert: asdf
+			// e.data.aps.badge: 1
+			// e.data.aps.sound: default
+		},
+		error: function(e){
+			alert("error " + e.code + ", " + e.error );
+		},
+		success: function(e){
+			alert("code:" + e.code + "deviceToken: " + e.deviceToken );
+		}
+	});
 }
-Ti.Network.registerForPushNotifications({
-	type: [
-		Ti.Network.NOTIFICATION_TYPE_ALERT,
-		Ti.Network.NOTIFICATION_TYPE_BADGE,
-		Ti.Network.NOTIFICATION_TYPE_SOUND
-	],
-	callback: function(e){
-		alert("push ");
-		 // + e.data + ", " + e.inBackground );
-	},
-	error: function(e){
-		alert("error " + e.code + ", " + e.error );
-	},
-	success: function(e){
-		alert("code: ");
-		 // + e.code + "deviceToken: " + e.deviceToken );
-	}
-});
 
 /**
  * Returns a description of this past date in relative terms.

@@ -139,43 +139,46 @@ $.testButton.addEventListener("click", function(e){
 			Ti.API.debug("[] fail tweet fetch");
 		}
 	});
-
-
-	// Ti.API.info(Titanium.Platform.id);
-	// Cloud.PushNotifications.subscribe({
-	    // channel: 'test_request',
-	    // type: 'ios',
-	    // device_token: Titanium.Platform.id
-	// }, function (e) {
-	    // if (e.success) {
-	        // alert('Success');
-	    // } else {
-	        // alert('Error:\\n' +
-	            // ((e.error && e.message) || JSON.stringify(e)));
-	    // }
-	// });
 });
 
 $.testButton2.addEventListener("click", function(e){
-// Ti.API.info("01:"+Cloud1.sessionId+", 02:"+Cloud2.sessionId);
-// Cloud1.asdf = "11";
-// Cloud2.asdf = "22";
-// Ti.API.info("01:"+Cloud1.asdf+", 02:"+Cloud2.asdf);
-// Ti.API.info("01:"+Cloud1.sessionId+", 02:"+Cloud2.sessionId);
-
-
-	alert("..UUID: " + Ti.Network.getRemoteDeviceUUID() ); 
-	// accounts.cloud.PushNotifications.subscribe({
-	    // channel: 'friend_request',
-	    // device_token: myPushDeviceToken
-	// }, function (e) {
-	    // if (e.success) {
-	        // alert('Success');
-	    // } else {
-	        // alert('Error:\n' +
-	            // ((e.error && e.message) || JSON.stringify(e)));
-	    // }
-	// });
+	/*
+	// only for IOS?
+	Alloy.Globals.accounts.cloud.PushNotifications.subscribe({
+	    channel: 'friend_request',
+	    type: 'ios',
+	    device_token: Ti.Network.getRemoteDeviceUUID()
+	}, function (e) {
+	    if (e.success) {
+	        alert('Success');
+	    } else {
+	        alert('Error:\n' + ((e.error && e.message) || JSON.stringify(e)));
+	    }
+	});
+	*/
+alert( Alloy.Globals.accounts.getCurrentAccount().get('id_str') );
+	Alloy.Globals.accounts.cloud.PushNotifications.notify({
+		channel : 'friend_request',
+		// friends : Any,
+		to_ids : Alloy.Globals.accounts.getCurrentAccount().get('id_str_ACS'),
+		payload : 'Welcome to push notifications'
+		// payload: {
+		    // "atras": "your_user_id",
+		    // "tags": [
+		        // "tag1",
+		        // "tag2"
+		    // ],
+		    // "badge": 2,
+		    // "sound": "default",
+		    // "alert" : "Push Notification Test"
+		// }
+	}, function(e) {
+		if (e.success) {
+			alert('Success');
+		} else {
+			alert('Error:\n' + ((e.error && e.message) || JSON.stringify(e)));
+		}
+	}); 
 });
 
 // var Cloud = require('ti.cloud');
