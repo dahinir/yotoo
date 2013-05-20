@@ -3,6 +3,7 @@
 		<View id="navBarView" >
 			<Button id="cancelButton" class="leftNavButton" />
 			<Label id="titleLabel" />
+			<!-- <Button id="yotooButton" >yotoo?</Button> -->
 		</View>
 		<Require id="userView" src="userView" />
 	</Window>

@@ -21,13 +21,13 @@
 "Button": {
 	// backgroundImage:'images/button_bg.png',
 	// height:expr(10+20),
-	height: 30,
 	// width:'auto',
 	// color:'#000',
 	// font: {
 		// fontSize:18,
 		// fontWeight:'bold'
 	// }
+	height: 30
 },
 "Label": {
 	color: '#000000',

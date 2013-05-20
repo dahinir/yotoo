@@ -36,7 +36,7 @@ Ti.API.info("getTopLevelViews( ) : " + this.getTopLevelViews( ) );
 // $.userView.setVerticalBounce( false);
 
 
-// userTabGroup //
+/* userTabGroup */
 $.userView.setCanCancelEvents( false );
 var isAddedUserTabGroup = false;
 // The rect and size values should be usable when postlayout event is fired.
@@ -52,8 +52,23 @@ $.userView.addEventListener('postlayout', function(){
 		$.userView.add(userTabGroup);
 		// Ti.API.debug("userTabGroup added");
 	}
+			
 });
-// userTabGroup //
+
+/*  */
+$.yotooButton.addEventListener('click', function(){
+	alert("dd");
+	ownerAccount.Cloud.Friends.add({
+	    user_ids: checked.join(",")
+	}, function (e) {
+	    if (e.success) {
+	        alert('Friend(s) added');
+	    } else {
+	        alert('Error:\n' +
+	            ((e.error && e.message) || JSON.stringify(e)));
+	    }
+	});
+});
 
 
 var setUser = function( userId ){
@@ -78,9 +93,11 @@ var setUser = function( userId ){
 			}
 			$.screenName.text = "@" + user.get('screen_name');
 			$.description.text = user.get('description');
-			
 			$.followersCount.text = L('followers') + " " + String.formatDecimal( user.get('followers_count') );
 			$.followingCount.text = L('following') + " " + String.formatDecimal( user.get('friends_count') );
+			if( purpose !== 'profile' ){
+				$.yotooButton.visible = true;
+			}
 
 			if(purpose === 'userView'){
 				var moreTaskOptions = {};

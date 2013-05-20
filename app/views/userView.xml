@@ -6,7 +6,11 @@
 		<ScrollableView id="userScrollableView" showPagingControl="true">
 			<View>
 				<ImageView id="profileImage" />
-				<Label id="name" />
+				<View id="nameAndYotooButton" >
+					<Button id="dummyButton" visible="false" />
+					<Label id="name" />
+					<Button id="yotooButton" visible="false">yotoo?</Button>
+				</View>
 				<ImageView id="verified" image="/images/twitter_verifiedAccountIcon.png" visible="false" />
 				<Label id="screenName" />
 			</View>

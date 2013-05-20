@@ -68,6 +68,7 @@ for heavy user, specialized relationship
 * http://docs.appcelerator.com/titanium/latest/#!/guide/Alloy_Sync_Adapters_and_Migrations 의 커스텀 씽크!
 * "멱등 버튼" 처리. 예를 들어 "sign in"버튼을 두번 누르면 두개의 로긴창이 뜬다.
 * ACL aka access controll list
+* yotto_nodeServer 이름을 yotoo_node_acs로 
 
 
 ## done
