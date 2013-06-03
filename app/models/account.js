@@ -3,22 +3,25 @@ exports.definition = {
 		columns: {
 			// twitter column
 			"id_str":"TEXT",
-			"id_str_acs": "TEXT",
 			"name":"TEXT",
 			"screen_name":"TEXT",
 			"profile_image_url_https":"TEXT",
 			"profile_background_image_url": "TEXT",
 			
-			// token for login			
+			// twitter token for login			
 			"access_token":"TEXT",
 			"access_token_secret":"TEXT",
+			
+			// for ACS
+			"id_str_acs": "TEXT",
+			// "session_id_acs": "TEXT",
 			
 			// for yotoo
 			"active":"INTEGER",
 			"status_active_tab_index":"INTEGER"
 		},
 		adapter: {
-			idAttribute: "id_str", // 64bit.. but TEXT
+			// idAttribute: "id_str", // 64bit.. but TEXT
 			type: "sql",
 			collection_name: "account"
 		}
@@ -53,13 +56,6 @@ exports.definition = {
 	extendCollection: function(Collection) {		
 		_.extend(Collection.prototype, {
 			// extended functions go here
-			cloud: require('ti.cloud'),
-			// getCloud: function(){
-				// return cloud;
-			// },
-			// setCloud: function( pCloud ){
-				// this.cloud = pCloud;
-			// },
 			getCurrentAccount: function(){
 				var currentAccount;
 				var activeFlag = 0;
@@ -75,23 +71,7 @@ exports.definition = {
 				return currentAccount;
 			},
 			changeCurrentAccount: function(currentAccount){
-				Ti.API.info("will change to " + currentAccount.get('name'));
-				
-				// cloud login by twitter
-				this.cloud.SocialIntegrations.externalAccountLogin({
-					id: currentAccount.get('id_str'),
-				    type: 'twitter',
-				    token: currentAccount.get('access_token')
-				}, function (e) {
-				    if (e.success) {
-				        var user = e.users[0];
-				        Ti.API.debug('[account.js] Cloud login success! id: ' + user.id + ' first name: ' + user.first_name +' last name: ' + user.last_name);
-				        currentAccount.set("id_str_acs", user.id);
-				        currentAccount.save();
-				    } else {
-				        alert('Error:\n' + ((e.error && e.message) || JSON.stringify(e)));
-				    }
-				});
+				Ti.API.info("[account.js] will change to " + currentAccount.get('name'));
 				
 				var isInCollection = false;
 				Alloy.Globals.accounts.map(function(account){
@@ -161,11 +141,30 @@ exports.definition = {
 									'screen_name': user.get('screen_name'),
 									'profile_image_url_https': user.get('profile_image_url_https').replace(/_normal/g, '_bigger'),
 									'profile_background_image_url': user.get('profile_background_image_url')
-								}); 
-								Ti.API.info("name: " + newAccount.get('name'));
+								});
+								Ti.API.info("[account.js] name: " + newAccount.get('name'));
+								
+								// cloud externalAccount create (twitter) //
+								var Cloud = require('cloudProxy').getCloud();
+								Cloud.externalAccountLoginAdapter({
+									id: user.get('id_str'),
+									type: 'twitter',
+									token: newAccount.get('access_token')
+								}, function (e) {
+								    if (e.success) {
+								        var user = e.users[0];
+								        Ti.API.info('[account.js] Cloud login success! sessionId:'+Cloud.sessionId+ ' id: ' + user.id + ' first name: ' + user.first_name +' last name: ' + user.last_name);
+								        newAccount.set('id_str_acs', user.id);
+								        newAccount.save();
+								        // alert('[account.js] current '+ currentAccount.get('session_id_acs') );
+								    } else {
+								        Ti.API.info('[accounts.js] Error: ' + ((e.error && e.message) || JSON.stringify(e)));
+								    }
+								});
+								
 								// save new account to persistence store
 								newAccount.save(); // must call after callback
-								Ti.API.debug("[account.js] new account saved");
+								Ti.API.info("[account.js] new account saved");
 									
 								// accounts managed globally
 								Alloy.Globals.accounts.add( newAccount);
@@ -174,9 +173,11 @@ exports.definition = {
 								callback(newAccount);
 							},
 							'onFailure': function(){
-								Ti.API.debug("[account.js] user.fetchFromServer failure")
+								Ti.API.info("[account.js] user.fetchFromServer failure")
 							}
 						});	// user.getUser()
+						
+
 					},
 					'onFailure': function(){
 						Ti.API.debug("[account.js] fail to add account");

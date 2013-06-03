@@ -1,9 +1,9 @@
-#appname: yotoo
-#appid: com.dasolute.yotoo
-#type: mobile
-#guid: 9da16483-966b-4295-90f7-66a88bd4d2e4
-#version: 1.0
-#publisher: not specified
-#url: not specified
-#image: appicon.png
-#desc: not specified
+#appname:yotoo
+#appid:com.dasolute.yotoo
+#type:ipad
+#guid:9da16483-966b-4295-90f7-66a88bd4d2e4
+#version:1.0
+#publisher:rapodor
+#url:http://dasolute.com/
+#image:appicon.png
+#desc:not specified

@@ -57,17 +57,11 @@ $.userView.addEventListener('postlayout', function(){
 
 /*  */
 $.yotooButton.addEventListener('click', function(){
-	alert("dd");
-	ownerAccount.Cloud.Friends.add({
-	    user_ids: checked.join(",")
-	}, function (e) {
-	    if (e.success) {
-	        alert('Friend(s) added');
-	    } else {
-	        alert('Error:\n' +
-	            ((e.error && e.message) || JSON.stringify(e)));
-	    }
-	});
+	alert( L('yotoo_effect') );
+	
+	
+	// sourceAccount, targetAccount
+	require('cloudProxy').getCloud().yotooRequest(ownerAccount, user);
 });
 
 
@@ -95,6 +89,17 @@ var setUser = function( userId ){
 			$.description.text = user.get('description');
 			$.followersCount.text = L('followers') + " " + String.formatDecimal( user.get('followers_count') );
 			$.followingCount.text = L('following') + " " + String.formatDecimal( user.get('friends_count') );
+			
+			// if name is too long
+			if( user.get('name').length > 13){
+				$.nameAndYotooButton.remove($.dummyButton);
+			}
+			if( user.get('name').length > 17 ){
+				$.nameAndYotooButton.remove($.yotooButton);
+				$.mainProfileView.add($.yotooButton);
+				$.yotooButton.left = $.profileImage.rect.width + $.profileImage.rect.x + 6;
+				$.yotooButton.top = $.profileImage.rect.height + $.profileImage.rect.y - 22;
+			}
 			if( purpose !== 'profile' ){
 				$.yotooButton.visible = true;
 			}

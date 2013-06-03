@@ -34,7 +34,19 @@ if (typeof Object.create !== 'function'){
 	Ti.API.warn("already defined Object.create()");
 }
 
+if( ENV_DEV ){
+	alert("ENV_DEV");
+}
+if( ENV_TEST ){
+	// alert("ENV_TEST");
+}
+if( ENV_PRODUCTION ){
+	alert("ENV_PRODUCTION");
+}
+
+// push notification
 if( OS_IOS ){
+	// alert("os");
 	// Ti.API.debug("[index.js] this is IOS");
 	// alert("[index.js] this is IOS");
 	Ti.Network.registerForPushNotifications({
@@ -44,11 +56,12 @@ if( OS_IOS ){
 			Ti.Network.NOTIFICATION_TYPE_SOUND
 		],
 		callback: function(e){
-			/* 앱 실행중 푸시를 받으면 실행될 코드
+			/* 
+			 * 앱 실행중 푸시를 받으면 실행될 코드
 			 * 실행중이 아닐때는 노티피케이션을 탭해서 앱이 실행되면 실행된다.
 			 * 고로 앱 실행 상태를 체크해서 동작하도록 해야 할 듯.
 			 */
-			
+			alert("callback");
 			alert("push " + e.data + ", " + e.inBackground );
 			var pushData = e.data;
 			for(key in pushData){
@@ -65,9 +78,11 @@ if( OS_IOS ){
 			// e.data.aps.sound: default
 		},
 		error: function(e){
+			alert("error");
 			alert("error " + e.code + ", " + e.error );
 		},
 		success: function(e){
+			alert("success");
 			alert("code:" + e.code + "deviceToken: " + e.deviceToken );
 		}
 	});

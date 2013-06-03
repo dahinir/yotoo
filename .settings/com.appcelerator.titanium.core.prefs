@@ -1,4 +1,7 @@
 eclipse.preferences.version=1
-provisioning_profiles/development/FD08D26C-0A35-449F-8094-06EF3A3B2279/appid=com.dasolute.yotoo
-provisioning_profiles/development/FD08D26C-0A35-449F-8094-06EF3A3B2279/name=Daehyeon Dev
-provisioning_profiles/development/FD08D26C-0A35-449F-8094-06EF3A3B2279/uuid=FD08D26C-0A35-449F-8094-06EF3A3B2279
+provisioning_profiles/development/9B7FB8DC-04ED-4E2B-B820-EDE1E7D1F846/appid=com.dasolute.yotoo
+provisioning_profiles/development/9B7FB8DC-04ED-4E2B-B820-EDE1E7D1F846/name=20130601
+provisioning_profiles/development/9B7FB8DC-04ED-4E2B-B820-EDE1E7D1F846/uuid=9B7FB8DC-04ED-4E2B-B820-EDE1E7D1F846
+provisioning_profiles/distribution/9B7FB8DC-04ED-4E2B-B820-EDE1E7D1F846/appid=com.dasolute.yotoo
+provisioning_profiles/distribution/9B7FB8DC-04ED-4E2B-B820-EDE1E7D1F846/name=20130601
+provisioning_profiles/distribution/9B7FB8DC-04ED-4E2B-B820-EDE1E7D1F846/uuid=9B7FB8DC-04ED-4E2B-B820-EDE1E7D1F846

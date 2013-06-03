@@ -4,7 +4,7 @@
 	<ScrollView id="userView">
 		<ImageView id="profileBannerImage" />
 		<ScrollableView id="userScrollableView" showPagingControl="true">
-			<View>
+			<View id="mainProfileView">
 				<ImageView id="profileImage" />
 				<View id="nameAndYotooButton" >
 					<Button id="dummyButton" visible="false" />

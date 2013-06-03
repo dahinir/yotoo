@@ -2,7 +2,7 @@ var args = arguments[0] || {};
 // var ownerAccount = args.ownerAccount;
 var account = args.account;
 
-Ti.API.info("account.get(name):"+ account.get('name') );
+Ti.API.info("[accountRow.js] account.get(name):"+ account.get('name') );
 
 $.profileImage.image = account.get('profile_image_url_https');
 $.name.text = account.get('name');

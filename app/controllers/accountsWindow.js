@@ -35,7 +35,7 @@ accounts.map(function(account){
 			Alloy.Globals.accounts.changeCurrentAccount( account );
 		}
 	});
-	
+		
 	$.accountsTable.appendRow(row);
 });
 

@@ -142,10 +142,9 @@ $.testButton.addEventListener("click", function(e){
 });
 
 $.testButton2.addEventListener("click", function(e){
-	/*
 	// only for IOS?
-	Alloy.Globals.accounts.cloud.PushNotifications.subscribe({
-	    channel: 'friend_request',
+	require('cloudProxy').getCloud().PushNotifications.subscribe({
+	    channel: 'yotoo',
 	    type: 'ios',
 	    device_token: Ti.Network.getRemoteDeviceUUID()
 	}, function (e) {
@@ -155,8 +154,7 @@ $.testButton2.addEventListener("click", function(e){
 	        alert('Error:\n' + ((e.error && e.message) || JSON.stringify(e)));
 	    }
 	});
-	*/
-
+/*
 	Alloy.Globals.accounts.cloud.PushNotifications.notify({
 		channel : 'friend_request',
 		// friends : Any,
@@ -179,15 +177,26 @@ $.testButton2.addEventListener("click", function(e){
 			alert('Error:\n' + ((e.error && e.message) || JSON.stringify(e)));
 		}
 	}); 
+*/
+/*
+	require('cloudProxy').getCloud().Users.showMe(function (e) {
+	    if (e.success) {
+	        var user = e.users[0];
+	        alert('acs id: ' + user.id );
+	    } else {
+	        alert('Error:'+ ((e.error && e.message) || JSON.stringify(e)));
+	    }
+	});
+*/
 });
 
 // var Cloud = require('ti.cloud');
-var Cloud = Alloy.Globals.accounts.cloud;
-var Cloud1 = Object.create(Cloud);
-var Cloud2 = Object.create(Cloud);
+// var Cloud = Alloy.Globals.accounts.cloud;
+// var Cloud1 = Object.create(Cloud);
+// var Cloud2 = Object.create(Cloud);
 
 // Cloud.sessionId = Ti.App.Properties.getString('cloudSessionId');
 // Ti.API.info("cloud.sessionId: "+ Ti.App.Properties.getString('cloudSessionId') );
-Ti.API.info("01:"+Cloud1.sessionId+", 02:"+Cloud2.sessionId);
+// Ti.API.info("01:"+Cloud1.sessionId+", 02:"+Cloud2.sessionId);
 
 
