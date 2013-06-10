@@ -1,5 +1,5 @@
 eclipse.preferences.version=1
-iosLaunchConfigurationAttributes/ATTR_MINIFY=true
+iosLaunchConfigurationAttributes/ATTR_MINIFY=false
 iosLaunchConfigurationAttributes/ATTR_PROJECT_NAME=yotoo
 iosLaunchConfigurationAttributes/appid=com.dasolute.yotoo
 iosLaunchConfigurationAttributes/certificate=Daehyeon Shin (B83FVSE449)

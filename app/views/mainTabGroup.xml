@@ -6,8 +6,8 @@
 			<Require id="timelineWindow" src="timelineWindow" />
 		</Tab>
 
-		<Tab id="mentionsTab">
-			<Require id="mentionsWindow" src="mentionsWindow" />
+		<Tab id="connectTab">
+			<Require id="connectWindow" src="connectWindow" />
 		</Tab>
 
 		<Tab title="searchTab">

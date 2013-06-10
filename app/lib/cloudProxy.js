@@ -125,7 +125,7 @@ var checkTargetYotoo = function(sourceAccount, targetAccount){
 		        alert('Success:\n' + 'Count: ' + e.yotoo.length);
             }else if ( e.yotoo.length > 0){
             	alert('YOTOO!');
-            	sendPushNotificationToTarget(sourceAccount, targetAccount);
+            	sendPushNotification(sourceAccount, targetAccount);
             }
 	    } else {
 	        alert('Error:\n' + ((e.error && e.message) || JSON.stringify(e)));
@@ -133,7 +133,7 @@ var checkTargetYotoo = function(sourceAccount, targetAccount){
 	});
 };
 
-var sendPushNotificationToTarget = function(sourceAccount, targetAccount){
+var sendPushNotification = function(sourceAccount, targetAccount){
 	Cloud.PushNotifications.notify({
 		channel : 'yotoo',
 		// friends : Any,

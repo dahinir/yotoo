@@ -69,11 +69,14 @@ for heavy user, specialized relationship
 * 1. twitter streaming api adapter :node.js socket.io.js nTwitter.js등을 이용해야 하나.. , socket.io는 Ti용 모듈을 누가 만들어 놓긴 했네(https://github.com/nowelium/socket.io-titanium)
 * 2. push notification server
 * 3. push notification server with twitter site stream
+* custom object로 간다. 서버는 여유가 생기면 만들어서 보안 유지한다. custom object 접근권한 
 * http://docs.appcelerator.com/titanium/latest/#!/guide/Alloy_Sync_Adapters_and_Migrations 의 커스텀 씽크!
 * "멱등 버튼" 처리. 예를 들어 "sign in"버튼을 두번 누르면 두개의 로긴창이 뜬다.
 * ACL aka access controll list
 * yotto_nodeServer 이름을 yotoo_node_acs로 
 * appStatus 모델을 만들어 저장. account.js의 active 필드 같은걸 이쪽으로 옮기
+* account.js에 yotoo한 대상 아이디들 저장 
+* account.js addAccount 할때 yotoo한 객체 있나 찾아 보고 저장
 
 
 ## done
@@ -85,18 +88,11 @@ for heavy user, specialized relationship
 * Ti.Cloud multi user support :인스턴스의 생성대신 account.js에서 매번 로긴 
 * github등록  
 * notification (client)
+* yotoo버튼 
 
 
 ## work now
 * listView
-* push notification (server by Node.ACS)
-* account.js에 yotoo한 대상 아이디들 저장 
-* account.js addAccount 할때 yotoo한 객체 있나 찾아 보고 저장
-* account.js addAccount 할때 ACS로 로긴이 안돼네? 	
-
-
-yotoo버튼 구현 할 차례
-custom object로 간다. 서버는 여유가 생기면 만들어서 보안 유지한다. custom object 접근권한 
-
+* map view
 
 

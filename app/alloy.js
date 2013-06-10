@@ -60,6 +60,8 @@ if( OS_IOS ){
 			 * 앱 실행중 푸시를 받으면 실행될 코드
 			 * 실행중이 아닐때는 노티피케이션을 탭해서 앱이 실행되면 실행된다.
 			 * 고로 앱 실행 상태를 체크해서 동작하도록 해야 할 듯.
+			 * 
+			 * Connection 탭의 activity history를 보여줄까?
 			 */
 			alert("callback");
 			alert("push " + e.data + ", " + e.inBackground );

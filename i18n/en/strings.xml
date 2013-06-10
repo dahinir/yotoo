@@ -6,6 +6,7 @@
 	<string name="cancel">Cancel</string>
 	
 	<string name="timeline">Timeline</string>
+	<string name="connect">Connect</string>
 	<string name="mentions">Mentions</string>
 	<string name="profile">Profile</string>
 	<string name="new_tweet">New Tweet</string>

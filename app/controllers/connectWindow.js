@@ -1,7 +1,7 @@
 var args = arguments[0] || {};
 var ownerAccount = args.ownerAccount;
 
-$.titleLabel.text = L('mentions');
+$.titleLabel.text = L('connect');
 
 exports.init = function(args) {
 	if(args.ownerAccount != undefined ){
@@ -19,5 +19,5 @@ exports.init = function(args) {
 	}
 };
 // only ios has .rightNavButton
-// $.mentionsWindow.rightNavButton = Ti.UI.createButton({title:"asd"});
+// $.connectWindow.rightNavButton = Ti.UI.createButton({title:"asd"});
 

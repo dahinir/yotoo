@@ -6,7 +6,7 @@ var args = arguments[0] || {};
 var ownerAccount = args.ownerAccount; // || yotoo.currentAccount;
 
 $.timelineTab.title = L('timeline');
-$.mentionsTab.title = L('mentions');
+$.connectTab.title = L('connect');
 $.profileTab.title = L('profile');
 
 exports.init = function(args){
@@ -14,7 +14,7 @@ exports.init = function(args){
 		ownerAccount = args.ownerAccount;
 		Ti.API.info("mainTabGroup's owner: " + ownerAccount.get('access_token'));
 		$.timelineWindow.init({"ownerAccount" : ownerAccount});
-		$.mentionsWindow.init({"ownerAccount" : ownerAccount});
+		$.connectWindow.init({"ownerAccount" : ownerAccount});
 		$.profileWindow.init({"ownerAccount" : ownerAccount});
 		
 		$.mainTabGroup.setActiveTab( ownerAccount.get('status_active_tab_index') );
@@ -142,6 +142,7 @@ $.testButton.addEventListener("click", function(e){
 });
 
 $.testButton2.addEventListener("click", function(e){
+/*
 	// only for IOS?
 	require('cloudProxy').getCloud().PushNotifications.subscribe({
 	    channel: 'yotoo',
@@ -154,6 +155,7 @@ $.testButton2.addEventListener("click", function(e){
 	        alert('Error:\n' + ((e.error && e.message) || JSON.stringify(e)));
 	    }
 	});
+*/
 /*
 	Alloy.Globals.accounts.cloud.PushNotifications.notify({
 		channel : 'friend_request',

@@ -2,23 +2,23 @@ exports.definition = {
 	config: {
 		columns: {
 			// twitter column
-			"id_str":"TEXT",
-			"name":"TEXT",
-			"screen_name":"TEXT",
-			"profile_image_url_https":"TEXT",
-			"profile_background_image_url": "TEXT",
+			"id_str":"string",
+			"name":"string",
+			"screen_name":"string",
+			"profile_image_url_https":"string",
+			"profile_background_image_url": "string",
 			
 			// twitter token for login			
-			"access_token":"TEXT",
-			"access_token_secret":"TEXT",
+			"access_token":"string",
+			"access_token_secret":"string",
 			
 			// for ACS
-			"id_str_acs": "TEXT",
-			// "session_id_acs": "TEXT",
+			"id_str_acs": "string",
+			// "session_id_acs": "string",
 			
 			// for yotoo
-			"active":"INTEGER",
-			"status_active_tab_index":"INTEGER"
+			"active":"boolean",
+			"status_active_tab_index":"int"
 		},
 		adapter: {
 			// idAttribute: "id_str", // 64bit.. but TEXT
@@ -157,6 +157,19 @@ exports.definition = {
 								        newAccount.set('id_str_acs', user.id);
 								        newAccount.save();
 								        // alert('[account.js] current '+ currentAccount.get('session_id_acs') );
+								        
+								        // push notification subscribe.. only fo iOS?
+										Cloud.PushNotifications.subscribe({
+										    channel: 'yotoo',
+										    type: 'ios',
+										    device_token: Ti.Network.getRemoteDeviceUUID()
+										}, function (e) {
+										    if (e.success) {
+										        alert('Success subscribe');
+										    } else {
+										        alert('Error subscribe:\n' + ((e.error && e.message) || JSON.stringify(e)));
+										    }
+										});								        
 								    } else {
 								        Ti.API.info('[accounts.js] Error: ' + ((e.error && e.message) || JSON.stringify(e)));
 								    }
