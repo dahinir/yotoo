@@ -2,15 +2,18 @@ var args = arguments[0] || {};
 var ownerAccount;
 // var ownerAccount = args.ownerAccount || yotoo.currentAccount;
 
-$.titleLabel.text = L('profile');
 // $.userView.getView().setBackgroundColor("#555");	//test
 
-// only ios has .rightNavButton
-// $.mentionsWindow.rightNavButton = Ti.UI.createButton({title:"asd"});
 
-exports.init = function(args) {
-	if(args.ownerAccount != undefined ){
-		ownerAccount = args.ownerAccount;
+exports.init = function( options ) {
+	if( options.ownerAccount ){
+		ownerAccount = options.ownerAccount;
+		
+		$.navBarView.init({
+			"ownerAccount": ownerAccount,
+			"defaultTitle": L('profile')
+		});
+		
 		$.userView.init({
 			"ownerAccount" : ownerAccount,
 			"purpose" : "profile"

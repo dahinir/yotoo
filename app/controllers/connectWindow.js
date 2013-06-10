@@ -1,21 +1,23 @@
 var args = arguments[0] || {};
 var ownerAccount = args.ownerAccount;
 
-$.titleLabel.text = L('connect');
 
-exports.init = function(args) {
-	if(args.ownerAccount != undefined ){
-		ownerAccount = args.ownerAccount;
+exports.init = function( options ) {
+	if( options.ownerAccount ){
+		ownerAccount = options.ownerAccount;
+		
+		$.navBarView.init({
+			"ownerAccount": ownerAccount,
+			"defaultTitle": L('connect')
+		});
+		
 		$.tweetsView.init({
 			"ownerAccount" : ownerAccount,
 			"purpose" : "mentions"
 		});
-		$.listAccountsButton.init({
-			"ownerAccount" : ownerAccount
-		});
-		$.newTweetButton.init({
-			"ownerAccount" : ownerAccount
-		});
+		
+	}else{
+		Ti.API.warn("[connectWindow.js] must set ownerAccount");
 	}
 };
 // only ios has .rightNavButton

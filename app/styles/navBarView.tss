@@ -1,0 +1,21 @@
+
+
+
+
+
+"#navBarView":{
+	top: 0,
+	width: "100%",
+	height: 46,
+	// borderRadius: "3dp",
+	backgroundColor: "#333",
+    backgroundGradient: {
+        type: 'linear',
+        startPoint: { x: '50%', y: '0%' },
+        endPoint: { x: '50%', y: '100%' },
+        colors: [ { color: '#CCC', offset: 0.0}, { color: '#333', offset: 1.0 } ]
+    }
+}
+
+
+

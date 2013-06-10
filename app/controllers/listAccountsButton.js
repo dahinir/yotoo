@@ -1,14 +1,14 @@
 var args = arguments[0] || {};
 var ownerAccount = args.ownerAccount;
 
-exports.init = function(args) {
-	if(args.ownerAccount != undefined ){
-		ownerAccount = args.ownerAccount;
+exports.init = function( options ) {
+	if( options.ownerAccount){
+		ownerAccount = options.ownerAccount;
 	}
 };
 
 $.listAccountsButton.addEventListener('click', function(e) {
-	if(ownerAccount != undefined){
+	if( ownerAccount ){
 		var accountsWindow = Alloy.createController('accountsWindow', {
 			"ownerAccount" : ownerAccount
 		}).getView();
@@ -36,7 +36,7 @@ $.listAccountsButton.addEventListener('click', function(e) {
 		accountsWindow.open(openingAnimation);
 		// alert("hi"+ Alloy.globals.myVal);
 	}else{
-		Ti.API.info("fuck! did not set ownerAccount. but maybe works next try");
+		Ti.API.info("[listAccountButton.js] fuck! did not set ownerAccount. but maybe works next try");
 	}
 });
 

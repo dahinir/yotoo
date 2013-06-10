@@ -1,0 +1,7 @@
+<Alloy>
+	<View id="navBarView" >
+		<Require id="listAccountsButton" src="listAccountsButton" />
+		<Label id="titleLabel" />
+		<Require id="newTweetButton" src="newTweetButton" />
+	</View>
+</Alloy>

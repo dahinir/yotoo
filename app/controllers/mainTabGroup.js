@@ -38,7 +38,7 @@ Alloy.Globals.testVal2 = 0;
 
 
 
-
+/* test */
 var tweetTemplate = {
     properties: {
         // These are the same as the list data item properties

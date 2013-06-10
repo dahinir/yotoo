@@ -94,5 +94,6 @@ for heavy user, specialized relationship
 ## work now
 * listView
 * map view
+* navBarView
 
 
