@@ -1,0 +1,6 @@
+<Alloy>
+	<Window id="discoverWindow" class="appWindow" >
+		<Require id="navBarView" src="navBarView" />
+		<Require id="userView" src="userView" />
+	</Window>
+</Alloy>

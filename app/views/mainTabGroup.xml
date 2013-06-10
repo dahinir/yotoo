@@ -11,6 +11,8 @@
 		</Tab>
 
 		<Tab title="searchTab">
+			<Require id="discoverWindow" src="discoverWindow" />
+			<!--
 			<Window id="testWindow" layout="vertical">
 				<View height="70" width="320" layout="vertical" borderWidth="1" backgroundColor="#F33">
 					<Button id="testButton" >testButton</Button>
@@ -20,6 +22,7 @@
 					<Label platform="android">Label (android)</Label>
 				</View>
 			</Window>
+			-->
 		</Tab>
 		
 		<Tab title="favoritTab">

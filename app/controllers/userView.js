@@ -5,28 +5,28 @@ var ownerAccount;
 var user;
 
 exports.destroy = function(){
-	Ti.API.info("userView closed, destroy binded model.");
+	Ti.API.info("[userView.js] userView closed, destroy binded model.");
     user.destroy();
 };
 // userView.js must called .init() //
-exports.init = function(args) {
-	if( args.ownerAccount ){
-		ownerAccount = args.ownerAccount;
+exports.init = function( options ) {
+	if( options.ownerAccount ){
+		ownerAccount = options.ownerAccount;
 		user = ownerAccount.createModel('user');
 		// $.tweetsView.init({
 			// "ownerAccount" : ownerAccount,
 			// "purpose" : "mentions"
 		// });
 	}
-	if( args.purpose ){
-		purpose = args.purpose;
+	if( options.purpose ){
+		purpose = options.purpose;
 		if(purpose === 'profile'){
 			setUser();
 		}
 	}
-	if( args.userId ){
-		user.set('id_str', args.userId);
-		setUser(args.userId);
+	if( options.userId ){
+		user.set('id_str', options.userId );
+		setUser( options.userId );
 	}
 };
 

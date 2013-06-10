@@ -1,9 +1,8 @@
 <Alloy>
 	<Window id="userWindow" class="appWindow">
 		<View id="navBarView" >
-			<Button id="cancelButton" class="leftNavButton" />
+			<Button id="closeButton" class="leftNavButton" />
 			<Label id="titleLabel" />
-			<!-- <Button id="yotooButton" >yotoo?</Button> -->
 		</View>
 		<Require id="userView" src="userView" />
 	</Window>

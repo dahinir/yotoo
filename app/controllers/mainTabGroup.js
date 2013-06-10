@@ -7,17 +7,20 @@ var ownerAccount = args.ownerAccount; // || yotoo.currentAccount;
 
 $.timelineTab.title = L('timeline');
 $.connectTab.title = L('connect');
+$.discoverTab.title = L('discover');
 $.profileTab.title = L('profile');
 
-exports.init = function(args){
-	if(args.ownerAccount != undefined ){
+exports.init = function( options ){
+	if( options.ownerAccount ){
 		ownerAccount = args.ownerAccount;
-		Ti.API.info("mainTabGroup's owner: " + ownerAccount.get('access_token'));
+		// Ti.API.info("[mainTabGroup] mainTabGroup init with owner: " + ownerAccount.get('access_token'));
+
+		$.mainTabGroup.setActiveTab( ownerAccount.get('status_active_tab_index') );
+		
 		$.timelineWindow.init({"ownerAccount" : ownerAccount});
 		$.connectWindow.init({"ownerAccount" : ownerAccount});
+		$.discoverWindow.init({"ownerAccount" : ownerAccount});
 		$.profileWindow.init({"ownerAccount" : ownerAccount});
-		
-		$.mainTabGroup.setActiveTab( ownerAccount.get('status_active_tab_index') );
 	}
 };
 
@@ -38,7 +41,12 @@ Alloy.Globals.testVal2 = 0;
 
 
 
-/* test */
+/*
+ * 
+ * 
+ * 
+ * 
+ *  test
 var tweetTemplate = {
     properties: {
         // These are the same as the list data item properties
@@ -141,64 +149,4 @@ $.testButton.addEventListener("click", function(e){
 	});
 });
 
-$.testButton2.addEventListener("click", function(e){
-/*
-	// only for IOS?
-	require('cloudProxy').getCloud().PushNotifications.subscribe({
-	    channel: 'yotoo',
-	    type: 'ios',
-	    device_token: Ti.Network.getRemoteDeviceUUID()
-	}, function (e) {
-	    if (e.success) {
-	        alert('Success');
-	    } else {
-	        alert('Error:\n' + ((e.error && e.message) || JSON.stringify(e)));
-	    }
-	});
 */
-/*
-	Alloy.Globals.accounts.cloud.PushNotifications.notify({
-		channel : 'friend_request',
-		// friends : Any,
-		to_ids : Alloy.Globals.accounts.getCurrentAccount().get('id_str_ACS'),
-		payload : 'Welcome to push notifications'
-		// payload: {
-		    // "atras": "your_user_id",
-		    // "tags": [
-		        // "tag1",
-		        // "tag2"
-		    // ],
-		    // "badge": 2,
-		    // "sound": "default",
-		    // "alert" : "Push Notification Test"
-		// }
-	}, function(e) {
-		if (e.success) {
-			alert('Success');
-		} else {
-			alert('Error:\n' + ((e.error && e.message) || JSON.stringify(e)));
-		}
-	}); 
-*/
-/*
-	require('cloudProxy').getCloud().Users.showMe(function (e) {
-	    if (e.success) {
-	        var user = e.users[0];
-	        alert('acs id: ' + user.id );
-	    } else {
-	        alert('Error:'+ ((e.error && e.message) || JSON.stringify(e)));
-	    }
-	});
-*/
-});
-
-// var Cloud = require('ti.cloud');
-// var Cloud = Alloy.Globals.accounts.cloud;
-// var Cloud1 = Object.create(Cloud);
-// var Cloud2 = Object.create(Cloud);
-
-// Cloud.sessionId = Ti.App.Properties.getString('cloudSessionId');
-// Ti.API.info("cloud.sessionId: "+ Ti.App.Properties.getString('cloudSessionId') );
-// Ti.API.info("01:"+Cloud1.sessionId+", 02:"+Cloud2.sessionId);
-
-

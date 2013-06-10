@@ -89,11 +89,11 @@ for heavy user, specialized relationship
 * github등록  
 * notification (client)
 * yotoo버튼 
+* navBarView
 
 
 ## work now
 * listView
-* map view
-* navBarView
+* map view :discoverWindow.js
 
 

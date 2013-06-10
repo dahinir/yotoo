@@ -3,6 +3,8 @@ var ownerAccount = args.ownerAccount;
 var defaultTitle = args.defaultTitle || "-";
 
 
+var leftNavButton = $.listAccountsButton;
+var rightNavButton = $.newTweetButton;
 
 exports.init = function( options ){
 	if( options.defaultTitle ){
@@ -13,10 +15,10 @@ exports.init = function( options ){
 	if( options.ownerAccount ){
 		ownerAccount = options.ownerAccount;
 		
-		$.listAccountsButton.init({
+		leftNavButton.init({
 			"ownerAccount" : ownerAccount
 		});
-		$.newTweetButton.init({
+		rightNavButton.init({
 			"ownerAccount" : ownerAccount
 		});
 	}else{
