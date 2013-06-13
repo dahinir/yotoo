@@ -10,7 +10,7 @@
 			<Require id="connectWindow" src="connectWindow" />
 		</Tab>
 
-		<Tab title="searchTab">
+		<Tab id="discoverTab">
 			<Require id="discoverWindow" src="discoverWindow" />
 			<!--
 			<Window id="testWindow" layout="vertical">

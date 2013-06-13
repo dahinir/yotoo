@@ -90,10 +90,10 @@ for heavy user, specialized relationship
 * notification (client)
 * yotoo버튼 
 * navBarView
+* map view :discoverWindow.js
 
 
 ## work now
 * listView
-* map view :discoverWindow.js
-
+* near twit
 

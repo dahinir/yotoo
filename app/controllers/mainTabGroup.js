@@ -12,7 +12,7 @@ $.profileTab.title = L('profile');
 
 exports.init = function( options ){
 	if( options.ownerAccount ){
-		ownerAccount = args.ownerAccount;
+		ownerAccount = options.ownerAccount;
 		// Ti.API.info("[mainTabGroup] mainTabGroup init with owner: " + ownerAccount.get('access_token'));
 
 		$.mainTabGroup.setActiveTab( ownerAccount.get('status_active_tab_index') );

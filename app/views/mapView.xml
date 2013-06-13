@@ -1,0 +1,21 @@
+<Alloy>
+	<SearchBar id="search" barColor="#000" showCancel="true" height="43" top="0" />
+
+	<!-- Ti.Map.View needed container -->
+	<View id="container" >
+	
+		<View id="mapView" ns="Ti.Map" animate="true" 
+			regionFit="true" userLocation="true" mapType="Ti.Map.HYBRID_TYPE" >
+			
+			<Annotation id="mountainView"
+			latitude="37.390749" longitude="-122.081651"
+			title="Appcelerator Headquarters" subtitle="Mountain View, CA"
+			pincolor="Titanium.Map.ANNOTATION_RED"
+			leftButton="/images/twitter_verifiedAccountIcon.png"
+			image="/images/twitter_verifiedAccountIcon.png"
+			myid="1" />
+	
+		</View>
+	
+	</View>
+</Alloy>

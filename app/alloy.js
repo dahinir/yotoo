@@ -35,13 +35,13 @@ if (typeof Object.create !== 'function'){
 }
 
 if( ENV_DEV ){
-	alert("ENV_DEV");
+	// alert("ENV_DEV");
 }
 if( ENV_TEST ){
 	// alert("ENV_TEST");
 }
 if( ENV_PRODUCTION ){
-	alert("ENV_PRODUCTION");
+	// alert("ENV_PRODUCTION");
 }
 
 // push notification
