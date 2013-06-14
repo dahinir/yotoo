@@ -38,22 +38,24 @@ Ti.API.info("getTopLevelViews( ) : " + this.getTopLevelViews( ) );
 
 /* userTabGroup */
 $.userView.setCanCancelEvents( false );
-var isAddedUserTabGroup = false;
-// The rect and size values should be usable when postlayout event is fired.
-$.userView.addEventListener('postlayout', function(){
+var addUserTabGroup = function(){
 	// altering properties that affect layout from the postlayout callback may result in an endless loop.
-	if( !isAddedUserTabGroup ){
-		isAddedUserTabGroup = true;
-		var userTabGroup = Alloy.createController('userTabGroup', {
-				'ownerAccount': ownerAccount,
-				'user': user,
-				'parentView': $.userView
-			}).getView(); 
-		$.userView.add(userTabGroup);
-		// Ti.API.debug("userTabGroup added");
-	}
-			
-});
+	$.userView.removeEventListener('postlayout', addUserTabGroup);
+
+	var userTabGroup = Alloy.createController('userTabGroup', {
+			'ownerAccount': ownerAccount,
+			'user': user,
+			'parentView': $.userView
+		}).getView(); 
+	$.userView.add(userTabGroup);
+	Ti.API.info("[userView.js] addUserTabGroup");
+};
+
+// The rect and size values should be usable when postlayout event is fired.
+$.userView.addEventListener('postlayout', addUserTabGroup);
+
+
+
 
 /*  */
 $.yotooButton.addEventListener('click', function(){
