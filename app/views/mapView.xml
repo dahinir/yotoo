@@ -1,5 +1,5 @@
 <Alloy>
-	<SearchBar id="search" barColor="#000" showCancel="true" height="43" top="0" />
+	<!--<SearchBar id="search" barColor="#000" showCancel="true" height="43" top="0" />--
 
 	<!-- Ti.Map.View needed container -->
 	<View id="container" >

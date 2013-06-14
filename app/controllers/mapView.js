@@ -36,8 +36,27 @@ if (Ti.Geolocation.locationServicesEnabled) {
 } else {
     alert('Please enable location services');
 }
-
-
+// var searchBar = Ti.UI.createSearchBar({
+    // barColor:'#000',
+    // opacity: 0.8, 
+    // showCancel:false,
+    // height:43,
+    // top:0,
+    // hintText: L('search_twitter')
+// });
+// $.container.add(searchBar);
+// searchBar.addEventListener('blur', function(e)
+// {
+	// Titanium.API.info('search bar cancel fired');
+	// searchBar.blur();
+// });
+// searchBar.addEventListener('focus', function(e)
+// {
+	// Titanium.API.info('search bar focus fired');
+	// $.mapView.hide();
+// });
+	
+	
 var apple =	Ti.Map.createAnnotation({
 		latitude: 37.331689,
 		longitude: -122.030731,
@@ -90,22 +109,22 @@ $.mapView.addEventListener('click', function(evt){
 });
 
 
-$.mapView.addEventListener('complete', function(e) {
-	Ti.API.info('complete');
-	Ti.API.info(e);
-});
-$.mapView.addEventListener('error', function(e) {
-	Ti.API.info('error');
-	Ti.API.info(e);
-});
-$.mapView.addEventListener('loading', function(e) {
-	Ti.API.info('loading');
-	Ti.API.info(e);
-});
-$.mapView.addEventListener('regionChanged', function(e) {
-	Ti.API.info('regionChanged');
-	Ti.API.info(e);
-});
+// $.mapView.addEventListener('complete', function(e) {
+	// Ti.API.info('complete');
+	// Ti.API.info(e);
+// });
+// $.mapView.addEventListener('error', function(e) {
+	// Ti.API.info('error');
+	// Ti.API.info(e);
+// });
+// $.mapView.addEventListener('loading', function(e) {
+	// Ti.API.info('loading');
+	// Ti.API.info(e);
+// });
+// $.mapView.addEventListener('regionChanged', function(e) {
+	// Ti.API.info('regionChanged');
+	// Ti.API.info(e);
+// });
 
 $.container.addEventListener('postlayout', function(){
 	$.mapView.region = {"latitude":"37.31488290584382", "longitude":"-121.9975154126932","latitudeDelta":"0.1", "longitudeDelta":"0.1"};

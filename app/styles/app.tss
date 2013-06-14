@@ -15,7 +15,7 @@
 "Window[platform=android]": {
     softInputMode: Ti.UI.Android.SOFT_INPUT_ADJUST_RESIZE 
 },
-".appWindow":{
+".appWindow": {
 	layout: "vertical"
 },
 "Button": {
@@ -59,7 +59,7 @@
 },
 "TextArea": {
 },
-"ActivityIndicator":{
+"ActivityIndicator": {
 	color: 'green',
 	font: {fontFamily:'Helvetica Neue', fontSize:26, fontWeight:'bold'},
 	message: 'Loading...',
@@ -71,28 +71,28 @@
 },
 
 // navigation bar :will be remove
-"#navBarView":{
+"#navBarView": {
 	top: 0,
 	width: "100%",
 	height: 46,
 	// borderRadius: "3dp",
 	backgroundColor: "#777"
 },
-".leftNavButton":{
+".leftNavButton": {
 	top: 8,
 	left: 8
 },
-".rightNavButton":{
+".rightNavButton": {
 	top: 8,
 	right: 8
 },
-"#listAccountsButton":{
+"#listAccountsButton": {
 },
-"#newTweetButton":{
+"#newTweetButton": {
 },
-"#cancelButton":{
+"#cancelButton": {
 },
-"#sendTweetButton":{
+"#sendTweetButton": {
 },
 // navigation bar end
 

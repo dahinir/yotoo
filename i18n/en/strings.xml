@@ -45,6 +45,9 @@
 	<string name="yotoo_effect">do you like this user? so then yotoo. this user can't know if whom yotoo you.</string>
 	<string name="yotoo_you_too">yotoo you, too!</string>
 	
+	<!-- discover tab -->
+	<string name="search_twitter">Search Twitter</string>
+	
 	<!-- guidance -->
 	<string name="when_delete_last_account">You don't have loggined account. you must login</string>
 	<string name="when_first_run">Nice to meet yoo. I'm yotoo!</string>
