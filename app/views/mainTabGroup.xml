@@ -11,7 +11,7 @@
 		</Tab>
 
 		<Tab id="discoverTab">
-			<Require id="discoverWindow" src="discoverWindow" />
+			<Require id="discoverWindow" src="discover/discoverWindow" />
 			<!--
 			<Window id="testWindow" layout="vertical">
 				<View height="70" width="320" layout="vertical" borderWidth="1" backgroundColor="#F33">

@@ -1,0 +1,5 @@
+<Alloy>
+	<View id="containerView">
+		<Require id="mapView" src="discover/localMapView" />
+	</View>
+</Alloy>

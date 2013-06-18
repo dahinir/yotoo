@@ -97,3 +97,15 @@ for heavy user, specialized relationship
 * listView
 * near twit
 
+
+탭별로 디렉토리를 나누자
+Discover/
+localMapView (한글론 주변)
+localListView
+globalSearchView
+
+
+yotoo 추가 프로필사진(숨겨진 기능 정도로 :플픽사진 크게 봤을때 다음장 볼수 있는 화살표가 나오게)
+
+
+

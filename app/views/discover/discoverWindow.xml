@@ -1,9 +1,7 @@
 <Alloy>
 	<Window id="discoverWindow" class="appWindow" >
 		<Require id="navBarView" src="navBarView" />
-		<View id="contentView">
-			<Require id="mapView" src="mapView" />
-		</View>
+		<Require id="localView" src="discover/localView" />
 
 	</Window>
 </Alloy>

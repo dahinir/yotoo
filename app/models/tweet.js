@@ -137,7 +137,7 @@ exports.definition = {
 				_.extend(params, options.params);
 				var onSuccess = options.onSuccess;
 				var onFailure = options.onFailure;
-				
+
 				var thisCollection = this;
 				var twitterApi = thisCollection.twitterApi;
 				twitterApi.fetch({
@@ -146,6 +146,9 @@ exports.definition = {
 					'onSuccess': function( resultJSON ){
 						thisCollection.reset();
 						// Ti.API.info("json:"+resultJSON.length+ ", collection"+thisCollection.length	);
+						if( options.purpose === 'discover' ){
+							resultJSON = resultJSON.statuses;
+						}
 						thisCollection.add( resultJSON );
 						// Ti.API.info("json:"+resultJSON.length+ ", collection"+thisCollection.length	);
 						onSuccess();
