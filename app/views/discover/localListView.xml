@@ -1,4 +1,6 @@
 <Alloy>
-	<View class="container">
+	<View id="localListView" >
+		<Slider id="slider" min="0" max="6155" width="100%" onChange="updateLabel" />
+        <Label id="label" width="100%" top="30" left="0" />
 	</View>
 </Alloy>

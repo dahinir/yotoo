@@ -26,6 +26,66 @@ exports.init = function( options ) {
 	}
 };
 
+var listView;
+var mapView = $.mapView;
+var showListView = function(){
+	Ti.API.info("[localView.js] showListView()");
+	if( listView === undefined ){
+		listView = Alloy.createController('discover/localListView');
+		listView.init({
+			"ownerAccount": ownerAccount,
+			"localParams": localParams
+		});
+		listView.getView().setTop( searchBarView.getHeight() 	);
+		$.containerView.add(listView.getView());
+		
+	}else{
+		listView.setRegion( localParams );
+		listView.getView().show();
+		if( mapView ){
+			mapView.getView().hide();
+		}
+	}
+};
+var showMapView = function(){
+	Ti.API.info("[localView.js] showMapView()");
+	if( mapView === undefined ){
+		Ti.API.info("un");
+	}else{
+		mapView.setRegion( localParams );
+		mapView.getView().show();
+		if( listView ){
+			listView.getView().hide();
+		}
+	}
+};
+
+
+// according to Apple's guidelines, you should provide a customized message to more clearly tell users why you're requesting their location
+Ti.Geolocation.purpose = 'Determine Current Location!!!!';
+
+if (Ti.Geolocation.locationServicesEnabled) {
+    // Ti.API.info('[mapView.js] now enable location services');
+
+    // Ti.Geolocation.accuracy = Ti.Geolocation.ACCURACY_BEST;
+    // Ti.Geolocation.distanceFilter = 10;
+    // Ti.Geolocation.preferredProvider = Ti.Geolocation.PROVIDER_GPS;
+	Ti.Geolocation.getCurrentPosition( function(e){
+		Ti.API.info("[localView.js] "+  JSON.stringify(e.coords) );
+		localParams.latitude = e.coords.latitude;
+		localParams.longitude = e.coords.longitude;
+	});
+
+    // Ti.Geolocation.addEventListener('location', function(e) {
+        // if (e.error) {
+            // alert('Error: ' + e.error);
+        // } else {
+            // Ti.API.info(e.coords);
+        // }
+    // });
+} else {
+    alert('Please enable location services');
+}
 
 
 
@@ -35,7 +95,8 @@ var searchBarView = Ti.UI.createView({
 	backgroundColor: '#000',
 	opacity: 0.7,
 	top: 0,
-	height: 43
+	height: 43,
+	zIndex: 1
 });
 var searchBar = Ti.UI.createSearchBar({
     barColor: '#000',
@@ -79,6 +140,13 @@ if( OS_IOS ){
 
 		Ti.API.info("[discoverWindow.js] click " + e.index);
 		Ti.API.info("[discoverWindow.js] localParams " + localParams.radius);
+		
+		if( e.index === 0){
+			showListView();
+		}
+		if( e.index === 1){
+			showMapView();
+		}
 		/*
 		var tweets = ownerAccount.createCollection('tweet');
 		tweets.fetchFromServer({

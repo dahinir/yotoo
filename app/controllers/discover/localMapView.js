@@ -8,55 +8,12 @@ exports.init = function( options ){
 		owenerAccount = options.ownerAccount;
 		localParams = options.localParams;
 	}else{
-		Ti.API.warn("[mapView.js] init() witheout ownerAccount");
+		Ti.API.warn("[localMapView.js] init() witheout ownerAccount");
 	}
-	Ti.API.info("[mapView.js] init");
-
+	Ti.API.info("[localMapView.js] init");
 }
 
-// according to Apple's guidelines, you should provide a customized message to more clearly tell users why you're requesting their location
-Ti.Geolocation.purpose = 'Determine Current Location!!!!';
 
-if (Ti.Geolocation.locationServicesEnabled) {
-    // Ti.API.info('[mapView.js] now enable location services');
-
-    // Ti.Geolocation.accuracy = Ti.Geolocation.ACCURACY_BEST;
-    // Ti.Geolocation.distanceFilter = 10;
-    // Ti.Geolocation.preferredProvider = Ti.Geolocation.PROVIDER_GPS;
-	Ti.Geolocation.getCurrentPosition( function(e){
-		Ti.API.info("[mapView.js] "+  JSON.stringify(e.coords) );
-	});
-
-    // Ti.Geolocation.addEventListener('location', function(e) {
-        // if (e.error) {
-            // alert('Error: ' + e.error);
-        // } else {
-            // Ti.API.info(e.coords);
-        // }
-    // });
-} else {
-    alert('Please enable location services');
-}
-// var searchBar = Ti.UI.createSearchBar({
-    // barColor:'#000',
-    // opacity: 0.8, 
-    // showCancel:false,
-    // height:43,
-    // top:0,
-    // hintText: L('search_twitter')
-// });
-// $.container.add(searchBar);
-// searchBar.addEventListener('blur', function(e)
-// {
-	// Titanium.API.info('search bar cancel fired');
-	// searchBar.blur();
-// });
-// searchBar.addEventListener('focus', function(e)
-// {
-	// Titanium.API.info('search bar focus fired');
-	// $.mapView.hide();
-// });
-	
 	
 var apple =	Ti.Map.createAnnotation({
 		latitude: 37.331689,
@@ -144,5 +101,19 @@ $.container.addEventListener('postlayout', function(){
 	$.mapView.addAnnotation(apple);
 	$.mapView.addAnnotation(google);
 });
-
-
+var setRegion = function( localParams ){
+	Ti.API.info("[localMapView.js] setRegion");
+	var delta;
+	if( localParams.unit === 'mi'){
+		delta = localParams.radius / 69.0;
+	}else{
+		delta = localParams.radius / 111.1;
+	}
+	$.mapView.region = {
+		"latitude": localParams.latitude,
+		"longitude": localParams.longitude,
+		"latitudeDelta": delta,
+		"longitudeDelta": delta
+	};
+}
+exports.setRegion = setRegion;
