@@ -19,13 +19,15 @@ exports.init = function( options ){
 
 
 
-$.slider.text = $.slider.value;
+// $.slider.text = $.slider.value;
 function updateLabel(e){
     $.label.text = String.format("%4.1f", e.value);
     localParams.radius = e.value;
 }
 
 exports.setRegion = function( localParams ){
-	$.slider.value =  localParams.radius;
+	Ti.API.info("[localListView.js] setRegion : "+ localParams.getRadiusByDelta());
+	$.slider.value =  localParams.getRadiusByDelta();
+    // $.label.text = String.format("%4.1f", localParams.getRadiusByDelta() );
 }
 

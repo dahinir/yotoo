@@ -3,12 +3,49 @@ var ownerAccount = args.ownerAccount;
 
 
 
-
+// 기본값 순위: 1.현재 위치 2.예전 위치 3.yotoo사무실  
 var localParams = {
 	latitude: 0,
 	longitude: 0,
+	latitudeDelta: 0,
 	radius: 1,
-	unit: 'mi'	// or 'km'
+	unit: 'mi',	// or 'km'
+
+	// setLatitudeDelta: function( delta ){
+		// this.latitudeDelta = delta;
+// 		
+		// if ( this.unit === 'mi' ){
+			// this.radius = delta * 69.0;
+		// }else{
+			// this.radius = delta * 111.111;
+		// }		
+	// },
+	
+	getRegionByRadius: function(){
+		var latitudeDelta;
+		if( this.unit === 'mi'){
+			latitudeDelta = this.radius / 69.0;
+		}else{
+			latitudeDelta = this.radius / 111.111;
+		}
+		var scalingFactor = Math.abs((Math.cos(2 * 3.14 * this.latitude / 360.0) ));
+		return {
+			"latitude": this.latitude,
+			"longitude": this.longitude,
+			"latitudeDelta": latitudeDelta,
+			"longitudeDelta": latitudeDelta * scalingFactor
+		};
+	},
+	
+	
+	
+	getRadiusByDelta: function(){
+		if ( this.unit === 'mi' ){
+			return this.latitudeDelta * 69.0;
+		}else{
+			return this.latitudeDelta * 111.111;
+		}		
+	}
 };
 
 
@@ -40,11 +77,12 @@ var showListView = function(){
 		$.containerView.add(listView.getView());
 		
 	}else{
-		listView.setRegion( localParams );
 		listView.getView().show();
-		if( mapView ){
-			mapView.getView().hide();
-		}
+	}
+	listView.setRegion( localParams );
+	
+	if( mapView ){
+		mapView.getView().hide();
 	}
 };
 var showMapView = function(){
@@ -52,11 +90,12 @@ var showMapView = function(){
 	if( mapView === undefined ){
 		Ti.API.info("un");
 	}else{
-		mapView.setRegion( localParams );
 		mapView.getView().show();
-		if( listView ){
-			listView.getView().hide();
-		}
+	}
+	mapView.setRegion( localParams );
+	
+	if( listView ){
+		listView.getView().hide();
 	}
 };
 
@@ -136,11 +175,14 @@ if( OS_IOS ){
 	    top: 5
 	});
 	
+	var buttonFlag = 1;
 	searchButtonBar.addEventListener('click', function(e){
-
-		Ti.API.info("[discoverWindow.js] click " + e.index);
-		Ti.API.info("[discoverWindow.js] localParams " + localParams.radius);
-		
+		// Ti.API.info("[discoverWindow.js] click " + e.index);
+		// Ti.API.info("[discoverWindow.js] localParams " + localParams.radius);
+		if( e.index === buttonFlag ){
+			return;
+		}
+		buttonFlag = e.index;
 		if( e.index === 0){
 			showListView();
 		}
