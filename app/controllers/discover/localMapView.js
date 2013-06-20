@@ -2,11 +2,13 @@ var args = arguments[0] || {};
 var ownerAccount = args.ownerAccount;
 
 var localParams;
+var searchBarHintTextUpdater;
 
 exports.init = function( options ){
 	if( options.ownerAccount ){
 		owenerAccount = options.ownerAccount;
 		localParams = options.localParams;
+		searchBarHintTextUpdater = options.searchBarHintTextUpdater;
 	}else{
 		Ti.API.warn("[localMapView.js] init() witheout ownerAccount");
 	}
@@ -83,13 +85,15 @@ $.mapView.addEventListener('complete', function(e) {
 	// Ti.API.info(e);
 // });
 $.mapView.addEventListener('regionChanged', function(e) {
-	Ti.API.info('regionChanged');
+	Ti.API.info('regionChanged.');
 	// Ti.API.info("miles: " + e.latitudeDelta * 69.0);
 	// Ti.API.info("km: " + e.latitudeDelta * 111.1);
 	Ti.API.info(e);
 	localParams.latitude = e.latitude;
 	localParams.longitude = e.longitude;
 	localParams.latitudeDelta = e.latitudeDelta;
+	Ti.API.info("radius: "+ localParams.getRadiusByDelta());
+	searchBarHintTextUpdater( );
 	// localParams.setLatitudeDelta( e.latitudeDelta );
 	// if ( localParams.unit === 'mi' ){
 		// localParams.radius = e.latitudeDelta * 69.0;
@@ -103,9 +107,8 @@ $.container.addEventListener('postlayout', function(){
 	$.mapView.addAnnotation(apple);
 	$.mapView.addAnnotation(google);
 });
-var setRegion = function( localParams ){
-	Ti.API.info("[localMapView.js] setRegion");
-	$.mapView.region = localParams.getRegionByRadius();
-	// Ti.API.info("[localMapView.js] delta is " + delta);
-}
-exports.setRegion = setRegion;
+// exports.setRegion = function( localParams ){
+	// Ti.API.info("[localMapView.js] setRegion");
+	// $.mapView.region = localParams.getRegionByRadius();
+	// // Ti.API.info("[localMapView.js] delta is " + delta);
+// }

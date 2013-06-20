@@ -10,17 +10,6 @@ var localParams = {
 	latitudeDelta: 0,
 	radius: 1,
 	unit: 'mi',	// or 'km'
-
-	// setLatitudeDelta: function( delta ){
-		// this.latitudeDelta = delta;
-// 		
-		// if ( this.unit === 'mi' ){
-			// this.radius = delta * 69.0;
-		// }else{
-			// this.radius = delta * 111.111;
-		// }		
-	// },
-	
 	getRegionByRadius: function(){
 		var latitudeDelta;
 		if( this.unit === 'mi'){
@@ -29,16 +18,14 @@ var localParams = {
 			latitudeDelta = this.radius / 111.111;
 		}
 		var scalingFactor = Math.abs((Math.cos(2 * 3.14 * this.latitude / 360.0) ));
+		Ti.API.info("scailFactor "+ scalingFactor);
 		return {
 			"latitude": this.latitude,
 			"longitude": this.longitude,
 			"latitudeDelta": latitudeDelta,
-			"longitudeDelta": latitudeDelta * scalingFactor
+			"longitudeDelta": latitudeDelta / scalingFactor
 		};
 	},
-	
-	
-	
 	getRadiusByDelta: function(){
 		if ( this.unit === 'mi' ){
 			return this.latitudeDelta * 69.0;
@@ -55,7 +42,8 @@ exports.init = function( options ) {
 		
 		$.mapView.init({
 			"ownerAccount": ownerAccount,
-			"localParams": localParams
+			"localParams": localParams,
+			"searchBarHintTextUpdater": searchBarHintTextUpdater
 		});
 		
 	}else{
@@ -65,7 +53,9 @@ exports.init = function( options ) {
 
 var listView;
 var mapView = $.mapView;
+var currentView = 'MAP'; // MAP or LIST
 var showListView = function(){
+	currentView = 'LIST';
 	Ti.API.info("[localView.js] showListView()");
 	if( listView === undefined ){
 		listView = Alloy.createController('discover/localListView');
@@ -73,26 +63,27 @@ var showListView = function(){
 			"ownerAccount": ownerAccount,
 			"localParams": localParams
 		});
-		listView.getView().setTop( searchBarView.getHeight() 	);
+		listView.getView().setTop( $.searchBarView.getHeight() 	);
 		$.containerView.add(listView.getView());
 		
 	}else{
 		listView.getView().show();
 	}
-	listView.setRegion( localParams );
+	// listView.setRegion( localParams );
 	
 	if( mapView ){
 		mapView.getView().hide();
 	}
 };
 var showMapView = function(){
+	currentView = 'MAP';
 	Ti.API.info("[localView.js] showMapView()");
 	if( mapView === undefined ){
-		Ti.API.info("un");
+		Ti.API.info("mapView undefined!!!!");
 	}else{
 		mapView.getView().show();
 	}
-	mapView.setRegion( localParams );
+	// mapView.setRegion( localParams );
 	
 	if( listView ){
 		listView.getView().hide();
@@ -127,42 +118,24 @@ if (Ti.Geolocation.locationServicesEnabled) {
 }
 
 
-
 /* SearchBar */
-var searchBarView = Ti.UI.createView({
-	// layout: 'horizontal',
-	backgroundColor: '#000',
-	opacity: 0.7,
-	top: 0,
-	height: 43,
-	zIndex: 1
-});
-var searchBar = Ti.UI.createSearchBar({
-    barColor: '#000',
-    // opacity: 0.8, 
-    showCancel: false,
-    height: 43,
-    top: 0,
-    right: 70,
-    // width: 290,
-    hintText: L('search_twitter')
-});
-// $.mapView.getView().addEventListener('click', function(e){
-	// Ti.API.info('mapView click fired');
-	// searchBar.blur();
-// });
-searchBar.addEventListener('cancel', function(e){
+$.searchBar.setHintText( L('search_twitter') );
+var searchBarHintTextUpdater = function( ){
+	Ti.API.info("asdfasdf : "+ localParams.getRadiusByDelta());
+	$.searchBar.setHintText( L('search_twitter') + String.format(" %4.1f", localParams.getRadiusByDelta()) + localParams.unit);
+};
+$.searchBar.addEventListener('cancel', function(e){
 	Ti.API.info('search bar cancel fired');
-	searchBar.blur();
+	$.searchBar.blur();
 });
-searchBar.addEventListener('focus', function(e){
+$.searchBar.addEventListener('focus', function(e){
 	Ti.API.info('search bar focus fired');
-	searchBar.setShowCancel(true, { animated: true });
+	$.searchBar.setShowCancel(true, { animated: true });
 	// $.mapView.hide();
 });
-searchBar.addEventListener('blur', function(e){
+$.searchBar.addEventListener('blur', function(e){
 	Ti.API.info('search bar blur fired');
-	searchBar.setShowCancel(false, { animated: true });
+	$.searchBar.setShowCancel(false, { animated: true });
 });
 if( OS_IOS ){	
 	var searchButtonBar = Ti.UI.createButtonBar({
@@ -217,9 +190,6 @@ if( OS_IOS ){
 		});
 		*/
 	});
-
+	$.searchBarView.add(searchButtonBar);
 }
 
-searchBarView.add(searchBar);
-searchBarView.add(searchButtonBar);
-$.containerView.add(searchBarView);

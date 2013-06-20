@@ -8,7 +8,7 @@ exports.init = function( options ){
 		owenerAccount = options.ownerAccount;
 		localParams = options.localParams;
 		
-		$.slider.setValue( localParams.radius );
+		// $.slider.setValue( localParams.radius );
 		
 	}else{
 		Ti.API.warn("[localListView.js] init() witheout ownerAccount");
@@ -20,14 +20,13 @@ exports.init = function( options ){
 
 
 // $.slider.text = $.slider.value;
-function updateLabel(e){
-    $.label.text = String.format("%4.1f", e.value);
-    localParams.radius = e.value;
-}
-
-exports.setRegion = function( localParams ){
-	Ti.API.info("[localListView.js] setRegion : "+ localParams.getRadiusByDelta());
-	$.slider.value =  localParams.getRadiusByDelta();
-    // $.label.text = String.format("%4.1f", localParams.getRadiusByDelta() );
-}
+// function updateLabel(e){
+    // $.label.text = String.format("%4.1f", e.value);
+    // localParams.radius = e.value;
+// }
+// 
+// exports.setRegion = function( localParams ){
+	// Ti.API.info("[localListView.js] setRegion : "+ localParams.getRadiusByDelta());
+	// $.slider.value =  localParams.getRadiusByDelta();
+// }
 

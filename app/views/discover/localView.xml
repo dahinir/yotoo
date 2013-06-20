@@ -1,5 +1,9 @@
 <Alloy>
 	<View id="containerView">
+		<View id="searchBarView" backgroundColor="#000" opacity="0.7" top="0"
+			height="43" zIndex="1" >
+			<SearchBar id="searchBar" barColor="#000" showCancel="false" height="43" top="0" right="70" />	
+		</View>
 		<Require id="mapView" src="discover/localMapView" />
 	</View>
 </Alloy>
