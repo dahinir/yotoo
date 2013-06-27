@@ -77,6 +77,7 @@ for heavy user, specialized relationship
 * appStatus 모델을 만들어 저장. account.js의 active 필드 같은걸 이쪽으로 옮기
 * account.js에 yotoo한 대상 아이디들 저장 
 * account.js addAccount 할때 yotoo한 객체 있나 찾아 보고 저장
+* parse.com 푸쉬도 같이 쓸까?
 
 
 ## done
@@ -96,6 +97,8 @@ for heavy user, specialized relationship
 ## work now
 * listView
 * near twit
+* 지도에서 검색은 위치를 검색하게?
+* map annotation 비슷한 위치 합치고 확대하면 분리되고 하는 건..
 
 
 탭별로 디렉토리를 나누자

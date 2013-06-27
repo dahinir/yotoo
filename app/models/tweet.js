@@ -148,6 +148,7 @@ exports.definition = {
 						// Ti.API.info("json:"+resultJSON.length+ ", collection"+thisCollection.length	);
 						if( options.purpose === 'discover' ){
 							resultJSON = resultJSON.statuses;
+							Ti.API.info(JSON.stringify(resultJSON));
 						}
 						thisCollection.add( resultJSON );
 						// Ti.API.info("json:"+resultJSON.length+ ", collection"+thisCollection.length	);

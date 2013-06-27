@@ -7,7 +7,7 @@ var ownerAccount = args.ownerAccount;
 var localParams = {
 	latitude: 0,
 	longitude: 0,
-	latitudeDelta: 0,
+	latitudeDelta: 0.01,
 	radius: 1,
 	unit: 'mi',	// or 'km'
 	getRegionByRadius: function(){
@@ -39,7 +39,7 @@ var localParams = {
 exports.init = function( options ) {
 	if( options.ownerAccount ){
 		ownerAccount = options.ownerAccount;
-		
+
 		$.mapView.init({
 			"ownerAccount": ownerAccount,
 			"localParams": localParams,
@@ -101,9 +101,11 @@ if (Ti.Geolocation.locationServicesEnabled) {
     // Ti.Geolocation.distanceFilter = 10;
     // Ti.Geolocation.preferredProvider = Ti.Geolocation.PROVIDER_GPS;
 	Ti.Geolocation.getCurrentPosition( function(e){
-		Ti.API.info("[localView.js] "+  JSON.stringify(e.coords) );
+		// Ti.API.info("[localView.js] "+  JSON.stringify(e.coords) );
 		localParams.latitude = e.coords.latitude;
 		localParams.longitude = e.coords.longitude;
+		$.mapView.setRegion();
+		$.mapView.updateTweets();
 	});
 
     // Ti.Geolocation.addEventListener('location', function(e) {
@@ -117,11 +119,14 @@ if (Ti.Geolocation.locationServicesEnabled) {
     alert('Please enable location services');
 }
 
+$.screen.addEventListener('touchstart', function(){
+	$.searchBar.blur();
+});
 
 /* SearchBar */
 $.searchBar.setHintText( L('search_twitter') );
 var searchBarHintTextUpdater = function( ){
-	Ti.API.info("asdfasdf : "+ localParams.getRadiusByDelta());
+	// Ti.API.info("[localView] : "+ localParams.getRadiusByDelta());
 	$.searchBar.setHintText( L('search_twitter') + String.format(" %4.1f", localParams.getRadiusByDelta()) + localParams.unit);
 };
 $.searchBar.addEventListener('cancel', function(e){
@@ -130,12 +135,43 @@ $.searchBar.addEventListener('cancel', function(e){
 });
 $.searchBar.addEventListener('focus', function(e){
 	Ti.API.info('search bar focus fired');
-	$.searchBar.setShowCancel(true, { animated: true });
-	// $.mapView.hide();
+	// $.searchBar.setShowCancel(true, { animated: true });
+	$.screen.show();
 });
 $.searchBar.addEventListener('blur', function(e){
 	Ti.API.info('search bar blur fired');
-	$.searchBar.setShowCancel(false, { animated: true });
+	$.screen.hide();
+	// $.searchBar.setShowCancel(false, { animated: true });
+});
+$.searchBar.addEventListener('return', function(e){
+	Ti.API.info('search bar change fired');
+	$.searchBar.blur();
+	var tweets = ownerAccount.createCollection('tweet');
+	tweets.fetchFromServer({
+		'purpose': 'discover',
+		'params': {
+			'q': e.value,
+			// 'geocode': "37.49804,127.027236,1mi"
+			'geocode': localParams.latitude +","+ localParams.longitude +","+ localParams.getRadiusByDelta() + localParams.unit
+		},
+		'onSuccess': function(){
+			tweets.map(function(tweet){
+				// var row = Alloy.createController('tweetRow', {
+					// 'tweet': tweet,
+					// 'ownerAccount': ownerAccount
+				// }).getView();
+				// row.id_str = tweet.get('id_str');
+				// rowArray.push(row);
+
+				Ti.API.info(tweet.get('user').screen_name + ": "+ tweet.get('text'));
+			});
+			// $.tweetsTable.setData( rowArray );
+			// $.tweetsTable.setVisible( true );
+		},
+		'onFailure': function(){
+			Ti.API.debug("[tweetView.js] fail setTweets()");
+		}
+	});
 });
 if( OS_IOS ){	
 	var searchButtonBar = Ti.UI.createButtonBar({

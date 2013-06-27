@@ -4,6 +4,7 @@
 			height="43" zIndex="1" >
 			<SearchBar id="searchBar" barColor="#000" showCancel="false" height="43" top="0" right="70" />	
 		</View>
+		<View id="screen" backgroundColor="#000" height="Ti.UI.FILL" top="43" opacity="0.3" zIndex="1" visible="false" />
 		<Require id="mapView" src="discover/localMapView" />
 	</View>
 </Alloy>
