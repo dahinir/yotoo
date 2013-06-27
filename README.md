@@ -80,23 +80,9 @@ for heavy user, specialized relationship
 * parse.com 푸쉬도 같이 쓸까?
 
 
-## done
-* 한글 트윗
-* twitter REST api
-* jsOAuth update http://github.com/bytespider/jsOAuth
-* callbackUrl을 셋팅 했을때 access token key, secret 얻기 (twitter2.js의 105 라인 수정)
-* jsOAuth 1.3.6 346라인 File이 뭐지?
-* Ti.Cloud multi user support :인스턴스의 생성대신 account.js에서 매번 로긴 
-* github등록  
-* notification (client)
-* yotoo버튼 
-* navBarView
-* map view :discoverWindow.js
-
 
 ## work now
 * listView
-* near twit
 * 지도에서 검색은 위치를 검색하게?
 * map annotation 비슷한 위치 합치고 확대하면 분리되고 하는 건..
 

@@ -174,10 +174,11 @@ $.searchBar.addEventListener('return', function(e){
 	});
 });
 if( OS_IOS ){	
-	var searchButtonBar = Ti.UI.createButtonBar({
+	var searchTabbedBar = Ti.UI.iOS.createTabbedBar({
 	    labels: ['LIST', 'MAP'],
+	    index: 1,
 	    backgroundColor: '#666',
-	    style:Ti.UI.iPhone.SystemButtonStyle.PLAIN,
+	    style:Titanium.UI.iPhone.SystemButtonStyle.BAR,
 	    height: 35,
 	    width: 60,
 	    right: 5,
@@ -185,7 +186,7 @@ if( OS_IOS ){
 	});
 	
 	var buttonFlag = 1;
-	searchButtonBar.addEventListener('click', function(e){
+	searchTabbedBar.addEventListener('click', function(e){
 		// Ti.API.info("[discoverWindow.js] click " + e.index);
 		// Ti.API.info("[discoverWindow.js] localParams " + localParams.radius);
 		if( e.index === buttonFlag ){
@@ -198,34 +199,8 @@ if( OS_IOS ){
 		if( e.index === 1){
 			showMapView();
 		}
-		/*
-		var tweets = ownerAccount.createCollection('tweet');
-		tweets.fetchFromServer({
-			'purpose': 'discover',
-			'params': {
-				// 'q': "",
-				'geocode': "37.49804,127.027236,1mi"
-			},
-			'onSuccess': function(){
-				tweets.map(function(tweet){
-					// var row = Alloy.createController('tweetRow', {
-						// 'tweet': tweet,
-						// 'ownerAccount': ownerAccount
-					// }).getView();
-					// row.id_str = tweet.get('id_str');
-					// rowArray.push(row);
 
-					Ti.API.info(tweet.get('user').screen_name + ": "+ tweet.get('text'));
-				});
-				// $.tweetsTable.setData( rowArray );
-				// $.tweetsTable.setVisible( true );
-			},
-			'onFailure': function(){
-				Ti.API.debug("[tweetView.js] fail setTweets()");
-			}
-		});
-		*/
 	});
-	$.searchBarView.add(searchButtonBar);
+	$.searchBarView.add(searchTabbedBar);
 }
 
