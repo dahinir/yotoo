@@ -85,6 +85,7 @@ for heavy user, specialized relationship
 * listView
 * 지도에서 검색은 위치를 검색하게?
 * map annotation 비슷한 위치 합치고 확대하면 분리되고 하는 건..
+* navBarView
 
 
 탭별로 디렉토리를 나누자

@@ -40,6 +40,11 @@ exports.updateTweets = function(){
 		'onSuccess': function(){
 			var annotations = [];
 			tweets.map(function(tweet){
+				if( !tweet.get('coordinates') ){
+					// may be it's RT
+					Ti.API.info("[localMapView.js] null coor: " + tweet.get('user').screen_name + ": "+ tweet.get('text') );
+					return;
+				}
 				var annotation = Ti.Map.createAnnotation({
 					latitude: tweet.get('coordinates').coordinates[1],
 					longitude: tweet.get('coordinates').coordinates[0],
@@ -128,7 +133,7 @@ $.mapView.addEventListener('regionChanged', function(e) {
 
 $.container.addEventListener('postlayout', function() {
 	Ti.API.info('[localMapView.js] postlayout');
-
+	exports.setRegion();
 }); 
 
 // exports.setRegion = function( localParams ){

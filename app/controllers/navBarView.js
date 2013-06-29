@@ -2,7 +2,6 @@ var args = arguments[0] || {};
 var ownerAccount = args.ownerAccount;
 var defaultTitle = args.defaultTitle || "-";
 
-
 var leftNavButton = $.listAccountsButton;
 var rightNavButton = $.newTweetButton;
 
