@@ -71,7 +71,7 @@ exports.updateTweets = function(){
 					})
 				});
 				annotations.push(annotation);
-				Ti.API.info(tweet.get('coordinates').coordinates[0]+"::" + tweet.get('user').screen_name + ": "+ tweet.get('text') );
+				// Ti.API.info(tweet.get('coordinates').coordinates[0]+"::" + tweet.get('user').screen_name + ": "+ tweet.get('text') );
 			});
 			$.mapView.addAnnotations(annotations);
 		},

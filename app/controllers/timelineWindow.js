@@ -1,13 +1,24 @@
 var args = arguments[0] || {};
 var ownerAccount = args.ownerAccount;
 
+
+
+
+
+
+
+var dropDownMenu = {
+	
+};
+
 exports.init = function( options ) {
 	if( options.ownerAccount ){
 		ownerAccount = options.ownerAccount;
 		
 		$.navBarView.init({
 			"ownerAccount": ownerAccount,
-			"defaultTitle": L('timeline')
+			"defaultTitle": L('timeline'),
+			"dropDownMenu": dropDownMenu
 		});
 		
 		$.tweetsView.init({
@@ -19,9 +30,5 @@ exports.init = function( options ) {
 		Ti.API.warn("[timeline.js] must set ownerAccount");
 	}
 };
-
-// exports.test = function(){
-	// return "ss";
-// }
 
 
