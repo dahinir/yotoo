@@ -6,7 +6,7 @@
  * Designed for yotoo Version:0.1
  * @requires jsOAuth: http://github.com/bytespider/jsOAuth
  */
-
+// test
 /*
 // 이런 식의 유즈케이스가 나오도록 만들자.
 var social = require('alloy/social').create({
