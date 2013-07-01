@@ -110,8 +110,8 @@ $.mapView.addEventListener('complete', function(e) {
 	// Ti.API.info(e);
 // });
 $.mapView.addEventListener('regionChanged', function(e) {
-	Ti.API.info('[localMapView.js] regionChanged. source: ' + e.source + ", type: " + e.type);
 	if( !isLoadingComplete ){
+		Ti.API.info('[localMapView.js] before complete regionChanged.');
 		return;
 	}
 	// Ti.API.info("miles: " + e.latitudeDelta * 69.0);

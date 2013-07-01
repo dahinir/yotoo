@@ -59,7 +59,10 @@ var urls = {
 	'profileBanner': "https://api.twitter.com/1.1/users/profile_banner.json",	// limit :180
 	'relationship': "https://api.twitter.com/1.1/friendships/show.json",	// limit :180.  wow! it was 15! wow!
 	
-	'userTimeline': "https://api.twitter.com/1.1/statuses/user_timeline.json"	// limit :180
+	'userTimeline': "https://api.twitter.com/1.1/statuses/user_timeline.json",	// limit :180
+	
+	'ownLists': "https://api.twitter.com/1.1/lists/ownerships.json",	// 15/user, 15/app
+	'subscriptLists': "https://api.twitter.com/1.1/lists/subscriptions.json"	// 15/user, 15/app
 };
 
 var toUrlString = function(params){
