@@ -5,7 +5,7 @@ var localParams;
 
 exports.init = function( options ){
 	if( options.ownerAccount ){
-		owenerAccount = options.ownerAccount;
+		ownerAccount = options.ownerAccount;
 		localParams = options.localParams;
 		
 		// $.slider.setValue( localParams.radius );

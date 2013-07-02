@@ -61,8 +61,8 @@ var urls = {
 	
 	'userTimeline': "https://api.twitter.com/1.1/statuses/user_timeline.json",	// limit :180
 	
-	'ownLists': "https://api.twitter.com/1.1/lists/ownerships.json",	// 15/user, 15/app
-	'subscriptLists': "https://api.twitter.com/1.1/lists/subscriptions.json"	// 15/user, 15/app
+	'ownershipLists': "https://api.twitter.com/1.1/lists/ownerships.json",	// 15/user, 15/app
+	'subscriptionLists': "https://api.twitter.com/1.1/lists/subscriptions.json"	// 15/user, 15/app
 };
 
 var toUrlString = function(params){

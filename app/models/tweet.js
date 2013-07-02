@@ -149,7 +149,14 @@ exports.definition = {
 						if( options.purpose === 'discover' ){
 							resultJSON = resultJSON.statuses;
 							Ti.API.info(JSON.stringify(resultJSON));
+						}else if( options.purpose === 'ownershipLists'){
+							Ti.API.info(JSON.stringify(resultJSON));
+							if( resultJSON.next_cursor !== 0 ){
+								alert("[tweet.js] list over 1000!, fetch more!");
+							}
 						}
+						
+						
 						thisCollection.add( resultJSON );
 						// Ti.API.info("json:"+resultJSON.length+ ", collection"+thisCollection.length	);
 						onSuccess();

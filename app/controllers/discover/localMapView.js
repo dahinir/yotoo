@@ -67,7 +67,7 @@ exports.updateTweets = function(){
 						// color: '#fff'
 					// }),
 					customView:Ti.UI.createImageView({
-					  image:tweet.get('user').profile_image_url_https.replace(/_normal\./g, '_bigger.')
+						image:tweet.get('user').profile_image_url_https.replace(/_normal\./g, '_bigger.')
 					})
 				});
 				annotations.push(annotation);
