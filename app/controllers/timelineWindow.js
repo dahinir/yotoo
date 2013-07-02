@@ -6,7 +6,6 @@ var tweets;
 
 // asdf
 
-
 var dropDownMenu = {
 
 };
