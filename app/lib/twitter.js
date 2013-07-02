@@ -52,7 +52,8 @@ var urls = {
 	
 	'timeline': "https://api.twitter.com/1.1/statuses/home_timeline.json",	// limit :15
 	'mentions': "https://api.twitter.com/1.1/statuses/mentions_timeline.json",	// limit :15
-	'discover': "https://api.twitter.com/1.1/search/tweets.json", // 180/user 450/app
+	'searchTweets': "https://api.twitter.com/1.1/search/tweets.json", // 180/user 450/app
+	'searchUsers': "https://api.twitter.com/1.1/users/search.json",	// 180/user
 	'profile': "https://api.twitter.com/1.1/account/verify_credentials.json",	// limit :15.  Use this method to test if supplied user credentials are valid.
 	
 	'userView': "https://api.twitter.com/1.1/users/show.json",	// limit :180
@@ -60,6 +61,7 @@ var urls = {
 	'relationship': "https://api.twitter.com/1.1/friendships/show.json",	// limit :180.  wow! it was 15! wow!
 	
 	'userTimeline': "https://api.twitter.com/1.1/statuses/user_timeline.json",	// limit :180
+	
 	
 	'ownershipLists': "https://api.twitter.com/1.1/lists/ownerships.json",	// 15/user, 15/app
 	'subscriptionLists': "https://api.twitter.com/1.1/lists/subscriptions.json"	// 15/user, 15/app

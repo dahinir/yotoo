@@ -89,8 +89,42 @@ exports.definition = {
 	
 	extendCollection: function(Collection) {		
 		_.extend(Collection.prototype, {
-			// extended functions go here			
+			/**
+			 * @method fetchFromServer
+			 * Fetch from the Twitter.com
+			 * @param {Object} options
+			 * @param {String} options.purpose Will match url
+			 * @param {Object} options.params Will use url parameter
+			 * @param {Function} [options.onSuccess] Callback function executed after a successful fetch tweets.
+			 * @param {Function} [options.onFailure] Callback function executed after a failed fetch.
+			 */
+			fetchFromServer: function(options){
+				var params = {'include_entities' : true};
+				_.extend(params, options.params);
+				var onSuccess = options.onSuccess;
+				var onFailure = options.onFailure;
 
+				var thisCollection = this;
+				var twitterApi = thisCollection.twitterApi;
+				twitterApi.fetch({
+					'purpose': options.purpose,
+					'params': params,
+					'onSuccess': function( resultJSON ){
+						thisCollection.reset();
+						if( options.purpose === 'searchUsers'){
+							Ti.API.info(JSON.stringify(resultJSON));
+						}
+						
+						
+						thisCollection.add( resultJSON );
+						// Ti.API.info("json:"+resultJSON.length+ ", collection"+thisCollection.length	);
+						onSuccess();
+					},
+					'onFailure': function( resultJSON ){
+						onFailure();
+					}
+				});
+			},
 		}); // end extend
 		
 		return Collection;

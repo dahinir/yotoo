@@ -47,6 +47,7 @@
 	
 	<!-- discover tab -->
 	<string name="search_twitter">Search Twitter</string>
+	<string name="search_twitter_users">Search Twitter Users</string>
 	
 	<!-- guidance -->
 	<string name="when_delete_last_account">You don't have loggined account. you must login</string>

@@ -1,24 +1,20 @@
-var args = arguments[0] || {};
-var ownerAccount = args.ownerAccount;
+// var args = arguments[0] || {};
+
+var ownerAccount = Alloy.Globals.accounts.getCurrentAccount();
 
 
 
 exports.init = function( options ) {
-	if( options.ownerAccount ){
-		ownerAccount = options.ownerAccount;
 		
-		$.navBarView.init({
-			"ownerAccount": ownerAccount,
-			"defaultTitle": L('dicover')
-		});
+	$.navBarView.init({
+		"ownerAccount": ownerAccount,
+		"defaultTitle": L('dicover')
+	});
+	
+	// $.localView.init({
+		// "ownerAccount" : ownerAccount
+	// });
 		
-		$.localView.init({
-			"ownerAccount" : ownerAccount
-		});
-		
-	}else{
-		Ti.API.warn("[discoverWindow.js] must set ownerAccount");
-	}
 };
 
 
