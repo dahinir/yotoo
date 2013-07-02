@@ -22,9 +22,9 @@ exports.init = function( options ) {
 				'count': 1000
 			},
 			'onSuccess': function(){
-				$.navBarView.setDropDownMenu({
-					"dropDownMenu": dropDownMenu
-				});
+				// $.navBarView.setDropDownMenu({
+					// "dropDownMenu": dropDownMenu
+				// });
 			},
 			'onFailure': function(){
 				Ti.API.info("[timelineWindow.js] fetch lists fail");

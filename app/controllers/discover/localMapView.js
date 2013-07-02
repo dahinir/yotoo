@@ -42,7 +42,7 @@ exports.updateTweets = function(){
 			tweets.map(function(tweet){
 				if( !tweet.get('coordinates') ){
 					// may be it's RT
-					Ti.API.info("[localMapView.js] null coor: " + tweet.get('user').screen_name + ": "+ tweet.get('text') );
+					Ti.API.info("[localMapView.js] " + tweet.get('user').screen_name + ": "+ tweet.get('text') );
 					return;
 				}
 				var annotation = Ti.Map.createAnnotation({
