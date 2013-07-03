@@ -14,7 +14,6 @@ exports.definition = {
 
 	extendModel: function(Model) {		
 		_.extend(Model.prototype, {
-			// extended functions go here
 			getUser: function(purpose, params, callback) {
 				var twitterAPI = this.ownerAccount.twitterAPI;
 				var destinationParams = {
@@ -129,6 +128,5 @@ exports.definition = {
 		
 		return Collection;
 	}
-		
 }
 

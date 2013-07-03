@@ -175,6 +175,16 @@ exports.definition = {
 								    }
 								});
 								
+								/* 이 로직은 user 모델에  있어야 겠지? refreshFriends() 같은 메소드에 
+								// retrieve friends for auto complete //
+								if( user.get('followers_count') < 300 ){
+									Ti.API.info("[account.js] follower is under 300");
+								}
+								if( user.get('friends_count') < 300 ){
+									Ti.API.info("[account.js] following is under 300");
+								}
+								*/
+								
 								// save new account to persistence store
 								newAccount.save(); // must call after callback
 								Ti.API.info("[account.js] new account saved");
