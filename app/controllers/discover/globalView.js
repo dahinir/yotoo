@@ -143,9 +143,7 @@ var listView = Ti.UI.createListView({
 var data = [];
 
 
-listView.setTop( $.searchBar.getHeight() );	// searchBar's height
-var section = Ti.UI.createListSection();
-listView.sections = [section];
+listView.setTop( $.searchBar.getHeight() );
 $.globalView.add(listView);	
 
 
@@ -165,7 +163,8 @@ $.searchBar.addEventListener('return', function(e){
 			'q': e.value
 		},
 		'onSuccess': function(){
-			var i = 0;
+			var section = Ti.UI.createListSection();
+			
 			users.map(function(user){
 				var data = {
 					profileImage: { image: user.get('profile_image_url_https').replace(/_normal\./g, '_bigger.')},
@@ -191,6 +190,14 @@ $.searchBar.addEventListener('return', function(e){
 				
 				section.appendItems([data]);
 			});
+			
+			if( listView.getSectionCount() === 0){
+				Ti.API.info("0 " + listView.getSectionCount());
+				listView.setSections([section]);
+			}else{
+				Ti.API.info("1 " + listView.getSectionCount());
+				listView.replaceSectionAt(0, section);
+			}
 	        // section.setItems( data);
 
 		},
