@@ -78,15 +78,15 @@ for heavy user, specialized relationship
 * account.js에 yotoo한 대상 아이디들 저장 
 * account.js addAccount 할때 yotoo한 객체 있나 찾아 보고 저장
 * parse.com 푸쉬도 같이 쓸까?
+* 지도에서 검색은 위치를 검색하게?
+* map annotation 비슷한 위치 합치고 확대하면 분리되고 하는 건..
+* navBarView
 
 
 
 ## work now
-* listView
-* 지도에서 검색은 위치를 검색하게?
-* map annotation 비슷한 위치 합치고 확대하면 분리되고 하는 건..
-* navBarView
 * ownerAccount는 UI component 생성시 currentAccount를 지역변수로 저장하는 걸로 대체 
+
 
 
 탭별로 디렉토리를 나누자

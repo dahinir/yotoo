@@ -1,6 +1,6 @@
 <Alloy>
 	<View id="globalView">
-		<SearchBar id="searchBar" barColor="#000" showCancel="false" height="43" top="0" />
-		<View id="dummyScreen" borderWidth="3" backgroundColor="#000" height="Ti.UI.FILL" top="43" opacity="0.3" zIndex="1" visible="false" />
+		<SearchBar id="searchBar" showCancel="false" />
+		<View id="dummyScreen" zIndex="1" visible="false" />
 	</View>
 </Alloy>

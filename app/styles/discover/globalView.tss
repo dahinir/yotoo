@@ -1,3 +1,15 @@
-".container": {
-	backgroundColor: "white"
+"#globalView": {
+	// layout: "vertical"
+},
+"#searchBar": {
+	barColor: "#000",
+	height: 43,
+	top: 0
+},
+"#dummyScreen": {
+	backgroundColor: "#000",
+	borderWidth: 3,
+	opacity: 0.3,
+	top: 43,
+	height: Ti.UI.FILL
 }

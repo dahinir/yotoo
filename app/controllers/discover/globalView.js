@@ -143,7 +143,7 @@ var listView = Ti.UI.createListView({
 var data = [];
 
 
-listView.setTop(40);
+listView.setTop( $.searchBar.getHeight() );	// searchBar's height
 var section = Ti.UI.createListSection();
 listView.sections = [section];
 $.globalView.add(listView);	
