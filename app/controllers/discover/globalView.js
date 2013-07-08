@@ -196,8 +196,9 @@ $.searchBar.addEventListener('return', function(e){
 				listView.setSections([section]);
 			}else{
 				Ti.API.info("1 " + listView.getSectionCount());
-				listView.replaceSectionAt(0, section);
+				listView.replaceSectionAt(0, section); //, {animated: true, position: Ti.UI.iPhone.ListViewScrollPosition.TOP});
 			}
+			listView.scrollToItem(0, 0);
 	        // section.setItems( data);
 
 		},
