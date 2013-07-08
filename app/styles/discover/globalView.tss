@@ -2,8 +2,6 @@
 	// layout: "vertical"
 },
 "#searchBar": {
-	barColor: "#000",
-	height: 43,
 	top: 0
 },
 "#dummyScreen": {

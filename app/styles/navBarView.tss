@@ -2,7 +2,6 @@
 
 
 
-
 "#navBarView":{
 	top: 0,
 	width: "100%",
@@ -11,10 +10,21 @@
 	backgroundColor: "#333",
     backgroundGradient: {
         type: 'linear',
-        startPoint: { x: '50%', y: '0%' },
-        endPoint: { x: '50%', y: '100%' },
-        colors: [ { color: '#CCC', offset: 0.0}, { color: '#333', offset: 1.0 } ]
+        startPoint: { x: 0, y: '0%' },
+        endPoint: { x: 0, y: '100%' },
+        colors: [ { color: '#CCC', offset: 0.0 }, 
+        		{ color: '#666', offset: 0.05 },
+        		{ color: '#222', offset: 0.95 }, 
+        		{ color: '#000', offset: 1.0 } ]
     }
+},
+"#titleLabel": {
+	color: '#FFF',
+	font: {
+		fontFamily:'Arial',
+		fontSize: 19,
+		fontWeight: 'bold'
+	}
 },
 ".leftNavButton":{
 	top: 8,

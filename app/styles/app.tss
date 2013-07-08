@@ -69,15 +69,12 @@
 	height: Ti.UI.SIZE,
 	width: Ti.UI.SIZE
 },
+"SearchBar": {
+	barColor: '#666',
+	height: 43
+},
 
 // navigation bar :will be remove
-"#navBarView": {
-	top: 0,
-	width: "100%",
-	height: 46,
-	// borderRadius: "3dp",
-	backgroundColor: "#777"
-},
 ".leftNavButton": {
 	top: 8,
 	left: 8
@@ -85,14 +82,6 @@
 ".rightNavButton": {
 	top: 8,
 	right: 8
-},
-"#listAccountsButton": {
-},
-"#newTweetButton": {
-},
-"#cancelButton": {
-},
-"#sendTweetButton": {
 },
 // navigation bar end
 

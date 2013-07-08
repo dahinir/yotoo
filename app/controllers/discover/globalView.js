@@ -1,7 +1,7 @@
 
 var ownerAccount = Alloy.Globals.accounts.getCurrentAccount();
 // Ti.API.info("[globalView.js] currentAccount\'s screen_name: " + ownerAccount.get('screen_name'));
-
+var users = ownerAccount.createCollection('user');
 
 var autoComplete = function(){
 };
@@ -122,7 +122,7 @@ var userRowTemplate = {
                 right: 10,
                 title: 'yotoo'
             },
-            events: { click : report }  // Binds a callback to the button's click event
+            events: { click : yotooAction }
         }
     ],
     events: {},
@@ -133,9 +133,16 @@ var userRowTemplate = {
         selectionStyle: Ti.UI.iPhone.ListViewCellSelectionStyle.NONE	// only iOS
     }
 };
-function report(e) {
-	Ti.API.info(e.type);
-}
+function yotooAction(e) {
+	alert( L('yotoo_effect')  + e.itemId);
+	
+	var targetUser = users.where({'id_str': e.itemId}).pop();
+	// Ti.API.info( users.where({'id_str': e.itemId}).pop().get('screen_name') );
+	// Ti.API.info( users.findWhere({'id_str': e.itemId}).get('screen_name') );
+	
+	// sourceAccount, targetAccount
+	require('cloudProxy').getCloud().yotooRequest(ownerAccount, targetUser);
+};
 var listView = Ti.UI.createListView({
     templates: { 'plain': userRowTemplate },
     defaultItemTemplate: 'plain'               
@@ -155,7 +162,7 @@ $.dummyScreen.addEventListener('touchstart', function(){
 $.searchBar.setHintText( L('search_twitter_users') );
 $.searchBar.addEventListener('return', function(e){
 	$.searchBar.blur();
-	var users = ownerAccount.createCollection('user');
+
 	users.fetchFromServer({
 		'purpose': 'searchUsers',
 		'params': {
@@ -192,10 +199,8 @@ $.searchBar.addEventListener('return', function(e){
 			});
 			
 			if( listView.getSectionCount() === 0){
-				Ti.API.info("0 " + listView.getSectionCount());
 				listView.setSections([section]);
 			}else{
-				Ti.API.info("1 " + listView.getSectionCount());
 				listView.replaceSectionAt(0, section); //, {animated: true, position: Ti.UI.iPhone.ListViewScrollPosition.TOP});
 			}
 			listView.scrollToItem(0, 0);
