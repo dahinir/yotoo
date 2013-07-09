@@ -1,5 +1,5 @@
 var args = arguments[0] || {};
-var ownerAccount = args.ownerAccount;
+var ownerAccount = args.ownerAccount || Alloy.Globals.accounts.getCurrentAccount();
 var defaultTitle = args.defaultTitle || "-";
 
 var leftNavButton = $.listAccountsButton;
@@ -11,18 +11,14 @@ exports.init = function( options ){
 	}
 	$.titleLabel.text = defaultTitle;
 
-	if( options.ownerAccount ){
-		ownerAccount = options.ownerAccount;
-		
-		leftNavButton.init({
-			"ownerAccount" : ownerAccount
-		});
-		rightNavButton.init({
-			"ownerAccount" : ownerAccount
-		});
-	}else{
-		Ti.API.warn("[navBarView.js] must set ownerAccount");
-	}
+	ownerAccount = options.ownerAccount;
+	
+	leftNavButton.init({
+		"ownerAccount" : ownerAccount
+	});
+	rightNavButton.init({
+		"ownerAccount" : ownerAccount
+	});
 }
 
 

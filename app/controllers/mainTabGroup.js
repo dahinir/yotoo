@@ -19,7 +19,7 @@ exports.init = function( options ){
 		
 		$.timelineWindow.init({"ownerAccount" : ownerAccount});
 		$.connectWindow.init({"ownerAccount" : ownerAccount});
-		$.discoverWindow.init({"ownerAccount" : ownerAccount});
+		// $.discoverWindow.init({"ownerAccount" : ownerAccount});
 		$.profileWindow.init({"ownerAccount" : ownerAccount});
 	}
 };

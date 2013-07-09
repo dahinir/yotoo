@@ -26,6 +26,8 @@
 		</Tab>
 		
 		<Tab title="favoritTab">
+			<Require id="favoriteWindow" src="favorite/favoriteWindow" />
+			<!--
 			<Window id="win1">
 				<ScrollableView id="scrollableView" showPagingControl="true">
 					<View layout="horizontal">
@@ -46,6 +48,7 @@
 					</ScrollView>
 				</ScrollableView>
 			</Window>
+			-->
 		</Tab>
 		
 

@@ -21,21 +21,21 @@ accounts.on('change:active', function(e){
 	Ti.API.info("[index.js] BackboneEvent(changed):" + account.get('name') +"\'s active to "+ account.get('active'));
 	if( account.get('active') ){	// for new current account
 		if( account.mainTabGroup === undefined){
-			Ti.API.info("[index.js] mainTabGroup is undefined, so will created");
+			Ti.API.info("[index.js] mainTabGroup is undefined, so will be created");
 			var mainTabGroup = Alloy.createController('mainTabGroup');
 			mainTabGroup.init({"ownerAccount":account});
 			account.mainTabGroup = mainTabGroup.getView();
 			account.mainTabGroup.open();
 		} else {
-			Ti.API.info("[index.js] mainTabGroup is defined, so call .show()");
-			account.mainTabGroup.show();
-			// account.mainTabGroup.open();
+			Ti.API.info("[index.js] mainTabGroup is defined, call maintabGroup.open()");
+			// account.mainTabGroup.show();
+			account.mainTabGroup.open();
 		}
 	}else{	// for previous current account	
 		if( account.mainTabGroup !== undefined){
-			Ti.API.info("[index.js] "+ account.get('name') + " is deactived, maintabGroup.hide()");
-			account.mainTabGroup.hide();
-			// account.mainTabGroup.close();
+			Ti.API.info("[index.js] "+ account.get('name') + " is deactived, maintabGroup.close()");
+			// account.mainTabGroup.hide();
+			account.mainTabGroup.close();
 		}
 	}
 });

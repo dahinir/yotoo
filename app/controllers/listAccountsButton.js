@@ -1,5 +1,5 @@
 var args = arguments[0] || {};
-var ownerAccount = args.ownerAccount;
+var ownerAccount = args.ownerAccount || Alloy.Globals.accounts.getCurrentAccount();
 
 exports.init = function( options ) {
 	if( options.ownerAccount){

@@ -44,27 +44,30 @@ for heavy user, specialized relationship
 * tweetRow.js :서치를 위해 타이틀을 투명하게 해서 값을 셋팅해 놓는데, 특수문자는 투명도값이 안먹힌다.
 
 
-## delayed
-* twitter certified products. (https://dev.twitter.com/programs/twitter-certified-products/apply)
+## for next version
 * 스트리밍에 연결된 상태를 한번에 보여주기 위한 UI필요 
-* Your application must handle the HTTP 420 error code that indicates that the account has been logging in too often. This response will be the indication that the account has exceeded the per-account-per-application connection limit described above. Indicate to the user that they have been automatically and temporarily banned from User Streams for an excessive login rate. The user should be advised to shut down extra copies of the application, perhaps instances running on another device, to restore streaming access.
-* data binding으로 tweetTable 구현
-* 비번을 바꿧을때(토큰완료됐을때) 액션
-* lazy loading을 탭에 적용하자(지금은 프로그램 시작하면 모든 탭을 한꺼번에 로딩함)
 * tweetRow에서 프로필 사진 클릭해서 유져뷰 띄울때 파라미터로 userId를 넘기는데 user모델 자체를 넘겨서 이미 가지고 있는 정보를 바로 보여주게 하자!
-* tweetRow에서 tableViewRow의 leftImage속성을 사용하자
-* Alloy.builtins.moment를 tweetRowView의 ago에 사용(http://momentjs.com/)
-* add account하고 또 add account 하면 쿠키때문에 그런지 전에 로긴된 그대로 떠서 자칫 중복 로긴되기 쉽다. :HTTPClient.clearCookies(url);
 * 정식으로 twitter서버에 올려진 사진은 인스타그램처럼 일반트윗테이블에 인스타그램처럼 꽉 채워 보여주자
 * tweetsView.js 업데이트 바텀 트윗 결과가 없는것으로 판명나면 바텀트윗업데이트를 발생시키는 이벤트리스너를 삭제하고 푸터뷰를 변경한다(유저가 인지할수 있게)
 * 아주 간단히 트윗 속도를 알려주자: (트윗수/(오늘-계정생성일)) 
-* 로긴 취소 했을때 웹뷰 close
-* 로긴 실패하고 다시 로긴 성공했을때..
-* 로긴 한번 실패해서 웹뷰 떠 있는 상태에서 다시 로긴 성공했을때.
 * 트윗 보내고 결과 json 읽기 
 * GET help/configuration returns new t.co length :사진 포함 트윗할때 글자수 마이너스(현재 공백 미포함 22 정도 된)  
 * 사진 포함 트윗할때 사진주소가 위치 수정 가능하게.
-* Ti.Network.HTTPClient.cache 상황에 맞게 true
+* 지도에서 검색은 위치를 검색하게?
+* map annotation 비슷한 위치 합치고 확대하면 분리되고 하는 건..
+
+
+## delayed
+* twitter certified products. (https://dev.twitter.com/programs/twitter-certified-products/apply)
+* Your application must handle the HTTP 420 error code that indicates that the account has been logging in too often. This response will be the indication that the account has exceeded the per-account-per-application connection limit described above. Indicate to the user that they have been automatically and temporarily banned from User Streams for an excessive login rate. The user should be advised to shut down extra copies of the application, perhaps instances running on another device, to restore streaming access.
+* data binding으로 구현
+* 비번을 바꿧을때(토큰완료됐을때) 액션
+* lazy loading을 탭에 적용하자(지금은 프로그램 시작하면 모든 탭을 한꺼번에 로딩함)
+* Alloy.builtins.moment를 tweetRowView의 ago에 사용(http://momentjs.com/)
+* add account하고 또 add account 하면 쿠키때문에 그런지 전에 로긴된 그대로 떠서 자칫 중복 로긴되기 쉽다. :HTTPClient.clearCookies(url);
+* 로긴 취소 했을때 웹뷰 close
+* 로긴 실패하고 다시 로긴 성공했을때..
+* 로긴 한번 실패해서 웹뷰 떠 있는 상태에서 다시 로긴 성공했을때.
 * 0. Node.ACS server (개발자 배타 끝나면)
 * 1. twitter streaming api adapter :node.js socket.io.js nTwitter.js등을 이용해야 하나.. , socket.io는 Ti용 모듈을 누가 만들어 놓긴 했네(https://github.com/nowelium/socket.io-titanium)
 * 2. push notification server
@@ -74,19 +77,16 @@ for heavy user, specialized relationship
 * "멱등 버튼" 처리. 예를 들어 "sign in"버튼을 두번 누르면 두개의 로긴창이 뜬다.
 * ACL aka access controll list
 * yotto_nodeServer 이름을 yotoo_node_acs로 
-* appStatus 모델을 만들어 저장. account.js의 active 필드 같은걸 이쪽으로 옮기
-* account.js에 yotoo한 대상 아이디들 저장 
 * account.js addAccount 할때 yotoo한 객체 있나 찾아 보고 저장
 * parse.com 푸쉬도 같이 쓸까?
-* 지도에서 검색은 위치를 검색하게?
-* map annotation 비슷한 위치 합치고 확대하면 분리되고 하는 건..
-* navBarView
-
+* Ti.Network.HTTPClient.cache 상황에 맞게 true
+* image cache :https://github.com/FokkeZB/nl.fokkezb.cachedImageView :http://docs.appcelerator.com/titanium/latest/#!/guide/Image_Best_Practices-section-30082525_ImageBestPractices-Cachingremoteimages
 
 
 ## work now
 * ownerAccount는 UI component 생성시 currentAccount를 지역변수로 저장하는 걸로 대체 
-
+* peopleView에서 사용할 user 모델들을 로컬에 저장해 놓아야 할텐데..
+* appStatus 모델을 만들어 저장. account.js의 active 필드 같은걸 이쪽으로 옮겨?
 
 
 탭별로 디렉토리를 나누자

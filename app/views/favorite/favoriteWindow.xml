@@ -1,7 +1,7 @@
 <Alloy>
 	<Window id="favoriteWindow" class="appWindow" >
 		<Require id="navBarView" src="navBarView" />
-		<!-- <Require id="localView" src="discover/localView" /> -->
-		<!-- <Require id="peopleView" src="favorite/peopleView" /> -->
+		<!-- <Require id="tweetsView" src="favorit/tweetsView" /> -->
+		<Require id="peopleView" src="favorite/peopleView" />
 	</Window>
 </Alloy>
