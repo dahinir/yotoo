@@ -26,8 +26,7 @@ var userListView = Alloy.createController('userListView', {
 				// Ti.API.info( users.where({'id_str': e.itemId}).pop().get('screen_name') );
 				// Ti.API.info( users.findWhere({'id_str': e.itemId}).get('screen_name') );
 				
-				// sourceAccount, targetAccount
-				require('cloudProxy').getCloud().yotooRequest(ownerAccount, targetUser);
+				ownerAccount.yotooTo( targetUser );
             } }
         }
 });

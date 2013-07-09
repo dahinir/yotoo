@@ -16,7 +16,7 @@ exports.definition = {
 			"id_str_acs": "string",
 			// "session_id_acs": "string",
 			
-			// for yotoo
+			// for this app
 			"active":"boolean",
 			"status_active_tab_index":"int"
 		},
@@ -29,13 +29,20 @@ exports.definition = {
 
 	extendModel: function(Model) {		
 		_.extend(Model.prototype, {
-			// extended functions go here
+			
 			testFunction: function (attrs){
 				Ti.API.info("testFunc: "+ this.get('name'));	// it works!
 				for (var key in attrs) {
                     var value = attrs[key];
                     Ti.API.info("testFunction: "+ value);
                 }
+			},
+			yotooTo: function( targetAccount ){
+				Ti.API.info("[account.js] yotoo!! " + this.get('name') + " to " + targetAccount.get('name') );
+				Alloy.Collections.instance('yotoo').addNewYotoo( this, targetAccount);
+			},
+			getYotooCollection: function(){
+				return Alloy.Collections.instance('yotoo').where({'source_id_str': this.get('id_str')});
 			},
 			createCollection: function(typeOfCollection){
 				var collection = Alloy.createCollection(typeOfCollection);
@@ -55,7 +62,7 @@ exports.definition = {
 	
 	extendCollection: function(Collection) {		
 		_.extend(Collection.prototype, {
-			// extended functions go here
+			
 			getCurrentAccount: function(){
 				var currentAccount;
 				var activeFlag = 0;

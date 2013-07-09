@@ -14,6 +14,9 @@ accounts.fetch();
 Ti.API.debug("[index.js] " + accounts.length + " loged in accounts loaded");
 Alloy.Globals.accounts = accounts;
 
+var yotoos = Alloy.Collections.instance('yotoo');
+yotoos.fetch();
+
 /* Backbone events */
 // on changed current account, reponse UI, create mainTabGroup is only in this.
 accounts.on('change:active', function(e){
@@ -92,6 +95,17 @@ if( !ENV_PRODUCTION ){
 	Ti.API.info("[index.js] current compiler target is not built for production. ")
 	// accounts.cloud.debug = true;  // moved to cloudAdapter.js
 }
+
+
+
+yotoos.map(function( yotoo){
+	Ti.API.info("[index.js] loaded yotoo: " + yotoo.get('acs_id')	
+		+ " " + yotoo.get('platform') + " " + yotoo.get('source_id_str')
+		+ " " + yotoo.get('target_id_str') + " " + yotoo.get('hided'));
+});
+
+
+
 
 
 

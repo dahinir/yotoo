@@ -23,9 +23,10 @@ var currentLoginUserCache;
  * @param {String} [options.id]
  * @param {String} [options.type]
  * @param {String} [options.token]
- * @param {Function} [callback]
+ * @param {Function} [options.success] Callback function executed after a success
+ * @param {Function} [options.error] Callback function executed after a fail 
  */
-cloudProxy.externalAccountLoginAdapter = function(options, callback){
+cloudProxy.externalAccountLoginAdapter = function(options){
 	if( !options.id ){
 		Ti.API.warn("[cloudProxy.js] id must be described!!!");
 	}
@@ -44,64 +45,102 @@ cloudProxy.externalAccountLoginAdapter = function(options, callback){
 		        // Ti.API.info('[cloudProxy.js]external id: ' + e.users[0].external_accounts[0].external_id );
 				currentLoginUserCache = e;	// store only if success
 		        currentLoginUserIdStr = e.users[0].external_accounts[0].external_id;
-		        // now, time to yotoo!
-		    } else {
+
+				if( options.success ){
+					options.success(e);
+				}
+		    } else {	// ACS login error
 		        Ti.API.info('[cloudProxy.js]Error: ' + ((e.error && e.message) || JSON.stringify(e)));
-		    }
-		    
-		    if( callback ){
-		    	// Ti.API.info("[cloudProcy.js] callback is defined.");
-		    	callback(e);
+		        if( options.error ){
+		        	options.error(e);
+		        }
 		    }
 		});
-	}else{
+	}else{	// ACS already loggin
 		Ti.API.info("[cloudProxy.js] already logged in ACS");
-		callback(currentLoginUserCache);
+		if( options.success ){
+			options.success(currentLoginUserCache);
+		}
 	}
 };
 
-cloudProxy.yotooRequest = function(sourceAccount, targetAccount) {
+/**
+ * @param {account} [options.sourceAccount]
+ * @param {account} [options.targetAccount]
+ * @param {Function} [options.success]
+ * @param {Function} [options.error]
+ */
+cloudProxy.yotooRequest = function(options) {
+	var sourceAccount = options.sourceAccount;
+	var targetAccount = options.targetAccount;
+	
 	// alert("inner: "+ currentLoginUserIdStr +"\nouter:"+sourceAccount.get('id_str'));
 	cloudProxy.externalAccountLoginAdapter({
 		id: sourceAccount.get('id_str'),
 	    type: 'twitter',
-	    token: sourceAccount.get('access_token')
-	}, function (e) {
-	    if (e.success) {
+	    token: sourceAccount.get('access_token'),
+		success: function (e) {
 	        var user = e.users[0];
 	        // Ti.API.info('[cloudProxy.js] Cloud login success! sessionId:'+Cloud.sessionId+ ' id: ' + user.id + ' first name: ' + user.first_name +' last name: ' + user.last_name);
 	        // alert('[cloudProxy.js] current '+ currentAccount.get('session_id_acs') );
 	        // Ti.API.info('[cloudProxy.js]external id: ' + e.users[0].external_accounts[0].external_id );
 	        currentLoginUserIdStr = e.users[0].external_accounts[0].external_id;
 	        // now, time to yotoo!
-	        createYotoo(sourceAccount, targetAccount);
-	    } else {
-	        Ti.API.info('Error:\n' + ((e.error && e.message) || JSON.stringify(e)));
-	    }
+	        postYotoo({
+	        	'sourceAccount': sourceAccount, 
+	        	'targetAccount': targetAccount,
+	        	'success': options.success,
+	        	'error': options.error
+	        });
+		},
+		error: function(e){	// ACS loggin error
+	        Ti.API.info('[cloudProxy.yotooRequest] Error:\n' + ((e.error && e.message) || JSON.stringify(e)));
+	        if( options.error ){
+	        	options.error(e);
+	        }
+		}
 	});
 };
 
-var createYotoo = function(sourceAccount, targetAccount){
+/**
+ * @param {account} [options.sourceAccount]
+ * @param {account} [options.targetAccount]
+ * @param {Function} [options.success]
+ * @param {Function} [options.error]
+ */
+var postYotoo = function(options){
+	var sourceAccount = options.sourceAccount;
+	var targetAccount = options.targetAccount;
+	
 	// create yotoo
 	Cloud.Objects.create({
 	    classname: 'yotoo',
 	    fields: {
-	        source: sourceAccount.get('id_str'),
-	        target: targetAccount.get('id_str')
+	        source_id_str: sourceAccount.get('id_str'),
+	        target_id_str: targetAccount.get('id_str'),
+	        platform: 'twitter'	// default
 	    }
 	}, function (e) {
 	    if (e.success) {
-	        var yotoo = e.yotoo[0];
+	        var result = e.yotoo[0];
 	        // alert('Success:\n' +
-	            // 'id: ' + yotoo.id + '\n' +
-	            // 'source: ' + yotoo.source + '\n' +
-	            // 'target: ' + yotoo.target + '\n' +
-	            // 'created_at: ' + yotoo.created_at);
+	            // 'id: ' + result.id + '\n' +
+	            // 'source: ' + result.source_id_str + '\n' +
+	            // 'target: ' + result.target_id_str + '\n' +
+	            // 'created_at: ' + result.created_at);
 	         // Ti.API.info("[cloudProxy.js] " + JSON.stringify(e) );
-	         checkTargetYotoo(sourceAccount, targetAccount);
-	    } else {
-	        alert('Error:\n' +
-	            ((e.error && e.message) || JSON.stringify(e)));
+			if( options.success ){
+				options.success(result);
+			}
+			
+			
+			// should be add retry action..
+			checkTargetYotoo(sourceAccount, targetAccount);
+	    } else {	// ACS create yotoo error
+	        Ti.API.info('[cloudProxy.createYotoo] Error:\n' + ((e.error && e.message) || JSON.stringify(e)));
+			if( options.error ){
+				options.error(e);
+			}
 	    }
 	});
 };
@@ -111,8 +150,8 @@ var checkTargetYotoo = function(sourceAccount, targetAccount){
 	    classname: 'yotoo',
 	    limit: 1000, // 1000 is maxium
 	    where: {
-	        source: targetAccount.get('id_str'),
-	        target: sourceAccount.get('id_str')
+	        source_id_str: targetAccount.get('id_str'),
+	        target_id_str: sourceAccount.get('id_str')
 	    }
 	}, function (e) {
 	    if (e.success) {

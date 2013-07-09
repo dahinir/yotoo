@@ -81,6 +81,7 @@ for heavy user, specialized relationship
 * parse.com 푸쉬도 같이 쓸까?
 * Ti.Network.HTTPClient.cache 상황에 맞게 true
 * image cache :https://github.com/FokkeZB/nl.fokkezb.cachedImageView :http://docs.appcelerator.com/titanium/latest/#!/guide/Image_Best_Practices-section-30082525_ImageBestPractices-Cachingremoteimages
+* 네트웤 상태등의 이유로 밀려 있는 할일 저장해 놓고 실행하는 로직 ex) cloudProxy.postYotoo() 에서 checkTargetYotoo()는 실패 했을때 조용히 다시 시도 되어야 한다.
 
 
 ## work now
