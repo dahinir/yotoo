@@ -110,7 +110,7 @@ var userRowTemplate = {
 			width : 80,
 			height : 30,
 			right : 10,
-			title : 'defaultAction'
+			title : 'action'
 		},
 		events : {
 			click : defaultAction

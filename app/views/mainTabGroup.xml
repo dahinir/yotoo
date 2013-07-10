@@ -25,7 +25,7 @@
 			-->
 		</Tab>
 		
-		<Tab title="favoritTab">
+		<Tab id="favoriteTab">
 			<Require id="favoriteWindow" src="favorite/favoriteWindow" />
 			<!--
 			<Window id="win1">

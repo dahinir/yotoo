@@ -105,18 +105,18 @@ exports.definition = {
 
 				var thisCollection = this;
 				var twitterApi = thisCollection.twitterApi;
+				
 				twitterApi.fetch({
 					'purpose': options.purpose,
 					'params': params,
 					'onSuccess': function( resultJSON ){
 						thisCollection.reset();
 						if( options.purpose === 'searchUsers'){
-							Ti.API.info(JSON.stringify(resultJSON));
+							// Ti.API.info(JSON.stringify(resultJSON));
 						}
 						
 						
 						thisCollection.add( resultJSON );
-						// Ti.API.info("json:"+resultJSON.length+ ", collection"+thisCollection.length	);
 						onSuccess();
 					},
 					'onFailure': function( resultJSON ){

@@ -29,7 +29,11 @@ exports.definition = {
 
 	extendModel: function(Model) {		
 		_.extend(Model.prototype, {
+			// Implement the initialize method	
+			initialize: function(){
+			},
 			
+			// Extend Backbone.Model
 			testFunction: function (attrs){
 				Ti.API.info("testFunc: "+ this.get('name'));	// it works!
 				for (var key in attrs) {
@@ -38,11 +42,19 @@ exports.definition = {
                 }
 			},
 			yotooTo: function( targetAccount ){
+				// alert(this.getYotoos().length);
 				Ti.API.info("[account.js] yotoo!! " + this.get('name') + " to " + targetAccount.get('name') );
-				Alloy.Collections.instance('yotoo').addNewYotoo( this, targetAccount);
+				this.getYotoos().addNewYotoo( this, targetAccount);
 			},
-			getYotooCollection: function(){
-				return Alloy.Collections.instance('yotoo').where({'source_id_str': this.get('id_str')});
+			getYotoos: function(){
+				if( this.yotoos ){
+					// alert("exist yotoos: " + this.yotoos.length);
+				}else{
+					var yotooArray = Alloy.Globals.yotoos.where({'source_id_str': this.get('id_str')});
+					this.yotoos = Alloy.createCollection('yotoo', yotooArray);
+					// alert("no yotoos: " + this.yotoos.length);
+				}
+				return this.yotoos;
 			},
 			createCollection: function(typeOfCollection){
 				var collection = Alloy.createCollection(typeOfCollection);
@@ -87,7 +99,7 @@ exports.definition = {
 						account.save();
 					}
 					if(account === currentAccount){
-						Ti.API.info(currentAccount.get('name') +" is in Collection");
+						Ti.API.info("[account.js] " + currentAccount.get('name') +" is in Collection");
 						isInCollection = true;
 					}
 				});

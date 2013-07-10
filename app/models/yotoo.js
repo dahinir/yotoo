@@ -26,14 +26,15 @@ exports.definition = {
 	},
 	extendCollection: function(Collection) {		
 		_.extend(Collection.prototype, {
-			
 			addNewYotoo: function(sourceUser, targetUser){
+				var thisCollection = this;
+				
 				// remote save
 				require('cloudProxy').getCloud().yotooRequest({
-					'sourceAccount': sourceUser,
-					'targetAccount': targetUser,
-					// local save
+					'sourceUser': sourceUser,
+					'targetUser': targetUser,
 					'success': function(result){
+						// local save
 						var newYotoo = Alloy.createModel('yotoo');
 						newYotoo.set({
 							'acs_id': result.id,
@@ -43,9 +44,12 @@ exports.definition = {
 							'hided': false,
 							'completed': false,
 							'unyotooed': false,
-							'past': false
+							'past': false 
 						});
+						// to persistence
 						newYotoo.save();
+						// to runtime
+						thisCollection.add( newYotoo );
 					},
 					'error': function(){
 						

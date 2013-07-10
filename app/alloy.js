@@ -12,7 +12,6 @@ ENV_DEV : true if the current compiler target is built for development (running 
 ENV_TEST : true if the current compiler target is built for testing on a device
 ENV_PRODUCTION : true if the current compiler target is built for production (running after a packaged installation)
  */
-// Alloy.globals = Alloy.globals || {};
 _.extend(Alloy.Globals,{
      // util : require('util'),
      myVal : 3,
@@ -33,6 +32,41 @@ if (typeof Object.create !== 'function'){
 }else{
 	Ti.API.warn("already defined Object.create()");
 }
+
+
+// load loged account from persistent storage //
+// This will create a singleton if it has not been previously created, or retrieves the singleton if it already exists.
+var accounts = Alloy.Collections.instance('account');
+var yotoos = Alloy.Collections.instance('yotoo');
+
+accounts.fetch();
+yotoos.fetch();
+
+Ti.API.info("[alloy.js] " + accounts.length + " loged in accounts loaded");
+Ti.API.info("[alloy.js] " + yotoos.length + " yotoos");
+
+Alloy.Globals.accounts = accounts;
+Alloy.Globals.yotoos = yotoos;
+
+var twitterAdapter = require('twitter');
+accounts.map(function(account){
+	Ti.API.info("[alloy.js] load account: @" + account.get('screen_name')+"\t, "+account.get('session_id_acs')+" ," +account.get('id_str_acs')+", "+ account.id + ", "+ account.get('active') );
+
+	account.twitterApi = twitterAdapter.create({
+		accessTokenKey: account.get('access_token'),
+		accessTokenSecret: account.get('access_token_secret')
+	});
+
+}); // accounts.map()
+
+yotoos.map(function( yotoo){
+	Ti.API.info("[alloy.js] loaded yotoo: " + yotoo.get('acs_id')	
+		+ " " + yotoo.get('platform') + " " + yotoo.get('source_id_str')
+		+ " " + yotoo.get('target_id_str') + " " + yotoo.get('hided'));
+});
+
+
+
 
 if( ENV_DEV ){
 	// alert("ENV_DEV");

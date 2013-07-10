@@ -9,13 +9,16 @@
 
 // load loged account from persistent storage //
 // This will create a singleton if it has not been previously created, or retrieves the singleton if it already exists.
-var accounts = Alloy.Collections.instance('account');
-accounts.fetch();
-Ti.API.debug("[index.js] " + accounts.length + " loged in accounts loaded");
-Alloy.Globals.accounts = accounts;
-
-var yotoos = Alloy.Collections.instance('yotoo');
-yotoos.fetch();
+// var accounts = Alloy.Collections.instance('account');
+// accounts.fetch();
+// Ti.API.debug("[index.js] " + accounts.length + " loged in accounts loaded");
+// Alloy.Globals.accounts = accounts;
+// 
+// var yotoos = Alloy.Collections.instance('yotoo');
+// yotoos.fetch();
+// Alloy.Globals.yotoos = yotoos;
+var accounts = Alloy.Globals.accounts;
+var yotoos = Alloy.Globals.yotoos;
 
 /* Backbone events */
 // on changed current account, reponse UI, create mainTabGroup is only in this.
@@ -59,53 +62,26 @@ accounts.on('remove', function(e){	// how about 'destroy'
 	}
 });
 
-
-
 // very first using this app, maybe //
 if( accounts.length === 0 ){
 	alert(L('when_first_run'));
 	Alloy.createController('welcomeWindow').getView().open();
 }
 
-
-var twitterAdapter = require('twitter');
 var activeCount = 0;
-// load every account from persistence store
 accounts.map(function(account){
-	Ti.API.info("[index.js] load account: @" + account.get('screen_name')+"\t, "+account.get('session_id_acs')+" ," +account.get('id_str_acs')+", "+ account.id + ", "+ account.get('active') );
-
-	account.twitterApi = twitterAdapter.create({
-		accessTokenKey: account.get('access_token'),
-		accessTokenSecret: account.get('access_token_secret')
-	});
-
 	// open active account's mainTabGroup UI
-	if(account.get('active')){
-		activeCount ++;
-		Alloy.Globals.accounts.changeCurrentAccount(account);
+	if(account.get('active') ){
+		activeCount++;
+		Ti.API.info("[index.js] good!");
+		accounts.changeCurrentAccount(account);
 	}
 }); // accounts.map()
 
 if(accounts.length !== 0 && activeCount === 0){
 	Ti.API.info("[index.js] last session was something wrong.");
-	Alloy.Globals.accounts.changeCurrentAccount(accounts.at(0));
+	accounts.changeCurrentAccount(accounts.at(0));
 }
-
-if( !ENV_PRODUCTION ){
-	Ti.API.info("[index.js] current compiler target is not built for production. ")
-	// accounts.cloud.debug = true;  // moved to cloudAdapter.js
-}
-
-
-
-yotoos.map(function( yotoo){
-	Ti.API.info("[index.js] loaded yotoo: " + yotoo.get('acs_id')	
-		+ " " + yotoo.get('platform') + " " + yotoo.get('source_id_str')
-		+ " " + yotoo.get('target_id_str') + " " + yotoo.get('hided'));
-});
-
-
-
 
 
 

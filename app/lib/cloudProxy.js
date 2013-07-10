@@ -65,20 +65,20 @@ cloudProxy.externalAccountLoginAdapter = function(options){
 };
 
 /**
- * @param {account} [options.sourceAccount]
- * @param {account} [options.targetAccount]
+ * @param {account} [options.sourceUser]
+ * @param {account} [options.targetUser]
  * @param {Function} [options.success]
  * @param {Function} [options.error]
  */
 cloudProxy.yotooRequest = function(options) {
-	var sourceAccount = options.sourceAccount;
-	var targetAccount = options.targetAccount;
+	var sourceUser = options.sourceUser;
+	var targetUser = options.targetUser;
 	
-	// alert("inner: "+ currentLoginUserIdStr +"\nouter:"+sourceAccount.get('id_str'));
+	// alert("inner: "+ currentLoginUserIdStr +"\nouter:"+sourceUser.get('id_str'));
 	cloudProxy.externalAccountLoginAdapter({
-		id: sourceAccount.get('id_str'),
+		id: sourceUser.get('id_str'),
 	    type: 'twitter',
-	    token: sourceAccount.get('access_token'),
+	    token: sourceUser.get('access_token'),
 		success: function (e) {
 	        var user = e.users[0];
 	        // Ti.API.info('[cloudProxy.js] Cloud login success! sessionId:'+Cloud.sessionId+ ' id: ' + user.id + ' first name: ' + user.first_name +' last name: ' + user.last_name);
@@ -87,8 +87,8 @@ cloudProxy.yotooRequest = function(options) {
 	        currentLoginUserIdStr = e.users[0].external_accounts[0].external_id;
 	        // now, time to yotoo!
 	        postYotoo({
-	        	'sourceAccount': sourceAccount, 
-	        	'targetAccount': targetAccount,
+	        	'sourceUser': sourceUser, 
+	        	'targetUser': targetUser,
 	        	'success': options.success,
 	        	'error': options.error
 	        });
@@ -103,21 +103,21 @@ cloudProxy.yotooRequest = function(options) {
 };
 
 /**
- * @param {account} [options.sourceAccount]
- * @param {account} [options.targetAccount]
+ * @param {account} [options.sourceUser]
+ * @param {account} [options.targetUser]
  * @param {Function} [options.success]
  * @param {Function} [options.error]
  */
 var postYotoo = function(options){
-	var sourceAccount = options.sourceAccount;
-	var targetAccount = options.targetAccount;
+	var sourceUser = options.sourceUser;
+	var targetUser = options.targetUser;
 	
 	// create yotoo
 	Cloud.Objects.create({
 	    classname: 'yotoo',
 	    fields: {
-	        source_id_str: sourceAccount.get('id_str'),
-	        target_id_str: targetAccount.get('id_str'),
+	        source_id_str: sourceUser.get('id_str'),
+	        target_id_str: targetUser.get('id_str'),
 	        platform: 'twitter'	// default
 	    }
 	}, function (e) {
@@ -135,7 +135,7 @@ var postYotoo = function(options){
 			
 			
 			// should be add retry action..
-			checkTargetYotoo(sourceAccount, targetAccount);
+			checkTargetYotoo(sourceUser, targetUser);
 	    } else {	// ACS create yotoo error
 	        Ti.API.info('[cloudProxy.createYotoo] Error:\n' + ((e.error && e.message) || JSON.stringify(e)));
 			if( options.error ){
@@ -145,13 +145,13 @@ var postYotoo = function(options){
 	});
 };
 
-var checkTargetYotoo = function(sourceAccount, targetAccount){
+var checkTargetYotoo = function(sourceUser, targetUser){
 	Cloud.Objects.query({
 	    classname: 'yotoo',
 	    limit: 1000, // 1000 is maxium
 	    where: {
-	        source_id_str: targetAccount.get('id_str'),
-	        target_id_str: sourceAccount.get('id_str')
+	        source_id_str: targetUser.get('id_str'),
+	        target_id_str: sourceUser.get('id_str')
 	    }
 	}, function (e) {
 	    if (e.success) {
@@ -164,7 +164,7 @@ var checkTargetYotoo = function(sourceAccount, targetAccount){
 		        alert('Success:\n' + 'Count: ' + e.yotoo.length);
             }else if ( e.yotoo.length > 0){
             	alert('YOTOO!');
-            	sendPushNotification(sourceAccount, targetAccount);
+            	sendPushNotification(sourceUser, targetUser);
             }
 	    } else {
 	        alert('Error:\n' + ((e.error && e.message) || JSON.stringify(e)));
@@ -172,12 +172,12 @@ var checkTargetYotoo = function(sourceAccount, targetAccount){
 	});
 };
 
-var sendPushNotification = function(sourceAccount, targetAccount){
+var sendPushNotification = function(sourceUser, targetUser){
 	Cloud.PushNotifications.notify({
 		channel : 'yotoo',
 		// friends : Any,
-		to_ids : targetAccount.get('id_str_acs'),
-		payload : sourceAccount.get('name') + " " + L('yotoo_you_too')
+		to_ids : targetUser.get('id_str_acs'),
+		payload : sourceUser.get('name') + " " + L('yotoo_you_too')
 		// payload: {
 		    // "atras": "your_user_id",
 		    // "tags": [

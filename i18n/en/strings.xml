@@ -10,6 +10,7 @@
 	<string name="timeline">Timeline</string>
 	<string name="connect">Connect</string>
 	<string name="discover">Discover</string>
+	<string name="favorite">Favorite</string>
 	<string name="profile">Profile</string>
 
 	<string name="mentions">Mentions</string>

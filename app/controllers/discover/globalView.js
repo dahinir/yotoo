@@ -53,7 +53,7 @@ $.searchBar.addEventListener('return', function(e){
 			userListView.setUsers( users );
 		},
 		'onFailure': function(){
-			Ti.API.debug("[globalView.js] fail setTweets()");
+			Ti.API.debug("[globalView.js] fail to fetch users");
 		}
 	});
 });

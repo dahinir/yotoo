@@ -8,6 +8,7 @@ var ownerAccount = args.ownerAccount; // || yotoo.currentAccount;
 $.timelineTab.title = L('timeline');
 $.connectTab.title = L('connect');
 $.discoverTab.title = L('discover');
+$.favoriteTab.title = L('favorite');
 $.profileTab.title = L('profile');
 
 exports.init = function( options ){

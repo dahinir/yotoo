@@ -54,6 +54,7 @@ var urls = {
 	'mentions': "https://api.twitter.com/1.1/statuses/mentions_timeline.json",	// limit :15
 	'searchTweets': "https://api.twitter.com/1.1/search/tweets.json", // 180/user 450/app
 	'searchUsers': "https://api.twitter.com/1.1/users/search.json",	// 180/user
+	'lookupUsers': "https://api.twitter.com/1.1/users/lookup.json",	// 180/user 60/app
 	'profile': "https://api.twitter.com/1.1/account/verify_credentials.json",	// limit :15.  Use this method to test if supplied user credentials are valid.
 	
 	'userView': "https://api.twitter.com/1.1/users/show.json",	// limit :180
