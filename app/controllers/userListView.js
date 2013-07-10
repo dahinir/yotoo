@@ -137,16 +137,18 @@ var listView = Ti.UI.createListView({
 	},
 	defaultItemTemplate : 'plain'
 });
-var data = [];
 
 // listView.setTop( $.searchBar.getHeight() );
 $.userListView.add(listView);
 
-exports.setUsers = function(newUsers) {
-	var section = Ti.UI.createListSection();
+var section = Ti.UI.createListSection();
 
-	newUsers.map(function(user) {
-		var data = {
+
+exports.setUsers = function(newUsers) {
+	var dataArray = [];
+	
+	var settingData = function(user) {
+		data = {
 			profileImage : {
 				image : user.get('profile_image_url_https').replace(/_normal\./g, '_bigger.')
 			},
@@ -182,9 +184,16 @@ exports.setUsers = function(newUsers) {
 				visible : true
 			};
 		}
+		dataArray.push(data);
+	};
 
-		section.appendItems([data]);
-	});
+	if( newUsers.map ){	// if newUsers is Collection
+		newUsers.map( settingData );
+	}else{	// if newusers is Model
+		settingData( newUsers );
+	}
+	
+	section.appendItems(dataArray);
 
 	if (listView.getSectionCount() === 0) {
 		listView.setSections([section]);

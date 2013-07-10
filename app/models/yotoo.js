@@ -34,7 +34,8 @@ exports.definition = {
 					'sourceUser': sourceUser,
 					'targetUser': targetUser,
 					'success': function(result){
-						// local save
+						
+						// for local save
 						var newYotoo = Alloy.createModel('yotoo');
 						newYotoo.set({
 							'acs_id': result.id,
@@ -48,7 +49,9 @@ exports.definition = {
 						});
 						// to persistence
 						newYotoo.save();
-						// to runtime
+						
+						// for runtime
+						newYotoo.targetUser = targetUser;	// using in peopleView.js
 						thisCollection.add( newYotoo );
 					},
 					'error': function(){

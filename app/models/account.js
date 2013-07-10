@@ -41,10 +41,10 @@ exports.definition = {
                     Ti.API.info("testFunction: "+ value);
                 }
 			},
-			yotooTo: function( targetAccount ){
+			yotooTo: function( targetUser ){
 				// alert(this.getYotoos().length);
-				Ti.API.info("[account.js] yotoo!! " + this.get('name') + " to " + targetAccount.get('name') );
-				this.getYotoos().addNewYotoo( this, targetAccount);
+				Ti.API.info("[account.js] yotoo!! " + this.get('name') + " to " + targetUser.get('name') );
+				this.getYotoos().addNewYotoo( this, targetUser);
 			},
 			getYotoos: function(){
 				if( this.yotoos ){

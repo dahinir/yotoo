@@ -45,10 +45,9 @@ accounts.on('change:active', function(e){
 		}
 	}
 });
-accounts.on('add', function(e){
+accounts.on('add', function(addedAccount){
 	// create mainTabGroup is only in accounts.on('change:active', funtion(e)){}
-	var account = e;
-	Ti.API.info("BackboneEvent(added):" + account.get('name') );
+	Ti.API.info("BackboneEvent(added):" + addedAccount.get('name') );
 });
 accounts.on('remove', function(e){	// how about 'destroy'
 	var account = e;

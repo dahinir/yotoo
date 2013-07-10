@@ -14,8 +14,9 @@ var yotoos = ownerAccount.getYotoos();
 // ownerAccount.getYotoos();
 // ownerAccount.getYotoos();
 // Ti.API.info(yotoos.length);
-yotoos.on('add', function(e){
-	alert('yotoo added');
+yotoos.on('add', function(addedYotoo){
+	alert('yotoo added' + addedYotoo.get('acs_id'));
+	userListView.setUsers( addedYotoo.targetUser );
 	Ti.API.info("[peopleView.js] yotoo added");
 });
 yotoos.on('change:hided change:completed change:unyotooed change:past', function(e){
