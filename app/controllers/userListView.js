@@ -143,8 +143,8 @@ $.userListView.add(listView);
 
 var section = Ti.UI.createListSection();
 
+exports.setUsers = function(newUsers, withClear) {
 
-exports.setUsers = function(newUsers) {
 	var dataArray = [];
 	
 	var settingData = function(user) {
@@ -193,6 +193,9 @@ exports.setUsers = function(newUsers) {
 		settingData( newUsers );
 	}
 	
+	if( withClear ){
+		listView.deleteSectionAt(0);
+	}
 	section.appendItems(dataArray);
 
 	if (listView.getSectionCount() === 0) {

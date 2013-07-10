@@ -50,7 +50,7 @@ $.searchBar.addEventListener('return', function(e){
 			'q': e.value
 		},
 		'onSuccess': function(){
-			userListView.setUsers( users );
+			userListView.setUsers( users, true );
 		},
 		'onFailure': function(){
 			Ti.API.debug("[globalView.js] fail to fetch users");
