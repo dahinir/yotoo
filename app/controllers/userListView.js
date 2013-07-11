@@ -7,6 +7,18 @@ var users = args.users;
 
 var getTemplate = function(type){
 	var childTemplates = [{
+		type: 'Ti.UI.View',
+		bindId: 'relationshipIndicator',
+		properties: {
+			visible: false,
+			top: 0,
+			left: 0,
+			height: 10,
+			widht: 100,
+			backgroundColor: "#000",
+			opacity: 0.5
+		}
+	}, {
 		type : 'Ti.UI.ImageView',
 		bindId : 'profileImage',
 		properties : {
@@ -20,7 +32,7 @@ var getTemplate = function(type){
 			left : 10
 		},
 		events : {
-			click : openUserView
+			click: openUserView
 		}
 	}, {
 		type : 'Ti.UI.ImageView',
@@ -45,6 +57,9 @@ var getTemplate = function(type){
 			},
 			top : 6,
 			left : 55
+		},
+		events: {
+			// postlayout: function(e){ alert(e.source.rect.width);}
 		}
 	}, {
 		type : 'Ti.UI.Label',
@@ -115,12 +130,11 @@ var getTemplate = function(type){
 	}];
 	
 	if( type === 'self'){
-		delete childTemplates[7];
+		delete childTemplates[8];
 	}
 	
 	return {
 		childTemplates: childTemplates,
-		events : {},
 		properties : {
 			// accessoryType: Ti.UI.LIST_ACCESSORY_TYPE_NONE,
 			// backgroundColor: '#FFF',
@@ -130,8 +144,31 @@ var getTemplate = function(type){
 	};
 };
 function defaultAction(e) {
-	alert("defaultAction " + e.itemId);
-};
+	alert("defaultAction\nitemId: " + e.itemId+"\nitemIndex:"+ e.itemIndex);
+	// user.twitterApi = ownerAccount.twitterApi;
+	var user = ownerAccount.createModel('user');
+	user.fetchMetaData({
+		'purpose': 'relationship',
+		'params': {
+			'source_id': ownerAccount.get('id_str'),
+			'target_id': e.itemId// user.get('id_str')
+		},
+		'onSuccess': function( results ){
+			var data = section.getItemAt( e.itemIndex);
+			if( results.relationship.source.followed_by){
+				data.relationshipIndicator = {
+					visible: true,
+					backgroundColor:"#999"
+				};
+			}
+			section.updateItemAt( e.itemIndex, data );
+			// alert(results.relationship.source.followed_by);
+		},
+		'onFailure': function(){
+			Ti.API.debug("[userView] fetchFromServer(for relationship) failure");
+		}				
+	});
+}
 function openUserView(e) {
 	alert("openUserView");
 	Ti.API.info(e.source.rect.x + ", " + e.source.rect.y);
@@ -144,7 +181,7 @@ userSelfRowTemplate = getTemplate("self");
 
 
 if (rightActionButton) {
-	userRowTemplate.childTemplates[7] = rightActionButton;
+	userRowTemplate.childTemplates[8] = rightActionButton;
 }
 var listView = Ti.UI.createListView({
 	templates : {

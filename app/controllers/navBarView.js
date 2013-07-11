@@ -19,6 +19,6 @@ exports.init = function( options ){
 	rightNavButton.init({
 		"ownerAccount" : ownerAccount
 	});
-}
+};
 
 

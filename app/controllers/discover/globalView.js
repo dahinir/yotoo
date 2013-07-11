@@ -67,7 +67,19 @@ $.searchBar.addEventListener('blur', function(){
 	$.dummyScreen.hide();
 });
 $.searchBar.addEventListener('change', function(e){
-	// Ti.API.info(e.value);
+	users.fetchFromServer({
+		'purpose': 'searchUsers',
+		'params': {
+			'count': 20, // maxium 20
+			'q': e.value
+		},
+		'onSuccess': function(){
+			userListView.setUsers( users, true );
+		},
+		'onFailure': function(){
+			Ti.API.debug("[globalView.js] fail to fetch users");
+		}
+	});
 });
 
 $.searchBar.focus();

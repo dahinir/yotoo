@@ -75,6 +75,22 @@
 },
 
 // navigation bar :will be remove
+"#navBarView":{
+	top: 0,
+	width: "100%",
+	height: 46,
+	// borderRadius: "3dp",
+	backgroundColor: "#333",
+    backgroundGradient: {
+        type: 'linear',
+        startPoint: { x: 0, y: '0%' },
+        endPoint: { x: 0, y: '100%' },
+        colors: [ { color: '#CCC', offset: 0.0 }, 
+        		{ color: '#666', offset: 0.05 },
+        		{ color: '#222', offset: 0.95 }, 
+        		{ color: '#000', offset: 1.0 } ]
+    }
+},
 ".leftNavButton": {
 	top: 8,
 	left: 8

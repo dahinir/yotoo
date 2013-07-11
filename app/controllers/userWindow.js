@@ -11,7 +11,6 @@ $.closeButton.addEventListener('click', function(e){
 	$.userWindow.close();
 });
 
-
 // $.userView.getView().setBackgroundColor("#555");	//test
 // $.userView.setUser("babamba11");
 // $.userView.setUser("37934281");	// should pass user_id. rapodor is 37934281
@@ -19,6 +18,13 @@ $.closeButton.addEventListener('click', function(e){
 exports.init = function( options ) {
 	if( options.ownerAccount ){
 		ownerAccount = options.ownerAccount;
+		
+		// $.navBarView.init({
+			// "ownerAccount": ownerAccount,
+			// "defaultTitle": L('profile')
+		// });
+		// $.navBarView.setLeftNavButton();
+		
 		$.userView.init({
 			'ownerAccount': ownerAccount
 		});

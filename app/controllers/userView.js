@@ -35,7 +35,6 @@ Ti.API.info(String.format(L('phrase2'), "hi1", "hi2"));
 Ti.API.info("getTopLevelViews( ) : " + this.getTopLevelViews( ) );
 // $.userView.setVerticalBounce( false);
 
-
 /* userTabGroup */
 $.userView.setCanCancelEvents( false );
 var addUserTabGroup = function(){

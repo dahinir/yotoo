@@ -59,7 +59,7 @@ var urls = {
 	
 	'userView': "https://api.twitter.com/1.1/users/show.json",	// limit :180
 	'profileBanner': "https://api.twitter.com/1.1/users/profile_banner.json",	// limit :180
-	'relationship': "https://api.twitter.com/1.1/friendships/show.json",	// limit :180.  wow! it was 15! wow!
+	'relationship': "https://api.twitter.com/1.1/friendships/show.json",	// 180/user 15/app.  it was 15! wow!
 	
 	'userTimeline': "https://api.twitter.com/1.1/statuses/user_timeline.json",	// limit :180
 	
