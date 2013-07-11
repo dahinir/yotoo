@@ -85,8 +85,6 @@ for heavy user, specialized relationship
 
 
 ## work now
-* ownerAccount는 UI component 생성시 currentAccount를 지역변수로 저장하는 걸로 대체 
-* peopleView에서 사용할 user 모델들을 로컬에 저장해 놓아야 할텐데..
 * appStatus 모델을 만들어 저장. account.js의 active 필드 같은걸 이쪽으로 옮겨?
 * addNewYotoo() 할 때 source_id_str, target_id_str 같은것이 있으면 삭제하고 add 
 

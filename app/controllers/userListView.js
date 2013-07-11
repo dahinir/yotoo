@@ -118,7 +118,7 @@ var getTemplate = function(type){
 		delete childTemplates[7];
 	}
 	
-	var template = {
+	return {
 		childTemplates: childTemplates,
 		events : {},
 		properties : {
@@ -128,7 +128,6 @@ var getTemplate = function(type){
 			selectionStyle : Ti.UI.iPhone.ListViewCellSelectionStyle.NONE	// only iOS
 		}
 	};
-	return template;
 };
 function defaultAction(e) {
 	alert("defaultAction " + e.itemId);
@@ -213,9 +212,11 @@ exports.setUsers = function(newUsers, withClear) {
 	}
 	
 	if( withClear ){
-		listView.deleteSectionAt(0);
+		// listView.deleteSectionAt(0);
+		section.setItems(dataArray);
+	}else{
+		section.appendItems(dataArray);
 	}
-	section.appendItems(dataArray);
 
 	if (listView.getSectionCount() === 0) {
 		listView.setSections([section]);
