@@ -5,8 +5,8 @@ var ownerAccount = args.ownerAccount || Alloy.Globals.accounts.getCurrentAccount
 var users = args.users;
 // || ownerAccount.createCollection('user');
 
-var userRowTemplate = {
-	childTemplates : [{
+var getTemplate = function(type){
+	var childTemplates = [{
 		type : 'Ti.UI.ImageView',
 		bindId : 'profileImage',
 		properties : {
@@ -20,10 +20,7 @@ var userRowTemplate = {
 			left : 10
 		},
 		events : {
-			click : function(e) {
-				Ti.API.info(e.source.rect.x + ", " + e.source.rect.y);
-				Ti.API.info("dpi: " + Titanium.Platform.displayCaps.dpi);
-			}
+			click : openUserView
 		}
 	}, {
 		type : 'Ti.UI.ImageView',
@@ -115,25 +112,45 @@ var userRowTemplate = {
 		events : {
 			click : defaultAction
 		}
-	}],
-	events : {},
-	properties : {
-		// accessoryType: Ti.UI.LIST_ACCESSORY_TYPE_NONE,
-		// backgroundColor: '#FFF',
-		height : 80,
-		selectionStyle : Ti.UI.iPhone.ListViewCellSelectionStyle.NONE	// only iOS
+	}];
+	
+	if( type === 'self'){
+		delete childTemplates[7];
 	}
+	
+	var template = {
+		childTemplates: childTemplates,
+		events : {},
+		properties : {
+			// accessoryType: Ti.UI.LIST_ACCESSORY_TYPE_NONE,
+			// backgroundColor: '#FFF',
+			height : 80,
+			selectionStyle : Ti.UI.iPhone.ListViewCellSelectionStyle.NONE	// only iOS
+		}
+	};
+	return template;
 };
 function defaultAction(e) {
 	alert("defaultAction " + e.itemId);
 };
+function openUserView(e) {
+	alert("openUserView");
+	Ti.API.info(e.source.rect.x + ", " + e.source.rect.y);
+	Ti.API.info("dpi: " + Titanium.Platform.displayCaps.dpi);
+}
+
+
+userRowTemplate = getTemplate();
+userSelfRowTemplate = getTemplate("self");
+
 
 if (rightActionButton) {
 	userRowTemplate.childTemplates[7] = rightActionButton;
 }
 var listView = Ti.UI.createListView({
 	templates : {
-		'plain' : userRowTemplate
+		'plain' : userRowTemplate,
+		'userSelf': userSelfRowTemplate
 	},
 	defaultItemTemplate : 'plain'
 });
@@ -146,7 +163,6 @@ var section = Ti.UI.createListSection();
 exports.setUsers = function(newUsers, withClear) {
 
 	var dataArray = [];
-	
 	var settingData = function(user) {
 		data = {
 			profileImage : {
@@ -171,6 +187,9 @@ exports.setUsers = function(newUsers, withClear) {
 				itemId : user.get('id_str')
 			}
 		};
+		if( user.get('id_str') === ownerAccount.get('id_str')){
+			data.template = 'userSelf';
+		}
 
 		if (OS_ANDROID) {
 			data.description_ = {
