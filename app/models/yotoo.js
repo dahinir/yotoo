@@ -104,7 +104,7 @@ exports.definition = {
 				});
 			},
 			sendYotooNotification: function(sourceUser, targetUser){
-				this.cloud.sendPushNotification({
+				this.cloudApi.sendPushNotification({
 					'channel': 'yotoo',
 					'receiverAcsId': targetUser.get('id_str_acs'),
 					'message':  sourceUser.get('name') + " " + L('yotoo_you_too'),
