@@ -23,8 +23,8 @@ var currentLoginUserCache;
  * @param {String} [options.id]
  * @param {String} [options.type]
  * @param {String} [options.token]
- * @param {Function} [options.success] Callback function executed after a success
- * @param {Function} [options.error] Callback function executed after a fail 
+ * @param {Function} [options.onSuccess] Callback function executed after a success
+ * @param {Function} [options.onError] Callback function executed after a fail 
  */
 cloudProxy.externalAccountLoginAdapter = function(options){
 	if( !options.id ){
@@ -46,57 +46,93 @@ cloudProxy.externalAccountLoginAdapter = function(options){
 				currentLoginUserCache = e;	// store only if success
 		        currentLoginUserIdStr = e.users[0].external_accounts[0].external_id;
 
-				if( options.success ){
-					options.success(e);
+				if( options.onSuccess ){
+					options.onSuccess(e);
 				}
 		    } else {	// ACS login error
 		        Ti.API.info('[cloudProxy.js]Error: ' + ((e.error && e.message) || JSON.stringify(e)));
-		        if( options.error ){
-		        	options.error(e);
+		        if( options.onError ){
+		        	options.onError(e);
 		        }
 		    }
 		});
 	}else{	// ACS already loggin
 		Ti.API.info("[cloudProxy.js] already logged in ACS");
-		if( options.success ){
-			options.success(currentLoginUserCache);
+		if( options.onSuccess ){
+			options.onSuccess(currentLoginUserCache);
 		}
 	}
 };
 
 /**
- * @param {account} [options.sourceUser]
- * @param {account} [options.targetUser]
- * @param {Function} [options.success]
- * @param {Function} [options.error]
+ * @method fetch
+ * @param {Object} options
+ * @param {String} options.url If this described, options.purpose will ignored
+ * @param {String} options.purpose We got some twitter.com urls
+ * @param {Object} options.params  
+ * @param {Functioin} [options.onSuccess]
+ * @param {Functioin} [options.onError]
  */
-cloudProxy.yotooRequest = function(options) {
+cloudProxy.fetch = function(options){
+	/* user객체를 받느냐 id_str만 받느냐 그것이 문제로다. */
+	/* id_str을 받아야 겠지.. */ 
+}
+
+
+/**
+ * @param {String} options.modelType like 'yotoo'
+ * @param {Object} [options.sourceUser]
+ * @param {Object} [options.targetUser]
+ * @param {Function} [options.onSuccess]
+ * @param {Function} [options.onError]
+ */
+cloudProxy.post = function(options) {
+	var modelType = options.modelType || 'yotoo';
 	var sourceUser = options.sourceUser;
 	var targetUser = options.targetUser;
 	
-	// alert("inner: "+ currentLoginUserIdStr +"\nouter:"+sourceUser.get('id_str'));
+	var createNewModel = function(){
+		Cloud.Objects.create({
+			classname : modelType,
+			fields : {
+				source_id_str : sourceUser.get('id_str'),
+				target_id_str : targetUser.get('id_str'),
+				platform : 'twitter'	// default
+			}
+		}, function(e) {
+			if (e.success) {
+				var result = e.yotoo[0];
+				// alert('Success:\n' +
+				// 'id: ' + result.id + '\n' +
+				// 'source: ' + result.source_id_str + '\n' +
+				// 'target: ' + result.target_id_str + '\n' +
+				// 'created_at: ' + result.created_at);
+				// Ti.API.info("[cloudProxy.js] " + JSON.stringify(e) );
+				if (options.onSuccess) {
+					options.onSuccess(result);
+				}
+				
+			} else {// ACS create yotoo error
+				Ti.API.info('[cloudProxy.createYotoo] Error:\n' + ((e.error && e.message) || JSON.stringify(e)));
+				if (options.onError) {
+					options.onError(e);
+				}
+			}
+		}); 
+	};
+	
 	cloudProxy.externalAccountLoginAdapter({
 		id: sourceUser.get('id_str'),
 	    type: 'twitter',
 	    token: sourceUser.get('access_token'),
-		success: function (e) {
-	        var user = e.users[0];
-	        // Ti.API.info('[cloudProxy.js] Cloud login success! sessionId:'+Cloud.sessionId+ ' id: ' + user.id + ' first name: ' + user.first_name +' last name: ' + user.last_name);
-	        // alert('[cloudProxy.js] current '+ currentAccount.get('session_id_acs') );
-	        // Ti.API.info('[cloudProxy.js]external id: ' + e.users[0].external_accounts[0].external_id );
-	        currentLoginUserIdStr = e.users[0].external_accounts[0].external_id;
+		onSuccess: function (e) {
 	        // now, time to yotoo!
-	        postYotoo({
-	        	'sourceUser': sourceUser, 
-	        	'targetUser': targetUser,
-	        	'success': options.success,
-	        	'error': options.error
-	        });
+	        createNewModel();
 		},
-		error: function(e){	// ACS loggin error
+		onError: function(e){	// ACS loggin error
 	        Ti.API.info('[cloudProxy.yotooRequest] Error:\n' + ((e.error && e.message) || JSON.stringify(e)));
-	        if( options.error ){
-	        	options.error(e);
+	        if( options.onError ){
+	        	options.onError(e);
 	        }
 		}
 	});
@@ -105,9 +141,9 @@ cloudProxy.yotooRequest = function(options) {
 /**
  * @param {account} [options.sourceUser]
  * @param {account} [options.targetUser]
- * @param {Function} [options.success]
- * @param {Function} [options.error]
- */
+ * @param {Function} [options.onSuccess]
+ * @param {Function} [options.onError]
+ *
 var postYotoo = function(options){
 	var sourceUser = options.sourceUser;
 	var targetUser = options.targetUser;
@@ -129,8 +165,8 @@ var postYotoo = function(options){
 	            // 'target: ' + result.target_id_str + '\n' +
 	            // 'created_at: ' + result.created_at);
 	         // Ti.API.info("[cloudProxy.js] " + JSON.stringify(e) );
-			if( options.success ){
-				options.success(result);
+			if( options.onSuccess ){
+				options.onSuccess(result);
 			}
 			
 			
@@ -138,47 +174,55 @@ var postYotoo = function(options){
 			checkTargetYotoo(sourceUser, targetUser);
 	    } else {	// ACS create yotoo error
 	        Ti.API.info('[cloudProxy.createYotoo] Error:\n' + ((e.error && e.message) || JSON.stringify(e)));
-			if( options.error ){
-				options.error(e);
+			if( options.onError ){
+				options.onError(e);
 			}
 	    }
 	});
 };
+*/
 
-var checkTargetYotoo = function(sourceUser, targetUser){
+/**
+ * @param {String} options.modelType like 'yotoo'
+ * @param {Object} [options.query] query for get
+ * @param {Function} [options.onSuccess]
+ * @param {Function} [options.onError]
+ */
+cloudProxy.get = function(options){
+	var modelType = options.modelType || 'yotoo';
+	var query = options.query;
+	
 	Cloud.Objects.query({
-	    classname: 'yotoo',
-	    limit: 1000, // 1000 is maxium
-	    where: {
-	        source_id_str: targetUser.get('id_str'),
-	        target_id_str: sourceUser.get('id_str')
-	    }
+	    'classname': modelType,
+	    // limit: 1000, // 1000 is maxium
+	    // order: 'created_at',
+	    'where': query
 	}, function (e) {
 	    if (e.success) {
-            var yotoo = e.yotoo[0];
-            // alert('id: ' + yotoo.id + '\n' +
-                // 'source: ' + yotoo.source + '\n' +
-                // 'target: ' + yotoo.target + '\n' +
-                // 'created_at: ' + yotoo.created_at);
-            if( e.yotoo.length === 0 ){
-		        alert('Success:\n' + 'Count: ' + e.yotoo.length);
-            }else if ( e.yotoo.length > 0){
-            	alert('YOTOO!');
-            	sendPushNotification(sourceUser, targetUser);
-            }
-	    } else {
-	        alert('Error:\n' + ((e.error && e.message) || JSON.stringify(e)));
+	    	var resultsJSON = e[modelType];
+	    	if( options.onSuccess ){
+	    		options.onSuccess( resultsJSON );
+	    	}
+	    } else{ 
+	        Ti.API.info('[cloudProxy.get] Error:\n' + ((e.error && e.message) || JSON.stringify(e)));
+	        if( options.onError ){
+	        	options.onError(e);
+	        }
 	    }
 	});
 };
 
-var sendPushNotification = function(sourceUser, targetUser){
+cloudProxy.sendPushNotification = function( options ){
+	var channel = options.channel || 'yotoo';
+	var message = options.message;
+	var receiverAcsId = options.receiverAcsId;
+	
 	Cloud.PushNotifications.notify({
-		channel : 'yotoo',
-		// friends : Any,
-		to_ids : targetUser.get('id_str_acs'),
-		payload : sourceUser.get('name') + " " + L('yotoo_you_too')
-		// payload: {
+		'channel' : channel,
+		// 'friends' : Any,
+		'to_ids' : receiverAcsId,
+		'payload' : message
+		// 'payload': {
 		    // "atras": "your_user_id",
 		    // "tags": [
 		        // "tag1",
@@ -190,9 +234,15 @@ var sendPushNotification = function(sourceUser, targetUser){
 		// }
 	}, function(e) {
 		if (e.success) {
-			alert('Success');
+			alert('[cloudProxy.sendNotification] Success');
+			if( options.onSuccess ){
+				options.onSuccess(e);
+			}
 		} else {
-			alert('Error:\n' + ((e.error && e.message) || JSON.stringify(e)));
+			alert('[cloudProxy.sendNotification] Error:\n' + ((e.error && e.message) || JSON.stringify(e)));
+			if( options.onError ){
+				options.onError(e);
+			}
 		}
 	}); 
 };

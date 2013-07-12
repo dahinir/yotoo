@@ -99,6 +99,11 @@ for heavy user, specialized relationship
 	:프로필 보기를 했으면 리프레쉬후 로컬 저장
 	:프로필 이미지는 업데이트 했을때 url이 바뀌나? 그렇다면 프로필 이미지 로딩 실퍠시에도 리프레쉬
 
+## work right now!
+* cloudProxy에서 yotooRequest를 날렸을때 하는 일련의 동작들( 타겟확인하고 노티 날리는것등)을
+  yotoo객체에서 하는걸로 하자.
+* 다음으론 cloudProxy.fetch() 구현  
+
 
 탭별로 디렉토리를 나누자
 Discover/

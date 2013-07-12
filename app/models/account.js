@@ -52,6 +52,7 @@ exports.definition = {
 				}else{
 					var yotooArray = Alloy.Globals.yotoos.where({'source_id_str': this.get('id_str')});
 					this.yotoos = Alloy.createCollection('yotoo', yotooArray);
+					this.yotoos.cloudApi = require('cloudProxy').getCloud();
 					// alert("no yotoos: " + this.yotoos.length);
 				}
 				return this.yotoos;
