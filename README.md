@@ -82,11 +82,22 @@ for heavy user, specialized relationship
 * Ti.Network.HTTPClient.cache 상황에 맞게 true
 * image cache :https://github.com/FokkeZB/nl.fokkezb.cachedImageView :http://docs.appcelerator.com/titanium/latest/#!/guide/Image_Best_Practices-section-30082525_ImageBestPractices-Cachingremoteimages
 * 네트웤 상태등의 이유로 밀려 있는 할일 저장해 놓고 실행하는 로직 ex) cloudProxy.postYotoo() 에서 checkTargetYotoo()는 실패 했을때 조용히 다시 시도 되어야 한다.
+* userView.js 열때 전에 열려 있는 유저와의 relationship 알려주기 (전에 열려 있는 유저는 editable필드로 작성해서 다른 아이디 쓸 수도 있게!)
 
 
 ## work now
 * appStatus 모델을 만들어 저장. account.js의 active 필드 같은걸 이쪽으로 옮겨?
-* addNewYotoo() 할 때 source_id_str, target_id_str 같은것이 있으면 삭제하고 add 
+* addNewYotoo() 할 때 source_id_str, target_id_str 같은것이 있으면 삭제하고 add
+	:서버
+	:로컬  
+* 서버에 저장된 yotoo는 언제 refresh해서 로컬과 싱크를 맞추지?
+	:트위터에 새 계정 추가 했을 때.
+	:새로운 유투를 추가 했을 때?
+	:changeCurrentUser시 마지막 yotoo채킹을 해서 일정기간 이상이면 체킹?
+* User객체들을 로컬에 저장해 놓고 쓰자
+	:캐쉬 개념으로 일정 시간 이상되면 업데이트 하고
+	:프로필 보기를 했으면 리프레쉬후 로컬 저장
+	:프로필 이미지는 업데이트 했을때 url이 바뀌나? 그렇다면 프로필 이미지 로딩 실퍠시에도 리프레쉬
 
 
 탭별로 디렉토리를 나누자

@@ -26,8 +26,8 @@ var getTemplate = function(type){
 			borderWidth : 0.5,
 			borderRadius : 3,
 			borderColor : '#030303',
-			height : 36.5, // 73/2
-			width : 36.5,
+			height : 48, // 73/2 is 36.5 but it's too small
+			width : 48,
 			top : 10,
 			left : 10
 		},
@@ -56,7 +56,7 @@ var getTemplate = function(type){
 				fontWeight : 'bold'
 			},
 			top : 6,
-			left : 55
+			left : 67
 		},
 		events: {
 			// postlayout: function(e){ alert(e.source.rect.width);}
@@ -72,7 +72,7 @@ var getTemplate = function(type){
 				fontWeight : 'normal'
 			},
 			top : 19,
-			left : 60
+			left : 72
 		}
 	}, {
 		type : 'Ti.UI.Label',
@@ -83,7 +83,7 @@ var getTemplate = function(type){
 				fontSize : 12
 			},
 			top : 37,
-			left : 55
+			left : 67
 		}
 	}, {
 		type : 'Ti.UI.Label',
@@ -94,7 +94,7 @@ var getTemplate = function(type){
 				fontSize : 12
 			},
 			top : 48,
-			left : 55
+			left : 67
 		}
 	}, {
 		type : 'Ti.UI.Label',

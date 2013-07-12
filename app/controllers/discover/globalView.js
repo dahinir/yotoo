@@ -69,14 +69,14 @@ $.searchBar.addEventListener('focus', function(){
 $.searchBar.addEventListener('blur', function(){
 	$.dummyScreen.hide();
 });
-var timerId;
+var typeDelayTimerId;
 $.searchBar.addEventListener('change', function(e){
-	if( timerId ){
-		clearTimeout(timerId);
+	if( typeDelayTimerId ){
+		clearTimeout( typeDelayTimerId );
 	}
-	timerId = setTimeout(function(){
+	typeDelayTimerId = setTimeout(function(){
 		updateUserListView( e.value );
-	}, 800);
+	}, 1000);
 });
 
 $.searchBar.focus();
