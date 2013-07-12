@@ -33,6 +33,21 @@ var userListView = Alloy.createController('userListView', {
 userListView.getView().setTop( $.searchBar.getHeight() );
 $.globalView.add( userListView.getView() );
 
+function updateUserListView(query){
+	users.fetchFromServer({
+		'purpose': 'searchUsers',
+		'params': {
+			'count': 20, // maxium 20
+			'q': query
+		},
+		'onSuccess': function(){
+			userListView.setUsers( users, true );
+		},
+		'onFailure': function(){
+			Ti.API.debug("[globalView.js] fail to fetch users");
+		}
+	});
+}
 
 $.dummyScreen.addEventListener('touchstart', function(){
 	$.searchBar.blur();
@@ -42,20 +57,8 @@ $.dummyScreen.addEventListener('touchstart', function(){
 $.searchBar.setHintText( L('search_twitter_users') );
 $.searchBar.addEventListener('return', function(e){
 	$.searchBar.blur();
-
-	users.fetchFromServer({
-		'purpose': 'searchUsers',
-		'params': {
-			'count': 20, // maxium 20
-			'q': e.value
-		},
-		'onSuccess': function(){
-			userListView.setUsers( users, true );
-		},
-		'onFailure': function(){
-			Ti.API.debug("[globalView.js] fail to fetch users");
-		}
-	});
+/* e.value와 정확히 일치하는 유저를 보여주는 특별한 row (실제론 평범한 view겠지?)  하나 추가 */
+	updateUserListView( e.value );
 });
 $.searchBar.addEventListener('cancel', function(){
 	$.searchBar.blur();
@@ -66,20 +69,14 @@ $.searchBar.addEventListener('focus', function(){
 $.searchBar.addEventListener('blur', function(){
 	$.dummyScreen.hide();
 });
+var timerId;
 $.searchBar.addEventListener('change', function(e){
-	users.fetchFromServer({
-		'purpose': 'searchUsers',
-		'params': {
-			'count': 20, // maxium 20
-			'q': e.value
-		},
-		'onSuccess': function(){
-			userListView.setUsers( users, true );
-		},
-		'onFailure': function(){
-			Ti.API.debug("[globalView.js] fail to fetch users");
-		}
-	});
+	if( timerId ){
+		clearTimeout(timerId);
+	}
+	timerId = setTimeout(function(){
+		updateUserListView( e.value );
+	}, 800);
 });
 
 $.searchBar.focus();
