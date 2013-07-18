@@ -10,7 +10,7 @@ migration.up = function(db) {
 			"access_token":"TEXT",
 			"access_token_secret":"TEXT",
 			
-			"id_str_acs":"TEXT",
+			"id_str_acs":"TEXT", 
 			// "session_id_acs": "TEXT",
 			
 			"active":"INTEGER",

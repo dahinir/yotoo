@@ -87,7 +87,12 @@ for heavy user, specialized relationship
 
 ## work now
 * appStatus 모델을 만들어 저장. account.js의 active 필드 같은걸 이쪽으로 옮겨?
-* addNewYotoo() 할 때 source_id_str, target_id_str 같은것이 있으면 삭제하고 add
+* addNewYotoo() 할 때 source_id_str, target_id_str 같은것이 있으면 
+	:hided일 경우 알람창으로 유저 확인후 hided를 false (무료)
+	:unyotoo일 경우 알람창으로 유저 확인후 unyotoo를 false (유료)
+	:past일 경우 알람창으로 유저 확인후 past를 false (유료)
+	:completed일 경우 알람창으로 유저 확인 없이 진행 (유료) 
+	:completed는 true, burned는 false 일 경우 알람창으로 불가능 알람  
 	:서버와 
 	:로컬에 
 * 의미있는 User객체들을 로컬에 저장해 놓고 쓰자(유투한 아이, 팔로잉(최근 400), 팔로워(최근 400), 내가쓴 맨션, :그냥 유저가 행위에 따라 읽게된 user들만 저장할까.)
@@ -97,13 +102,13 @@ for heavy user, specialized relationship
 
 ## work right now!
 * yotoo sync
-	:yotoo.fetchFromServer() 구현  
-	:yotoo객체를 서버에 저장할때 hide, completed등의 필드도 저장해야 한다.
+	v:yotoo.fetchFromServer() 구현  
+	v:yotoo객체를 서버에 저장할때 hide, completed등의 필드도 저장해야 한다.
 	:yotoo객체의 hide, completed등의 필드 변경이 되었을때 서버에 저장 해야 한다.   
-* 서버에 저장된 yotoo는 언제 refresh해서 로컬과 싱크를 맞추지?
+* 서버에 저장된 yotoo는 언제 refresh해서 로컬과 싱크를 맞추지? -로컬엔 있지만 서버에 없는 경우는 없음 
 	:트위터에 새 계정 추가 했을 때.
-	:새로운 유투를 추가 했을 때?
-	:changeCurrentUser시 마지막 yotoo채킹을 해서 일정기간 이상이면 체킹?
+	:changeCurrentUser시 마지막 yotoo채킹을 해서 일정기간 이상이면 체킹? - no
+	:pull to refresh 구현 
 
 
 탭별로 디렉토리를 나누자

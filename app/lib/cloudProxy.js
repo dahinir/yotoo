@@ -87,25 +87,19 @@ cloudProxy.externalAccountLoginAdapter = function(options){
 
 
 /**
+ * @param {Object} [options.mainAgent] account model
  * @param {String} [options.modelType] like 'yotoo'
- * @param {Object} [options.sourceUser]
- * @param {Object} [options.targetUser]
+ * @param {Object} [options.fields] post to fields
  * @param {Function} [options.onSuccess]
  * @param {Function} [options.onError]
  */
 cloudProxy.post = function(options) {
 	var modelType = options.modelType || 'yotoo';
-	var sourceUser = options.sourceUser;
-	var targetUser = options.targetUser;
 	
 	var createNewModel = function(){
 		Cloud.Objects.create({
 			classname : modelType,
-			fields : {
-				source_id_str : sourceUser.get('id_str'),
-				target_id_str : targetUser.get('id_str'),
-				platform : 'twitter'	// default
-			}
+			fields: options.fields  
 		}, function(e) {
 			if (e.success) {
 				var result = e.yotoo[0];
@@ -129,9 +123,9 @@ cloudProxy.post = function(options) {
 	};
 	
 	cloudProxy.externalAccountLoginAdapter({
-		id: sourceUser.get('id_str'),
+		id: options.mainAgent.get('id_str'),
 	    type: 'twitter',
-	    token: sourceUser.get('access_token'),
+	    token: options.mainAgent.get('access_token'),
 		onSuccess: function (e) {
 	        // now, time to yotoo!
 	        createNewModel();
@@ -148,7 +142,7 @@ cloudProxy.post = function(options) {
 
 /**
  * @param {Object} [options.mainAgent]
- * @param {String} options.modelType like 'yotoo'
+ * @param {String} [options.modelType] like 'yotoo'
  * @param {Object} [options.query] query for get
  * @param {Function} [options.onSuccess]
  * @param {Function} [options.onError]

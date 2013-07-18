@@ -135,6 +135,11 @@ var getTemplate = function(type){
 	
 	return {
 		childTemplates: childTemplates,
+		events: {
+			'swipe': function(e){
+				alert( JSON.stringify(e) + e.itemIndex + ": " + e.itemId );
+			}
+		},
 		properties : {
 			// accessoryType: Ti.UI.LIST_ACCESSORY_TYPE_NONE,
 			// backgroundColor: '#FFF',
@@ -145,7 +150,6 @@ var getTemplate = function(type){
 };
 function defaultAction(e) {
 	alert("defaultAction\nitemId: " + e.itemId+"\nitemIndex:"+ e.itemIndex);
-	// user.twitterApi = ownerAccount.twitterApi;
 	var user = ownerAccount.createModel('user');
 	user.fetchMetaData({
 		'purpose': 'relationship',
@@ -193,9 +197,9 @@ var listView = Ti.UI.createListView({
 
 // listView.setTop( $.searchBar.getHeight() );
 $.userListView.add(listView);
-$.userListView.addEventListener('swipe', function(e){
-	alert(e);
-});
+// $.userListView.addEventListener('swipe', function(e){
+	// alert(e);
+// });
 
 var section = Ti.UI.createListSection();
 

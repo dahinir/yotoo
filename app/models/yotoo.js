@@ -8,8 +8,9 @@ exports.definition = {
 		    
 		    // status //
 		    "hided": "boolean",
-		    "completed": "boolean",
 		    "unyotooed": "boolean",
+		    "completed": "boolean",
+		    "burned": "boolean",
 		    "past": "boolean"
 		},
 		adapter: {
@@ -37,10 +38,30 @@ exports.definition = {
 					'query': query,
 					'onSuccess': function( resultsJSON ){
 						// thisCollection.reset();
-						alert( JSON.stringify(resultsJSON) );
+						// alert( JSON.stringify(resultsJSON) );
 						
-						thisCollection.add( resultsJSON );
-						// thisCollection.set( resultsJSON );
+						for(var i = 0; i < resultsJSON.length; i++){
+							if ( thisCollection.where({'target_id_str': resultsJSON[i].target_id_str}).pop() ){
+								// this yotoo already in this collection 
+								alert("in: " + resultsJSON[i].target_id_str);
+							}else{
+								// this yotoo is not in this collection
+								alert("no: " + resultsJSON[i].target_id_str);
+								var newYotoo = Alloy.createModel('yotoo');
+								newYotoo.set({
+									'acs_id': resultsJSON[i].id,
+									'platform': resultsJSON[i].platform,
+									'source_id_str': resultsJSON[i].source_id_str,
+									'target_id_str': resultsJSON[i].target_id_str,
+									'hided': resultsJSON[i].hided,
+									'completed': resultsJSON[i].hided,
+									'unyotooed': resultsJSON[i].unyotooed,
+									'past': resultsJSON[i].past
+								});
+								newYotoo.save();
+								thisCollection.add( newYotoo );
+							}
+						}
 					},
 					'onError': function(e){
 						Ti.API.info("[yotoo.fetchFromServer] error ");
@@ -49,11 +70,20 @@ exports.definition = {
 			},
 			addNewYotoo: function(sourceUser, targetUser){
 				var thisCollection = this;
+
 				// remote save
 				this.cloudApi.post({
 					'modelType': 'yotoo',
-					'sourceUser': sourceUser,
-					'targetUser': targetUser,
+					'mainAgent': sourceUser,
+					'fields': {
+						'source_id_str': sourceUser.get('id_str'),
+						'target_id_str': targetUser.get('id_str'),
+						'hided': false,
+						'completed': false,
+						'unyotooed': false,
+						'past': false,
+						'platform': 'twitter'	// default
+					},
 					'onSuccess': function(result){
 						// for local save
 						var newYotoo = Alloy.createModel('yotoo');
@@ -67,7 +97,7 @@ exports.definition = {
 							'unyotooed': false,
 							'past': false 
 						});
-						// to persistence
+						// to persistence :must save after success of server post
 						newYotoo.save();
 						
 						// for runtime

@@ -8,8 +8,9 @@ migration.up = function(db) {
 		    
 		    // status //
 		    "hided": "INTEGER",
-		    "completed": "INTEGER",
 		    "unyotooed": "INTEGER",
+		    "completed": "INTEGER",
+		    "burned": "INTEGER",
 		    "past": "INTEGER"
 		},
 		"adapter": {

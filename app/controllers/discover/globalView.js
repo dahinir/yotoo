@@ -19,15 +19,17 @@ var userListView = Alloy.createController('userListView', {
                 right: 10,
                 title: 'yotoo'
             },
-            events: { click : function(e){
-				alert( L('yotoo_effect')  + e.itemId);
+            events: { 
+            	click : function(e){
+					alert( L('yotoo_effect')  + e.itemId);
 				
-				var targetUser = users.where({'id_str': e.itemId}).pop();
-				// Ti.API.info( users.where({'id_str': e.itemId}).pop().get('screen_name') );
-				// Ti.API.info( users.findWhere({'id_str': e.itemId}).get('screen_name') );
+					var targetUser = users.where({'id_str': e.itemId}).pop();
+					// Ti.API.info( users.where({'id_str': e.itemId}).pop().get('screen_name') );
+					// Ti.API.info( users.findWhere({'id_str': e.itemId}).get('screen_name') );
 				
-				ownerAccount.yotooTo( targetUser );
-            } }
+					ownerAccount.yotooTo( targetUser );
+            	}
+            }
         }
 });
 userListView.getView().setTop( $.searchBar.getHeight() );

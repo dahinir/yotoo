@@ -55,9 +55,9 @@ var urls = {
 	'searchTweets': "https://api.twitter.com/1.1/search/tweets.json", // 180/user 450/app
 	'searchUsers': "https://api.twitter.com/1.1/users/search.json",	// 180/user
 	'lookupUsers': "https://api.twitter.com/1.1/users/lookup.json",	// 180/user 60/app
-	'profile': "https://api.twitter.com/1.1/account/verify_credentials.json",	// limit :15.  Use this method to test if supplied user credentials are valid.
+	'profile': "https://api.twitter.com/1.1/account/verify_credentials.json",	// 15/user  Use this method to test if supplied user credentials are valid.
 	
-	'userView': "https://api.twitter.com/1.1/users/show.json",	// limit :180
+	'userView': "https://api.twitter.com/1.1/users/show.json",	// 180/user 180/app
 	'profileBanner': "https://api.twitter.com/1.1/users/profile_banner.json",	// limit :180
 	'relationship': "https://api.twitter.com/1.1/friendships/show.json",	// 180/user 15/app.  it was 15! wow!
 	

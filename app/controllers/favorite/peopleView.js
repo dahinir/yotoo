@@ -22,17 +22,36 @@ yotoos.on('add', function(addedYotoo){
 		 */ 
 		// alert("addedYotoo undefined?");
 	}else{
-		alert('yotoo added' + addedYotoo.get('acs_id'));
+		alert('[peopleView.js] yotoo add event' + addedYotoo.get('acs_id'));
 		userListView.setUsers( addedYotoo.targetUser );
 	}
-	Ti.API.info("[peopleView.js] yotoo added");
+	Ti.API.info("[peopleView.js] yotoo add event");
 });
 yotoos.on('change:hided change:completed change:unyotooed change:past', function(e){
-	alert('yotoo changed');
+	alert('[peopleView.js] yotoo changed');
 	Ti.API.info("[peopleView.js] change yotoo status");
 });
 
-var userListView = Alloy.createController('userListView');
+var userListView = Alloy.createController('userListView', {
+	'rightActionButton': {
+		type: 'Ti.UI.Button',
+		bindId: 'hehe',
+		properties: {
+			width: 80,
+			height: 30,
+			right: 10,
+			title: 'kia'
+		},
+		events: {
+			'click': function(e){
+				// alert("unyotoo");
+				alert("delete yotoo");
+				alert(JSON.stringify(e));
+				// e.itemId
+			}
+		}
+	}
+});
 $.peopleView.add( userListView.getView() );
 
 var userIds = "";
