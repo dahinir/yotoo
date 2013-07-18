@@ -24,6 +24,7 @@ var yotoos = Alloy.Globals.yotoos;
 // on changed current account, reponse UI, create mainTabGroup is only in this.
 accounts.on('change:active', function(e){
 	var account = e;
+	alert("[index.js] BackboneEvent(changed):" + account.get('name') +"\'s active to "+ account.get('active'));
 	Ti.API.info("[index.js] BackboneEvent(changed):" + account.get('name') +"\'s active to "+ account.get('active'));
 	if( account.get('active') ){	// for new current account
 		if( account.mainTabGroup === undefined){

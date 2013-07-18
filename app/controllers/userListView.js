@@ -193,6 +193,9 @@ var listView = Ti.UI.createListView({
 
 // listView.setTop( $.searchBar.getHeight() );
 $.userListView.add(listView);
+$.userListView.addEventListener('swipe', function(e){
+	alert(e);
+});
 
 var section = Ti.UI.createListSection();
 

@@ -15,8 +15,16 @@ var yotoos = ownerAccount.getYotoos();
 // ownerAccount.getYotoos();
 // Ti.API.info(yotoos.length);
 yotoos.on('add', function(addedYotoo){
-	alert('yotoo added' + addedYotoo.get('acs_id'));
-	userListView.setUsers( addedYotoo.targetUser );
+	if( !addedYotoo.targetUser ){
+		/*
+		 * 의미있는 user는 저장되어 있으므로 로컬에서 한번 검색해 보고  
+		 * targetUser를 트위터에서 가져와야 한다.
+		 */ 
+		// alert("addedYotoo undefined?");
+	}else{
+		alert('yotoo added' + addedYotoo.get('acs_id'));
+		userListView.setUsers( addedYotoo.targetUser );
+	}
 	Ti.API.info("[peopleView.js] yotoo added");
 });
 yotoos.on('change:hided change:completed change:unyotooed change:past', function(e){
@@ -32,6 +40,7 @@ yotoos.map(function(yotoo){
 	userIds = userIds + "," + yotoo.get('target_id_str');
 });
 userIds = userIds.replace( /^,/g , '');
+	// alert("before: " + userIds);
 
 users.fetchFromServer({
 	'purpose': 'lookupUsers',
@@ -45,7 +54,24 @@ users.fetchFromServer({
 });
 
 
-
+var testButton = Ti.UI.createButton();
+$.peopleView.add( testButton);
+testButton.addEventListener('click', function(){
+	var us = "";
+	yotoos.map(function(yotoo){
+		us = us + "," + yotoo.get('target_id_str');
+	});
+	// alert("before: " + us);
+	
+	yotoos.fetchFromServer( ownerAccount );
+	
+	us = "";
+	yotoos.map(function(yotoo){
+		us = us + "," + yotoo.get('target_id_str');
+	});
+	// alert("after: " + us);
+	
+});
 // var localYotoos = Alloy.createCollection('yotoo');
 // var globalYotoos = Alloy.Globals.yotoos;
 // 

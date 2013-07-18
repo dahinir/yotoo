@@ -1,12 +1,12 @@
 var args = arguments[0] || {};
-// var ownerAccount = args.ownerAccount;
-var account = args.account;
+var ownerAccount = args.ownerAccount || Alloy.Globals.accounts.getCurrentAccount();
+// var account = args.account;
 
-Ti.API.info("[accountRow.js] account.get(name):"+ account.get('name') );
+alert("[accountRow.js] account.get(name):"+ ownerAccount.get('name') );
 
-$.profileImage.image = account.get('profile_image_url_https');
-$.name.text = account.get('name');
-$.screenName.text = account.get('screen_name');
+$.profileImage.image = ownerAccount.get('profile_image_url_https');
+$.name.text = ownerAccount.get('name');
+$.screenName.text = ownerAccount.get('screen_name');
 
 
 
@@ -15,7 +15,8 @@ if( OS_IOS ){
 	$.accountRow.setEditable(true);
 
 	$.accountRow.addEventListener('delete', function(e){
-		Alloy.Globals.accounts.deleteAccount( account);
+		// alert("dd");
+		Alloy.Globals.accounts.deleteAccount( ownerAccount);
 	});
 
 }

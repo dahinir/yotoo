@@ -27,21 +27,29 @@ exports.definition = {
 	extendCollection: function(Collection) {		
 		_.extend(Collection.prototype, {
 			fetchFromServer: function(account){
-				this.cloudApi.fetch({
-					'onSuccess': function(){
+				var thisCollection = this;
+				var query ={
+					'source_id_str': account.get('id_str')
+				};
+				this.cloudApi.get({
+					'mainAgent': account,
+					'modelType': 'yotoo',
+					'query': query,
+					'onSuccess': function( resultsJSON ){
+						// thisCollection.reset();
+						alert( JSON.stringify(resultsJSON) );
 						
+						thisCollection.add( resultsJSON );
+						// thisCollection.set( resultsJSON );
 					},
-					'onError': function(){
-						Ti.API.info("[yotoo.fetchFromServer] error");
+					'onError': function(e){
+						Ti.API.info("[yotoo.fetchFromServer] error ");
 					}
 				});
 			},
 			addNewYotoo: function(sourceUser, targetUser){
 				var thisCollection = this;
-//yotooRequest -> postYotoo -> checkTargetYotoo -> sendPushNotification
-//post -> get -> sendNotification
 				// remote save
-				// require('cloudProxy').getCloud().yotooRequest({
 				this.cloudApi.post({
 					'modelType': 'yotoo',
 					'sourceUser': sourceUser,
@@ -83,6 +91,7 @@ exports.definition = {
 					'target_id_str': sourceUser.get('id_str')
 				};
 				this.cloudApi.get({
+					'mainAgent': sourceUser,
 					'modelType': 'yotoo',
 					'query': query,
 					'onSuccess': function( resultsJSON ){
@@ -105,6 +114,7 @@ exports.definition = {
 			},
 			sendYotooNotification: function(sourceUser, targetUser){
 				this.cloudApi.sendPushNotification({
+					'mainAgent': sourceUser,
 					'channel': 'yotoo',
 					'receiverAcsId': targetUser.get('id_str_acs'),
 					'message':  sourceUser.get('name') + " " + L('yotoo_you_too'),

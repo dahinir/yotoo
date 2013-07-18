@@ -19,6 +19,26 @@ var cloudProxy = new F();
 var currentLoginUserIdStr;
 var currentLoginUserCache;
 
+/* just for develope
+cloudProxy.deleteAll = function( account){
+	var yotoos = account.getYotoos();
+	Cloud.SocialIntegrations.externalAccountLogin({
+		id: account.get('id_str'),
+		type: 'twitter',
+		token: account.get('access_token')
+	}, function(e){
+			yotoos.map( function(yotoo){
+					Cloud.Objects.remove({
+						classname: 'yotoo',
+						id: yotoo.get('acs_id')
+					}, function(e){
+						// alert("remove: " + JSON.stringify(e));
+					});
+			});
+	});
+};
+*/
+
 /**
  * @param {String} [options.id]
  * @param {String} [options.type]
@@ -64,23 +84,10 @@ cloudProxy.externalAccountLoginAdapter = function(options){
 	}
 };
 
-/**
- * @method fetch
- * @param {Object} options
- * @param {String} options.url If this described, options.purpose will ignored
- * @param {String} options.purpose We got some twitter.com urls
- * @param {Object} options.params  
- * @param {Functioin} [options.onSuccess]
- * @param {Functioin} [options.onError]
- */
-cloudProxy.fetch = function(options){
-	/* user객체를 받느냐 id_str만 받느냐 그것이 문제로다. */
-	/* id_str을 받아야 겠지.. */ 
-}
 
 
 /**
- * @param {String} options.modelType like 'yotoo'
+ * @param {String} [options.modelType] like 'yotoo'
  * @param {Object} [options.sourceUser]
  * @param {Object} [options.targetUser]
  * @param {Function} [options.onSuccess]
@@ -138,51 +145,9 @@ cloudProxy.post = function(options) {
 	});
 };
 
-/**
- * @param {account} [options.sourceUser]
- * @param {account} [options.targetUser]
- * @param {Function} [options.onSuccess]
- * @param {Function} [options.onError]
- *
-var postYotoo = function(options){
-	var sourceUser = options.sourceUser;
-	var targetUser = options.targetUser;
-	
-	// create yotoo
-	Cloud.Objects.create({
-	    classname: 'yotoo',
-	    fields: {
-	        source_id_str: sourceUser.get('id_str'),
-	        target_id_str: targetUser.get('id_str'),
-	        platform: 'twitter'	// default
-	    }
-	}, function (e) {
-	    if (e.success) {
-	        var result = e.yotoo[0];
-	        // alert('Success:\n' +
-	            // 'id: ' + result.id + '\n' +
-	            // 'source: ' + result.source_id_str + '\n' +
-	            // 'target: ' + result.target_id_str + '\n' +
-	            // 'created_at: ' + result.created_at);
-	         // Ti.API.info("[cloudProxy.js] " + JSON.stringify(e) );
-			if( options.onSuccess ){
-				options.onSuccess(result);
-			}
-			
-			
-			// should be add retry action..
-			checkTargetYotoo(sourceUser, targetUser);
-	    } else {	// ACS create yotoo error
-	        Ti.API.info('[cloudProxy.createYotoo] Error:\n' + ((e.error && e.message) || JSON.stringify(e)));
-			if( options.onError ){
-				options.onError(e);
-			}
-	    }
-	});
-};
-*/
 
 /**
+ * @param {Object} [options.mainAgent]
  * @param {String} options.modelType like 'yotoo'
  * @param {Object} [options.query] query for get
  * @param {Function} [options.onSuccess]
@@ -192,59 +157,103 @@ cloudProxy.get = function(options){
 	var modelType = options.modelType || 'yotoo';
 	var query = options.query;
 	
-	Cloud.Objects.query({
-	    'classname': modelType,
-	    // limit: 1000, // 1000 is maxium
-	    // order: 'created_at',
-	    'where': query
-	}, function (e) {
-	    if (e.success) {
-	    	var resultsJSON = e[modelType];
-	    	if( options.onSuccess ){
-	    		options.onSuccess( resultsJSON );
-	    	}
-	    } else{ 
-	        Ti.API.info('[cloudProxy.get] Error:\n' + ((e.error && e.message) || JSON.stringify(e)));
+	var getObjects = function(){
+		Cloud.Objects.query({
+		    'classname': modelType,
+		    // limit: 1000, // 1000 is maxium
+		    // order: 'created_at',
+		    'where': query
+		}, function (e) {
+		    if (e.success) {
+		    	var resultsJSON = e[modelType];
+		    	if( options.onSuccess ){
+		    		options.onSuccess( resultsJSON );
+		    	}
+		    } else{ 
+		        Ti.API.info('[cloudProxy.get] Error:\n' + ((e.error && e.message) || JSON.stringify(e)));
+		        if( options.onError ){
+		        	options.onError(e);
+		        }
+		    }
+		});
+	}
+
+	cloudProxy.externalAccountLoginAdapter({
+		id: options.mainAgent.get('id_str'),
+	    type: 'twitter',
+	    token: options.mainAgent.get('access_token'),
+		onSuccess: function (e) {
+	        // now, time to yotoo!
+	        getObjects();
+		},
+		onError: function(e){	// ACS loggin error
+	        Ti.API.info('[cloudProxy.yotooRequest] Error:\n' + ((e.error && e.message) || JSON.stringify(e)));
 	        if( options.onError ){
 	        	options.onError(e);
 	        }
-	    }
+		}
 	});
 };
 
+/**
+ * @param {Object} [options.mainAgent]
+ * @param {String} options.channel
+ * @param {String} options.receiverAcsId
+ * @param {String} options.message
+ * @param {Function} [options.onSuccess]
+ * @param {Function} [options.onError]
+ */
 cloudProxy.sendPushNotification = function( options ){
 	var channel = options.channel || 'yotoo';
 	var message = options.message;
 	var receiverAcsId = options.receiverAcsId;
 	
-	Cloud.PushNotifications.notify({
-		'channel' : channel,
-		// 'friends' : Any,
-		'to_ids' : receiverAcsId,
-		'payload' : message
-		// 'payload': {
-		    // "atras": "your_user_id",
-		    // "tags": [
-		        // "tag1",
-		        // "tag2"
-		    // ],
-		    // "badge": 2,
-		    // "sound": "default",
-		    // "alert" : "Push Notification Test"
-		// }
-	}, function(e) {
-		if (e.success) {
-			alert('[cloudProxy.sendNotification] Success');
-			if( options.onSuccess ){
-				options.onSuccess(e);
+	var sendPushNotifications = function(){
+		Cloud.PushNotifications.notify({
+			'channel' : channel,
+			// 'friends' : Any,
+			'to_ids' : receiverAcsId,
+			'payload' : message
+			// 'payload': {
+			    // "atras": "your_user_id",
+			    // "tags": [
+			        // "tag1",
+			        // "tag2"
+			    // ],
+			    // "badge": 2,
+			    // "sound": "default",
+			    // "alert" : "Push Notification Test"
+			// }
+		}, function(e) {
+			if (e.success) {
+				alert('[cloudProxy.sendNotification] Success');
+				if( options.onSuccess ){
+					options.onSuccess(e);
+				}
+			} else {
+				alert('[cloudProxy.sendNotification] Error:\n' + ((e.error && e.message) || JSON.stringify(e)));
+				if( options.onError ){
+					options.onError(e);
+				}
 			}
-		} else {
-			alert('[cloudProxy.sendNotification] Error:\n' + ((e.error && e.message) || JSON.stringify(e)));
-			if( options.onError ){
-				options.onError(e);
-			}
+		});
+	}
+	
+	cloudProxy.externalAccountLoginAdapter({
+		id: options.mainAgent.get('id_str'),
+	    type: 'twitter',
+	    token: options.mainAgent.get('access_token'),
+		onSuccess: function (e) {
+	        // now, time to yotoo!
+	        sendPushNotifications();
+		},
+		onError: function(e){	// ACS loggin error
+	        Ti.API.info('[cloudProxy.yotooRequest] Error:\n' + ((e.error && e.message) || JSON.stringify(e)));
+	        if( options.onError ){
+	        	options.onError(e);
+	        }
 		}
-	}); 
+	});
 };
 
 // exports.getCurrentCloud = function(){
