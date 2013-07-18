@@ -24,7 +24,7 @@ $.addAccountButton.addEventListener('click', function(e){
 
 
 accounts.map(function(account){
-	var row = Alloy.createController('accountRow', {
+	var row = Alloy.createController('accountTableRow', {
 		"ownerAccount" : account
 	}).getView();
 

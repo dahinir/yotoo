@@ -1,6 +1,6 @@
 var args = arguments[0] || {};
-var ownerAccount = args.ownerAccount || Alloy.Globals.accounts.getCurrentAccount();
-// var account = args.account;
+// DO NOT! var ownerAccount = args.ownerAccount || Alloy.Globals.accounts.getCurrentAccount();
+var ownerAccount = args.ownerAccount;
 
 alert("[accountRow.js] account.get(name):"+ ownerAccount.get('name') );
 
