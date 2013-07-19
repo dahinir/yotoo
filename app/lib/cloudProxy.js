@@ -84,101 +84,24 @@ cloudProxy.externalAccountLoginAdapter = function(options){
 	}
 };
 
-
-
 /**
  * @param {Object} [options.mainAgent] account model
+ * @param {String} [options.method] 'get', 'post', 'sendPushNotification'
  * @param {String} [options.modelType] like 'yotoo'
- * @param {Object} [options.fields] post to fields
- * @param {Function} [options.onSuccess]
- * @param {Function} [options.onError]
- */
-cloudProxy.post = function(options) {
-	var modelType = options.modelType || 'yotoo';
-	
-	var createNewModel = function(){
-		Cloud.Objects.create({
-			classname : modelType,
-			fields: options.fields  
-		}, function(e) {
-			if (e.success) {
-				var result = e.yotoo[0];
-				// alert('Success:\n' +
-				// 'id: ' + result.id + '\n' +
-				// 'source: ' + result.source_id_str + '\n' +
-				// 'target: ' + result.target_id_str + '\n' +
-				// 'created_at: ' + result.created_at);
-				// Ti.API.info("[cloudProxy.js] " + JSON.stringify(e) );
-				if (options.onSuccess) {
-					options.onSuccess(result);
-				}
-				
-			} else {// ACS create yotoo error
-				Ti.API.info('[cloudProxy.createYotoo] Error:\n' + ((e.error && e.message) || JSON.stringify(e)));
-				if (options.onError) {
-					options.onError(e);
-				}
-			}
-		}); 
-	};
-	
-	cloudProxy.externalAccountLoginAdapter({
-		id: options.mainAgent.get('id_str'),
-	    type: 'twitter',
-	    token: options.mainAgent.get('access_token'),
-		onSuccess: function (e) {
-	        // now, time to yotoo!
-	        createNewModel();
-		},
-		onError: function(e){	// ACS loggin error
-	        Ti.API.info('[cloudProxy.yotooRequest] Error:\n' + ((e.error && e.message) || JSON.stringify(e)));
-	        if( options.onError ){
-	        	options.onError(e);
-	        }
-		}
-	});
-};
-
-
-/**
- * @param {Object} [options.mainAgent]
- * @param {String} [options.modelType] like 'yotoo'
+ * @param {Object} [options.fields] fields for post
  * @param {Object} [options.query] query for get
  * @param {Function} [options.onSuccess]
  * @param {Function} [options.onError]
  */
-cloudProxy.get = function(options){
-	var modelType = options.modelType || 'yotoo';
-	var query = options.query;
+cloudProxy.excuteWithLogin = function( options){
+	var method = options.method;
 	
-	var getObjects = function(){
-		Cloud.Objects.query({
-		    'classname': modelType,
-		    // limit: 1000, // 1000 is maxium
-		    // order: 'created_at',
-		    'where': query
-		}, function (e) {
-		    if (e.success) {
-		    	var resultsJSON = e[modelType];
-		    	if( options.onSuccess ){
-		    		options.onSuccess( resultsJSON );
-		    	}
-		    } else{ 
-		        Ti.API.info('[cloudProxy.get] Error:\n' + ((e.error && e.message) || JSON.stringify(e)));
-		        if( options.onError ){
-		        	options.onError(e);
-		        }
-		    }
-		});
-	}
-
 	cloudProxy.externalAccountLoginAdapter({
 		id: options.mainAgent.get('id_str'),
 	    type: 'twitter',
 	    token: options.mainAgent.get('access_token'),
 		onSuccess: function (e) {
-	        // now, time to yotoo!
-	        getObjects();
+			cloudProxy[method]( options );
 		},
 		onError: function(e){	// ACS loggin error
 	        Ti.API.info('[cloudProxy.yotooRequest] Error:\n' + ((e.error && e.message) || JSON.stringify(e)));
@@ -189,63 +112,98 @@ cloudProxy.get = function(options){
 	});
 };
 
-/**
- * @param {Object} [options.mainAgent]
- * @param {String} options.channel
- * @param {String} options.receiverAcsId
- * @param {String} options.message
- * @param {Function} [options.onSuccess]
- * @param {Function} [options.onError]
- */
-cloudProxy.sendPushNotification = function( options ){
-	var channel = options.channel || 'yotoo';
-	var message = options.message;
-	var receiverAcsId = options.receiverAcsId;
+cloudProxy.post = function(options){
+	var modelType = options.modelType || 'yotoo';
+	var fields = options.fields;
+	var onSuccess = options.onSuccess;
+	var onError = options.onError;
 	
-	var sendPushNotifications = function(){
-		Cloud.PushNotifications.notify({
-			'channel' : channel,
-			// 'friends' : Any,
-			'to_ids' : receiverAcsId,
-			'payload' : message
-			// 'payload': {
-			    // "atras": "your_user_id",
-			    // "tags": [
-			        // "tag1",
-			        // "tag2"
-			    // ],
-			    // "badge": 2,
-			    // "sound": "default",
-			    // "alert" : "Push Notification Test"
-			// }
-		}, function(e) {
-			if (e.success) {
-				alert('[cloudProxy.sendNotification] Success');
-				if( options.onSuccess ){
-					options.onSuccess(e);
-				}
-			} else {
-				alert('[cloudProxy.sendNotification] Error:\n' + ((e.error && e.message) || JSON.stringify(e)));
-				if( options.onError ){
-					options.onError(e);
-				}
+	Cloud.Objects.create({
+		'classname': modelType,
+		'fields': fields  
+	}, function(e) {
+		if (e.success) {
+			var result = e.yotoo[0];
+			// alert('Success:\n' +
+			// 'id: ' + result.id + '\n' +
+			// 'source: ' + result.source_id_str + '\n' +
+			// 'target: ' + result.target_id_str + '\n' +
+			// 'created_at: ' + result.created_at);
+			// Ti.API.info("[cloudProxy.js] " + JSON.stringify(e) );
+			if (onSuccess) {
+				onSuccess(result);
 			}
-		});
-	}
-	
-	cloudProxy.externalAccountLoginAdapter({
-		id: options.mainAgent.get('id_str'),
-	    type: 'twitter',
-	    token: options.mainAgent.get('access_token'),
-		onSuccess: function (e) {
-	        // now, time to yotoo!
-	        sendPushNotifications();
-		},
-		onError: function(e){	// ACS loggin error
-	        Ti.API.info('[cloudProxy.yotooRequest] Error:\n' + ((e.error && e.message) || JSON.stringify(e)));
-	        if( options.onError ){
-	        	options.onError(e);
+			
+		} else {// ACS create yotoo error
+			Ti.API.info('[cloudProxy.createYotoo] Error:\n' + ((e.error && e.message) || JSON.stringify(e)));
+			if (onError) {
+				onError(e);
+			}
+		}
+	});
+};
+
+cloudProxy.get = function(options){
+	var modelType = options.modelType || 'yotoo';
+	var query = options.fields;
+	var onSuccess = options.onSuccess;
+	var onError = options.onError;
+
+	Cloud.Objects.query({
+	    'classname': modelType,
+	    // limit: 1000, // 1000 is maxium
+	    // order: 'created_at',
+	    'where': query
+	}, function (e) {
+	    if (e.success) {
+	    	var resultsJSON = e[modelType];
+	    	if( onSuccess ){
+	    		onSuccess( resultsJSON );
+	    	}
+	    } else{ 
+	        Ti.API.info('[cloudProxy.get] Error:\n' + ((e.error && e.message) || JSON.stringify(e)));
+	        if( onError ){
+	        	onError(e);
 	        }
+	    }
+	});
+};
+
+cloudProxy.sendPushNotification = function(options){
+	var fields = options.fields;
+	
+	var channel = fields.channel || 'yotoo';
+	var receiverAcsId = fields.receiverAcsId;
+	var message = fields.message;
+	var onSuccess = options.onSuccess;
+	var onError = options.onError;
+
+	Cloud.PushNotifications.notify({
+		'channel' : channel,
+		// 'friends' : Any,
+		'to_ids' : receiverAcsId,
+		'payload' : message
+		// 'payload': {
+		    // "atras": "your_user_id",
+		    // "tags": [
+		        // "tag1",
+		        // "tag2"
+		    // ],
+		    // "badge": 2,
+		    // "sound": "default",
+		    // "alert" : "Push Notification Test"
+		// }
+	}, function(e) {
+		if (e.success) {
+			alert('[cloudProxy.sendNotification] Success');
+			if( onSuccess ){
+				onSuccess(e);
+			}
+		} else {
+			alert('[cloudProxy.sendNotification] Error:\n' + ((e.error && e.message) || JSON.stringify(e)));
+			if( onError ){
+				onError(e);
+			}
 		}
 	});
 };

@@ -5,41 +5,27 @@ var users = ownerAccount.createCollection('user');
 var yotoos = ownerAccount.getYotoos();
 
 
-// var firstYotoo = yotoos.at(0);
-// firstYotoo.set({'hided': 1});
-// firstYotoo.save();
-// Ti.API.info("delllllll:" +firstYotoo.get('acs_id'));
-// firstYotoo.destroy();
-
-// ownerAccount.getYotoos();
-// ownerAccount.getYotoos();
-// Ti.API.info(yotoos.length);
 yotoos.on('add', function(addedYotoo){
 	if( !addedYotoo.targetUser ){
-		/*
-		 * 의미있는 user는 저장되어 있으므로 로컬에서 한번 검색해 보고  
-		 * targetUser를 트위터에서 가져와야 한다.
-		 */ 
-		 // users.fetchFromServer({
-		 	// 'purpose': 'lookupUsers',
-		 // });
 		alert("[peopleView.js] addedYotoo undefined?");
+		setUsersBy( Alloy.createCollection('yotoo', [addedYotoo]) );
 	}else{
 		alert('[peopleView.js] yotoo add event' + addedYotoo.get('acs_id'));
 		userListView.setUsers( addedYotoo.targetUser );
 	}
 	Ti.API.info("[peopleView.js] yotoo add event");
 });
+yotoos.on('addMultiple', function(e){
+	// alert(JSON.stringify(e));
+	setUsersBy( Alloy.createCollection('yotoo', e) );
+});
 yotoos.on('change:hided change:completed change:unyotooed change:past', function(e){
 	alert('[peopleView.js] yotoo changed');
 	Ti.API.info("[peopleView.js] change yotoo status");
 });
-yotoos.on('remove', function(){
-	// remove from listView, too
-});
-yotoos.on('addMultiple', function(e){
-	// alert(JSON.stringify(e));
-	setUsers( Alloy.createCollection('yotoo', e) );
+yotoos.on('remove', function(e){
+	alert(JSON.stringify(e));	
+	userListView.deleteUser();
 });
 
 var userListView = Alloy.createController('userListView', {
@@ -55,23 +41,27 @@ var userListView = Alloy.createController('userListView', {
 		events: {
 			'click': function(e){
 				// alert("unyotoo");
-				alert("delete yotoo");
-				alert(JSON.stringify(e));
+				Ti.API.info(JSON.stringify(e));
 				yotoos.where({'target_id_str':  e.itemId}).pop().destroy();
+				// yotoos.where({'target_id_str':  e.itemId}).pop().unYotoo();
 			}
 		}
 	}
 });
 $.peopleView.add( userListView.getView() );
 
-var setUsers = function( yotooCollection) {
+var setUsersBy = function( newYotoos ) {
 	var userIds = "";
-	yotooCollection.map(function(yotoo){
+	newYotoos.map(function(yotoo){
 		userIds = userIds + "," + yotoo.get('target_id_str');
 	});
-	userIds = userIds.replace( /^,/g , '');
-		// alert("before: " + userIds);
 	
+	userIds = userIds.replace( /^,/g , '');
+
+	/*
+	 * 의미있는 user는 저장되어 있으므로 로컬에서 한번 검색해 보고  
+	 * targetUser를 트위터에서 가져와야 한다.
+	 */ 
 	users.fetchFromServer({
 		'purpose': 'lookupUsers',
 		'params': { 'user_id': userIds },
@@ -83,26 +73,19 @@ var setUsers = function( yotooCollection) {
 		}
 	});
 };
-setUsers(yotoos);
+setUsersBy(yotoos);
 
 
 // should be 'pull to refresh' 
 var testButton = Ti.UI.createButton();
 $.peopleView.add( testButton);
 testButton.addEventListener('click', function(){
-	var us = "";
-	yotoos.map(function(yotoo){
-		us = us + "," + yotoo.get('target_id_str');
-	});
-	// alert("before: " + us);
+	// yo.cloudApi_ = 2;
+	// alert(JSON.stringify(yotoos.at(0).__proto__.config));
 	
+	
+	// yotoos.at(0).unYotoo(ownerAccount);
 	yotoos.fetchFromServer( ownerAccount );
-	
-	us = "";
-	yotoos.map(function(yotoo){
-		us = us + "," + yotoo.get('target_id_str');
-	});
-	// alert("after: " + us);
 	
 });
 // var localYotoos = Alloy.createCollection('yotoo');

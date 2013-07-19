@@ -101,6 +101,7 @@ for heavy user, specialized relationship
 	:프로필 이미지는 업데이트 했을때 url이 바뀌나? 그렇다면 프로필 이미지 로딩 실퍠시에도 리프레쉬
 
 ## work right now!
+* cloudProxy.excute 함수로 몰빵  
 * yotoo sync
 	v:yotoo.fetchFromServer() 구현  
 	v:yotoo객체를 서버에 저장할때 hide, completed등의 필드도 저장해야 한다.

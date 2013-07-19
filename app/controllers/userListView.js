@@ -271,3 +271,8 @@ exports.setUsers = function(newUsers, withClear) {
 	listView.scrollToItem(0, 0);
 };
 
+
+exports.deleteUser = function(newUsers, withClear) {
+}
+
+

@@ -1,3 +1,7 @@
+// shared
+// var cloudApi = {a: 1};
+// var asdf = function(){ alert("asdf");return "dd";}();
+
 exports.definition = {
 	config: {
 		columns: {
@@ -21,22 +25,38 @@ exports.definition = {
 	},		
 	extendModel: function(Model) {		
 		_.extend(Model.prototype, {
-			// extended functions and properties go here
+			'initialize': function(e, e2){
+				// alert("haha");
+				// alert("init" + JSON.stringify(e));
+				// alert("init2" + JSON.stringify(e2));
+				this.cloudApi = require('cloudProxy').getCloud();
+			},
+			'unYotoo': function( account ){
+				this.cloudApi.excute({
+					'mainAgent': account,
+					'method': 'post'
+				});
+			}
 		});
 		
 		return Model;
 	},
 	extendCollection: function(Collection) {		
 		_.extend(Collection.prototype, {
-			fetchFromServer: function(account){
+			'initialize': function(e) {
+				this.cloudApi = require('cloudProxy').getCloud();
+			},
+			'fetchFromServer': function(account){
 				var thisCollection = this;
 				var query ={
 					'source_id_str': account.get('id_str')
 				};
-				this.cloudApi.get({
+				// this.cloudApi.get({
+				this.cloudApi.excuteWithLogin({
 					'mainAgent': account,
+					'method': 'get',
 					'modelType': 'yotoo',
-					'query': query,
+					'fields': query,
 					'onSuccess': function( resultsJSON ){
 						// thisCollection.reset();
 						// alert( JSON.stringify(resultsJSON) );
@@ -64,21 +84,23 @@ exports.definition = {
 								tempYotooArray.push( newYotoo );
 							}
 						}
-						thisCollection.add( tempYotooArray, {silent: true} );
-						thisCollection.trigger('addMultiple', tempYotooArray);
+						thisCollection.add( tempYotooArray );
+						// thisCollection.add( tempYotooArray, {silent: true} );
+						// thisCollection.trigger('addMultiple', tempYotooArray);
 					},
 					'onError': function(e){
 						Ti.API.info("[yotoo.fetchFromServer] error ");
 					}
 				});
 			},
-			addNewYotoo: function(sourceUser, targetUser){
+			'addNewYotoo': function(sourceUser, targetUser){
 				var thisCollection = this;
 
 				// remote save
-				this.cloudApi.post({
-					'modelType': 'yotoo',
+				this.cloudApi.excuteWithLogin({
 					'mainAgent': sourceUser,
+					'method': 'post',
+					'modelType': 'yotoo',
 					'fields': {
 						'source_id_str': sourceUser.get('id_str'),
 						'target_id_str': targetUser.get('id_str'),
@@ -118,16 +140,17 @@ exports.definition = {
 				});
 				return;
 			},
-			checkTargetYotoo: function(sourceUser, targetUser){
+			'checkTargetYotoo': function(sourceUser, targetUser){
 				var thisCollection = this;
 				var query ={
 					'source_id_str': targetUser.get('id_str'),
 					'target_id_str': sourceUser.get('id_str')
 				};
-				this.cloudApi.get({
+				this.cloudApi.excuteWithLogin({
 					'mainAgent': sourceUser,
+					'method': 'get',
 					'modelType': 'yotoo',
-					'query': query,
+					'fields': query,
 					'onSuccess': function( resultsJSON ){
 						if( resultsJSON.length === 0 ){
 							Ti.API.info("[yotoo.checkTargetYotoo] not yet. haha");
@@ -146,12 +169,17 @@ exports.definition = {
 					}
 				});
 			},
-			sendYotooNotification: function(sourceUser, targetUser){
-				this.cloudApi.sendPushNotification({
-					'mainAgent': sourceUser,
+			'sendYotooNotification': function(sourceUser, targetUser){
+				var fields = {
 					'channel': 'yotoo',
 					'receiverAcsId': targetUser.get('id_str_acs'),
 					'message':  sourceUser.get('name') + " " + L('yotoo_you_too'),
+				};
+				// this.cloudApi.sendPushNotification({
+				this.cloudApi.excuteWithLogin({
+					'mainAgent': sourceUser,
+					'method': 'sendPushNotification',
+					'fields': fields,
 					'onSuccess': function(e){
 						Ti.API.info("[yotoo.sendYotooNotification] success");
 					},

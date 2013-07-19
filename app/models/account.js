@@ -30,7 +30,9 @@ exports.definition = {
 	extendModel: function(Model) {		
 		_.extend(Model.prototype, {
 			// Implement the initialize method	
-			initialize: function(){
+			initialize: function(e, e2){
+				// alert("init" + JSON.stringify(e));
+				// alert("init2" + JSON.stringify(e2));
 			},
 			
 			// Extend Backbone.Model
@@ -52,8 +54,7 @@ exports.definition = {
 				}else{
 					var yotooArray = Alloy.Globals.yotoos.where({'source_id_str': this.get('id_str')});
 					this.yotoos = Alloy.createCollection('yotoo', yotooArray);
-					this.yotoos.cloudApi = require('cloudProxy').getCloud();
-					// alert("no yotoos: " + this.yotoos.length);
+					// this.yotoos.cloudApi = require('cloudProxy').getCloud();
 				}
 				return this.yotoos;
 			},
