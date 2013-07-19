@@ -14,7 +14,6 @@ F.prototype = Cloud;
 var cloudProxy = new F();
 
 
-
 // store ACS's current login user as twitter id_str
 var currentLoginUserIdStr;
 var currentLoginUserCache;
@@ -48,7 +47,7 @@ cloudProxy.deleteAll = function( account){
  */
 cloudProxy.externalAccountLoginAdapter = function(options){
 	if( !options.id ){
-		Ti.API.warn("[cloudProxy.js] id must be described!!!");
+		Ti.API.warn("[cloudProxy.externalAccountLoginAdapter] id must be described!!!");
 	}
 	
 	// just login to ACS
@@ -70,14 +69,14 @@ cloudProxy.externalAccountLoginAdapter = function(options){
 					options.onSuccess(e);
 				}
 		    } else {	// ACS login error
-		        Ti.API.info('[cloudProxy.js]Error: ' + ((e.error && e.message) || JSON.stringify(e)));
+		        Ti.API.info('[cloudProxy.externalAccountLoginAdapter]Error: ' + ((e.error && e.message) || JSON.stringify(e)));
 		        if( options.onError ){
 		        	options.onError(e);
 		        }
 		    }
 		});
 	}else{	// ACS already loggin
-		Ti.API.info("[cloudProxy.js] already logged in ACS");
+		Ti.API.info("[cloudProxy.externalAccountLoginAdapter] already logged in ACS");
 		if( options.onSuccess ){
 			options.onSuccess(currentLoginUserCache);
 		}
@@ -94,17 +93,18 @@ cloudProxy.externalAccountLoginAdapter = function(options){
  * @param {Function} [options.onError]
  */
 cloudProxy.excuteWithLogin = function( options){
+	var mainAgent = options.mainAgent;
 	var method = options.method;
 	
 	cloudProxy.externalAccountLoginAdapter({
-		id: options.mainAgent.get('id_str'),
+		id: mainAgent.get('id_str'),
 	    type: 'twitter',
 	    token: options.mainAgent.get('access_token'),
 		onSuccess: function (e) {
 			cloudProxy[method]( options );
 		},
 		onError: function(e){	// ACS loggin error
-	        Ti.API.info('[cloudProxy.yotooRequest] Error:\n' + ((e.error && e.message) || JSON.stringify(e)));
+	        Ti.API.info('[cloudProxy.excuteWithLogin] Error:\n' + ((e.error && e.message) || JSON.stringify(e)));
 	        if( options.onError ){
 	        	options.onError(e);
 	        }
@@ -123,7 +123,7 @@ cloudProxy.post = function(options){
 		'fields': fields  
 	}, function(e) {
 		if (e.success) {
-			var result = e.yotoo[0];
+			var result = e[modelType][0];
 			// alert('Success:\n' +
 			// 'id: ' + result.id + '\n' +
 			// 'source: ' + result.source_id_str + '\n' +
@@ -135,11 +135,37 @@ cloudProxy.post = function(options){
 			}
 			
 		} else {// ACS create yotoo error
-			Ti.API.info('[cloudProxy.createYotoo] Error:\n' + ((e.error && e.message) || JSON.stringify(e)));
+			Ti.API.info('[cloudProxy.post] Error:\n' + ((e.error && e.message) || JSON.stringify(e)));
 			if (onError) {
 				onError(e);
 			}
 		}
+	});
+};
+
+cloudProxy.put = function(options){
+	var modelType = options.modelType || 'yotoo';
+	var acsId = options.acsId;
+	var fields = options.fields;
+	var onSuccess = options.onSuccess;
+	var onError = options.onError;
+
+	Cloud.Objects.update({
+	    'classname': modelType,
+	    'id': acsId,
+	    'fields': fields
+	}, function (e) {
+	    if (e.success) {
+	    	var result = e[modelType][0];
+			if (onSuccess) {
+				onSuccess(result);
+			}
+	    } else {
+			Ti.API.info('[cloudProxy.put] Error:\n' + ((e.error && e.message) || JSON.stringify(e)));
+			if (onError) {
+				onError(e);
+			}
+	    }
 	});
 };
 

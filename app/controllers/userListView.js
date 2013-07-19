@@ -272,7 +272,9 @@ exports.setUsers = function(newUsers, withClear) {
 };
 
 
-exports.deleteUser = function(newUsers, withClear) {
+exports.deleteUser = function( deletedUser ) {
+	alert('deleted: '+ deletedUser.get('screen_name'));
+	// 여기 구현 할 차례 
 }
 
 

@@ -32,9 +32,26 @@ exports.definition = {
 				this.cloudApi = require('cloudProxy').getCloud();
 			},
 			'unYotoo': function( account ){
-				this.cloudApi.excute({
+				var thisModel = this;
+				var fields = {
+					'unyotooed': true
+				};
+				this.cloudApi.excuteWithLogin({
 					'mainAgent': account,
-					'method': 'post'
+					'method': 'put',
+					'acsId': this.get('acs_id'),
+					'fields': fields,
+					'onSuccess': function( result ){
+						// alert(JSON.stringify(result));
+						thisModel.set({
+							'unyotooed': true,
+						});
+						// to persistence :must save after success of server post
+						thisModel.save();
+					},
+					'onError': function(e){
+						Ti.API.info("[yotoo.unYotoo] error ");
+					}
 				});
 			}
 		});

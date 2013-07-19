@@ -4,6 +4,9 @@ var ownerAccount = args.ownerAccount || Alloy.Globals.accounts.getCurrentAccount
 var users = ownerAccount.createCollection('user');
 var yotoos = ownerAccount.getYotoos();
 
+users.on('remove', function(removedUser){
+	userListView.deleteUser(removedUser);
+});
 
 yotoos.on('add', function(addedYotoo){
 	if( !addedYotoo.targetUser ){
@@ -19,14 +22,21 @@ yotoos.on('addMultiple', function(e){
 	// alert(JSON.stringify(e));
 	setUsersBy( Alloy.createCollection('yotoo', e) );
 });
-yotoos.on('change:hided change:completed change:unyotooed change:past', function(e){
+yotoos.on('change:unyotooed', function(yotoo){
+	// alert(yotoo.get('acs_id'));
+	// yotoo.get('target_id_str')
+	var unYotooedUser = users.where({'id_str': yotoo.get('target_id_str')}).pop();
+	users.remove( unYotooedUser );
+	// userListView.deleteUser(yotoo.get('target_id_str'));
+});
+yotoos.on('change:hided change:completed change:past', function(e){
 	alert('[peopleView.js] yotoo changed');
 	Ti.API.info("[peopleView.js] change yotoo status");
 });
-yotoos.on('remove', function(e){
-	alert(JSON.stringify(e));	
-	userListView.deleteUser();
-});
+// yotoos.on('remove', function(e){
+	// alert(JSON.stringify(e));	
+	// userListView.deleteUser();
+// });
 
 var userListView = Alloy.createController('userListView', {
 	'rightActionButton': {
@@ -40,10 +50,10 @@ var userListView = Alloy.createController('userListView', {
 		},
 		events: {
 			'click': function(e){
-				// alert("unyotoo");
-				Ti.API.info(JSON.stringify(e));
-				yotoos.where({'target_id_str':  e.itemId}).pop().destroy();
-				// yotoos.where({'target_id_str':  e.itemId}).pop().unYotoo();
+				alert("unyotoo");
+				yotoos.where({'target_id_str':  e.itemId}).pop().unYotoo(ownerAccount);
+				// Ti.API.info(JSON.stringify(e));
+				// yotoos.where({'target_id_str':  e.itemId}).pop().destroy();
 			}
 		}
 	}
