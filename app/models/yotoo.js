@@ -14,8 +14,9 @@ exports.definition = {
 		    "past": "boolean"
 		},
 		adapter: {
-			type: "sql",
-			collection_name: "yotoo"
+			// 'migration': ,
+			'type': "sql",
+			'collection_name': "yotoo"
 		}
 	},		
 	extendModel: function(Model) {		
@@ -40,6 +41,7 @@ exports.definition = {
 						// thisCollection.reset();
 						// alert( JSON.stringify(resultsJSON) );
 						
+						var tempYotooArray = [];
 						for(var i = 0; i < resultsJSON.length; i++){
 							if ( thisCollection.where({'target_id_str': resultsJSON[i].target_id_str}).pop() ){
 								// this yotoo already in this collection 
@@ -59,9 +61,11 @@ exports.definition = {
 									'past': resultsJSON[i].past
 								});
 								newYotoo.save();
-								thisCollection.add( newYotoo );
+								tempYotooArray.push( newYotoo );
 							}
 						}
+						thisCollection.add( tempYotooArray, {silent: true} );
+						thisCollection.trigger('addMultiple', tempYotooArray);
 					},
 					'onError': function(e){
 						Ti.API.info("[yotoo.fetchFromServer] error ");

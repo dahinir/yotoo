@@ -20,7 +20,10 @@ yotoos.on('add', function(addedYotoo){
 		 * 의미있는 user는 저장되어 있으므로 로컬에서 한번 검색해 보고  
 		 * targetUser를 트위터에서 가져와야 한다.
 		 */ 
-		// alert("addedYotoo undefined?");
+		 // users.fetchFromServer({
+		 	// 'purpose': 'lookupUsers',
+		 // });
+		alert("[peopleView.js] addedYotoo undefined?");
 	}else{
 		alert('[peopleView.js] yotoo add event' + addedYotoo.get('acs_id'));
 		userListView.setUsers( addedYotoo.targetUser );
@@ -30,6 +33,13 @@ yotoos.on('add', function(addedYotoo){
 yotoos.on('change:hided change:completed change:unyotooed change:past', function(e){
 	alert('[peopleView.js] yotoo changed');
 	Ti.API.info("[peopleView.js] change yotoo status");
+});
+yotoos.on('remove', function(){
+	// remove from listView, too
+});
+yotoos.on('addMultiple', function(e){
+	// alert(JSON.stringify(e));
+	setUsers( Alloy.createCollection('yotoo', e) );
 });
 
 var userListView = Alloy.createController('userListView', {
@@ -47,32 +57,36 @@ var userListView = Alloy.createController('userListView', {
 				// alert("unyotoo");
 				alert("delete yotoo");
 				alert(JSON.stringify(e));
-				// e.itemId
+				yotoos.where({'target_id_str':  e.itemId}).pop().destroy();
 			}
 		}
 	}
 });
 $.peopleView.add( userListView.getView() );
 
-var userIds = "";
-yotoos.map(function(yotoo){
-	userIds = userIds + "," + yotoo.get('target_id_str');
-});
-userIds = userIds.replace( /^,/g , '');
-	// alert("before: " + userIds);
+var setUsers = function( yotooCollection) {
+	var userIds = "";
+	yotooCollection.map(function(yotoo){
+		userIds = userIds + "," + yotoo.get('target_id_str');
+	});
+	userIds = userIds.replace( /^,/g , '');
+		// alert("before: " + userIds);
+	
+	users.fetchFromServer({
+		'purpose': 'lookupUsers',
+		'params': { 'user_id': userIds },
+		'onSuccess': function(){
+			userListView.setUsers( users );
+		},
+		'onFailure': function(){
+			Ti.API.info("[peopleView.js] fail to fetch users");
+		}
+	});
+};
+setUsers(yotoos);
 
-users.fetchFromServer({
-	'purpose': 'lookupUsers',
-	'params': { 'user_id': userIds },
-	'onSuccess': function(){
-		userListView.setUsers( users );
-	},
-	'onFailure': function(){
-		Ti.API.info("[peopleView.js] fail to fetch users");
-	}
-});
 
-
+// should be 'pull to refresh' 
 var testButton = Ti.UI.createButton();
 $.peopleView.add( testButton);
 testButton.addEventListener('click', function(){

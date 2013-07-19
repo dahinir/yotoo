@@ -151,6 +151,9 @@ exports.definition = {
 						/////user.ownerAccount = newAccount;
 						var user = newAccount.createModel('user');
 						
+						var yotoos = newAccount.getYotoos();
+						yotoos.fetchFromServer( newAccount );
+						
 						user.fetchFromServer({
 							'purpose': 'profile',
 							'params': {},
@@ -195,8 +198,6 @@ exports.definition = {
 								    }
 								});
 								
-								var yotoos = newAccount.getYotoos();
-								yotoos.fetchFromServer( newAccount );
 								
 								/* 이 로직은 user 모델에  있어야 겠지? refreshFriends() 같은 메소드에 
 								// retrieve friends for auto complete //
