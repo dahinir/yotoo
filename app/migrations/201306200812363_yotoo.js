@@ -1,7 +1,8 @@
 migration.up = function(db) {
+	// db.dropTable("yotoo");
 	db.createTable({
 		"columns": {
-			"acs_id": "TEXT",
+			"id": "TEXT",
 			"platform": "TEXT",	// like twitter, facebook..
 		    "source_id_str": "TEXT",
 		    "target_id_str": "TEXT",
@@ -10,10 +11,10 @@ migration.up = function(db) {
 		    "hided": "INTEGER",
 		    "unyotooed": "INTEGER",
 		    "completed": "INTEGER",
-		    "burned": "INTEGER",
-		    "past": "INTEGER"
+		    "burned": "INTEGER"
 		},
 		"adapter": {
+			'idAttribute': "id",
 			"type": "sql",
 			"collection_name": "yotoo"
 		}

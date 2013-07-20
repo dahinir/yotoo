@@ -10,6 +10,7 @@ var autoComplete = function(){
 
 
 var userListView = Alloy.createController('userListView', {
+	'users': users,
 	'rightActionButton': {
             type: 'Ti.UI.Button',   // Use a button
             bindId: 'yotooButton',       // Bind ID for this button
@@ -27,7 +28,7 @@ var userListView = Alloy.createController('userListView', {
 					// Ti.API.info( users.where({'id_str': e.itemId}).pop().get('screen_name') );
 					// Ti.API.info( users.findWhere({'id_str': e.itemId}).get('screen_name') );
 				
-					ownerAccount.yotooTo( targetUser );
+					ownerAccount.getYotoos().addNewYotoo(ownerAccount, targetUser);
             	}
             }
         }

@@ -17,8 +17,8 @@ exports.definition = {
 			// "session_id_acs": "string",
 			
 			// for this app
-			"active":"boolean",
-			"status_active_tab_index":"int"
+			"active": "boolean",
+			"status_active_tab_index": "int"
 		},
 		adapter: {
 			// idAttribute: "id_str", // 64bit.. but TEXT
@@ -42,11 +42,6 @@ exports.definition = {
                     var value = attrs[key];
                     Ti.API.info("testFunction: "+ value);
                 }
-			},
-			yotooTo: function( targetUser ){
-				// alert(this.getYotoos().length);
-				Ti.API.info("[account.js] yotoo!! " + this.get('name') + " to " + targetUser.get('name') );
-				this.getYotoos().addNewYotoo( this, targetUser);
 			},
 			getYotoos: function(){
 				if( this.yotoos ){

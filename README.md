@@ -111,6 +111,7 @@ for heavy user, specialized relationship
 	:pull to refresh 구현 
 * peopleView.js 에 users의 컴페어러는 datetime으로 하면 날짜순으로 자동정렬 되겠지?
 	:그럼 users 이벤트의 add 이벤트 리스너로 userListView를 호출할까.. 
+v* yotoo의 past는 삭제 하고 unyotooed로 통합 사용 하자 
 
 탭별로 디렉토리를 나누자
 Discover/

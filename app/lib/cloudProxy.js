@@ -18,9 +18,9 @@ var cloudProxy = new F();
 var currentLoginUserIdStr;
 var currentLoginUserCache;
 
-/* just for develope
-cloudProxy.deleteAll = function( account){
-	var yotoos = account.getYotoos();
+/* just for develope */
+cloudProxy.deleteAllYotoos = function( account){
+	var yotoos = Alloy.Globals.yotoos;
 	Cloud.SocialIntegrations.externalAccountLogin({
 		id: account.get('id_str'),
 		type: 'twitter',
@@ -36,7 +36,6 @@ cloudProxy.deleteAll = function( account){
 			});
 	});
 };
-*/
 
 /**
  * @param {String} [options.id]

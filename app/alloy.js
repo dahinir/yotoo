@@ -61,9 +61,9 @@ accounts.map(function(account){
 }); // accounts.map()
 
 yotoos.map(function( yotoo){
-	Ti.API.info("[alloy.js] loaded yotoo: " + yotoo.get('acs_id')	
+	Ti.API.info("[alloy.js] loaded yotoo: " + yotoo.get('id')	
 		+ " " + yotoo.get('platform') + " " + yotoo.get('source_id_str')
-		+ " " + yotoo.get('target_id_str') + " " + yotoo.get('hided'));
+		+ " " + yotoo.get('target_id_str') + " " + yotoo.get('unyotooed'));
 });
 
 

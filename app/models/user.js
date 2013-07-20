@@ -38,6 +38,7 @@ exports.definition = {
 			 * @param {Function} [options.onSuccess] Callback function executed after a successful fetch tweets.
 			 * @param {Function} [options.onFailure] Callback function executed after a failed fetch.
 			 */
+			// collection에 있는 fetch보고 배워 
 			fetchFromServer: function(options){
 				var params = {
 					'include_entities' : true,
@@ -62,6 +63,7 @@ exports.definition = {
 					}
 				});
 			},
+			
 			fetchMetaData: function(options){
 				var params = {};
 				_.extend(params, options.params);
@@ -90,37 +92,46 @@ exports.definition = {
 		_.extend(Collection.prototype, {
 			/**
 			 * @method fetchFromServer
-			 * Fetch from the Twitter.com
+			 * designed like backbone.fetch()
 			 * @param {Object} options
 			 * @param {String} options.purpose Will match url
 			 * @param {Object} options.params Will use url parameter
-			 * @param {Function} [options.onSuccess] Callback function executed after a successful fetch tweets.
-			 * @param {Function} [options.onFailure] Callback function executed after a failed fetch.
+			 * @param {Function} [options.success] Callback function executed after a successful fetch tweets.
+			 * @param {Function} [options.error] Callback function executed after a failed fetch.
 			 */
-			fetchFromServer: function(options){
+			'fetchFromServer': function(options){
 				var params = {'include_entities' : true};
 				_.extend(params, options.params);
-				var onSuccess = options.onSuccess;
-				var onFailure = options.onFailure;
-
-				var thisCollection = this;
-				var twitterApi = thisCollection.twitterApi;
+				var purpose = options.purpose;
+				var add = options.add;
+				var reset = options.reset;
+				var success = options.success;
+				var error = options.error;
 				
-				twitterApi.fetch({
-					'purpose': options.purpose,
+				var thisCollection = this;
+				
+				this.twitterApi.fetch({
+					'purpose': purpose,
 					'params': params,
 					'onSuccess': function( resultJSON ){
-						thisCollection.reset();
+						if( add || reset ){
+							thisCollection.reset();
+						}
 						if( options.purpose === 'searchUsers'){
 							// Ti.API.info(JSON.stringify(resultJSON));
 						}
 						
 						
 						thisCollection.add( resultJSON );
-						onSuccess();
+						if( success ){
+							success(thisCollection, resultJSON, options);
+						}
 					},
 					'onFailure': function( resultJSON ){
-						onFailure();
+						Ti.API.info("[user.fetchFromServer] error");
+						if( error ){
+							error();
+						}
 					}
 				});
 			},

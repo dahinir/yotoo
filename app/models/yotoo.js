@@ -5,7 +5,7 @@
 exports.definition = {
 	config: {
 		columns: {
-			"acs_id": "string",
+			"id": "string",	// acs id; make this by ACS	
 			"platform": "string",	// like twitter, facebook..
 		    "source_id_str": "string",
 		    "target_id_str": "string",
@@ -14,11 +14,11 @@ exports.definition = {
 		    "hided": "boolean",
 		    "unyotooed": "boolean",
 		    "completed": "boolean",
-		    "burned": "boolean",
-		    "past": "boolean"
+		    "burned": "boolean"
 		},
 		adapter: {
 			// 'migration': ,
+			'idAttribute': "id",
 			'type': "sql",
 			'collection_name': "yotoo"
 		}
@@ -39,15 +39,15 @@ exports.definition = {
 				this.cloudApi.excuteWithLogin({
 					'mainAgent': account,
 					'method': 'put',
-					'acsId': this.get('acs_id'),
+					'acsId': this.get('id'),
 					'fields': fields,
 					'onSuccess': function( result ){
-						// alert(JSON.stringify(result));
 						thisModel.set(fields);
 						// to persistence :must save after success of server post
 						thisModel.save();
 					},
 					'onError': function(e){
+						alert(JSON.stringify(e));
 						Ti.API.info("[yotoo.unYotoo] error ");
 					}
 				});
@@ -61,56 +61,49 @@ exports.definition = {
 			'initialize': function(e) {
 				this.cloudApi = require('cloudProxy').getCloud();
 			},
-			'fetchFromServer': function(account){
+			/**
+			 * designed like backbone.fetch()
+ 			 * @param {Object} options
+			 */
+			'fetchFromServer': function(options){
+				var mainAgent = options.mainAgent;
 				var thisCollection = this;
 				var query ={
-					'source_id_str': account.get('id_str')
+					'source_id_str': mainAgent.get('id_str')
 				};
-				// this.cloudApi.get({
+				var add = options.add;
+				var reset = options.reset;
+				var success = options.success;
+				var error = options.error;
+				
 				this.cloudApi.excuteWithLogin({
-					'mainAgent': account,
+					'mainAgent': mainAgent,
 					'method': 'get',
 					'modelType': 'yotoo',
 					'fields': query,
 					'onSuccess': function( resultsJSON ){
-						// thisCollection.reset();
-						// alert( JSON.stringify(resultsJSON) );
-						
-						var tempYotooArray = [];
-						for(var i = 0; i < resultsJSON.length; i++){
-							if ( thisCollection.where({'target_id_str': resultsJSON[i].target_id_str}).pop() ){
-								// this yotoo already in this collection 
-								alert("in: " + resultsJSON[i].target_id_str);
-							}else{
-								// this yotoo is not in this collection
-								alert("no: " + resultsJSON[i].target_id_str);
-								var newYotoo = Alloy.createModel('yotoo');
-								newYotoo.set({
-									'acs_id': resultsJSON[i].id,
-									'platform': resultsJSON[i].platform,
-									'source_id_str': resultsJSON[i].source_id_str,
-									'target_id_str': resultsJSON[i].target_id_str,
-									'hided': resultsJSON[i].hided,
-									'completed': resultsJSON[i].hided,
-									'unyotooed': resultsJSON[i].unyotooed,
-									'past': resultsJSON[i].past
-								});
-								newYotoo.save();
-								tempYotooArray.push( newYotoo );
-							}
+						if( add || reset ){
+							thisCollection.reset();
 						}
-						thisCollection.add( tempYotooArray );
-						// thisCollection.add( tempYotooArray, {silent: true} );
-						// thisCollection.trigger('addMultiple', tempYotooArray);
+						thisCollection.add( resultsJSON );
+						if( success ){
+							// success(collection, response, options);
+							success(thisCollection, resultsJSON, options);
+						}
 					},
 					'onError': function(e){
 						Ti.API.info("[yotoo.fetchFromServer] error ");
+						if( error ){
+							error();
+						}
 					}
 				});
 			},
 			'addNewYotoo': function(sourceUser, targetUser){
 				var thisCollection = this;
 
+				// 기존 yotoo 있는지 검사 부터..
+				
 				// remote save
 				this.cloudApi.excuteWithLogin({
 					'mainAgent': sourceUser,
@@ -122,22 +115,12 @@ exports.definition = {
 						'hided': false,
 						'completed': false,
 						'unyotooed': false,
-						'past': false,
 						'platform': 'twitter'	// default
 					},
 					'onSuccess': function(result){
 						// for local save
 						var newYotoo = Alloy.createModel('yotoo');
-						newYotoo.set({
-							'acs_id': result.id,
-							'platform': result.platform,
-							'source_id_str': result.source_id_str,
-							'target_id_str': result.target_id_str,
-							'hided': false,
-							'completed': false,
-							'unyotooed': false,
-							'past': false 
-						});
+						newYotoo.set(result);
 						// to persistence :must save after success of server post
 						newYotoo.save();
 						
@@ -174,10 +157,6 @@ exports.definition = {
 							thisCollection.sendYotooNotification( sourceUser, targetUser);
 						};
 						var result = resultsJSON[0];
-			            // alert('id: ' + result.id + '\n' +
-				        // 'source_id_str: ' + result.source_id_str + '\n' +
-				        // 'target_id_str: ' + result.target_id_str + '\n' +
-				        // 'created_at: ' + result.created_at);
 					},
 					'onError': function(e){
 						Ti.API.info("[yotoo.checkTargetYotoo] error ");

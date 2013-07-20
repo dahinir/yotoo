@@ -4,26 +4,26 @@ var ownerAccount = args.ownerAccount || Alloy.Globals.accounts.getCurrentAccount
 var users = ownerAccount.createCollection('user');
 var yotoos = ownerAccount.getYotoos();
 
-users.on('remove', function(removedUser){
-	// userListView.deleteUser(removedUser);
-});
-
-yotoos.on('add', function(addedYotoo){
-	if( !addedYotoo.targetUser ){
-		alert("[peopleView.js] addedYotoo undefined?");
-		setUsersBy( Alloy.createCollection('yotoo', [addedYotoo]) );
+var tempAddedYotoos = Alloy.createCollection('yotoo');
+yotoos.on('add', function(addedYotoo, collection, options){
+	// alert(JSON.stringify(b));	// collection
+	// alert(JSON.stringify(options));	// {index: collections index}
+	// alert( options.index + ", " + (yotoos.length - 1) );
+	if( addedYotoo.targetUser ){
+		users.add( addedYotoo.targetUser );
 	}else{
-		alert('[peopleView.js] yotoo add event' + addedYotoo.get('acs_id'));
-		userListView.setUsers( addedYotoo.targetUser );
+		tempAddedYotoos.add(addedYotoo);
+		if( options.index === yotoos.length - 1){
+			fetchYotooUsers( tempAddedYotoos );
+			tempAddedYotoos.reset();
+		}
+		addedYotoo.save();
 	}
+	
 	Ti.API.info("[peopleView.js] yotoo add event");
 });
-yotoos.on('addMultiple', function(e){
-	// alert(JSON.stringify(e));
-	setUsersBy( Alloy.createCollection('yotoo', e) );
-});
 yotoos.on('change:unyotooed', function(yotoo){
-	// alert(yotoo.get('acs_id'));
+	alert(yotoo.get('unyotooed'));
 	// yotoo.get('target_id_str')
 	var unYotooedUser = users.where({'id_str': yotoo.get('target_id_str')}).pop();
 	users.remove( unYotooedUser );
@@ -33,10 +33,7 @@ yotoos.on('change:hided change:completed change:past', function(e){
 	alert('[peopleView.js] yotoo changed');
 	Ti.API.info("[peopleView.js] change yotoo status");
 });
-// yotoos.on('remove', function(e){
-	// alert(JSON.stringify(e));	
-	// userListView.deleteUser();
-// });
+
 
 var userListView = Alloy.createController('userListView', {
 	'users': users,
@@ -53,6 +50,7 @@ var userListView = Alloy.createController('userListView', {
 			'click': function(e){
 				alert("unyotoo");
 				var yt = yotoos.where({'target_id_str':  e.itemId}).pop();
+				alert(".." + yt.get('unyotooed'));
 				yt.unYotoo(ownerAccount);
 				// alert(yt.get('unyotooed'));
 				// Ti.API.info(JSON.stringify(e));
@@ -63,9 +61,20 @@ var userListView = Alloy.createController('userListView', {
 });
 $.peopleView.add( userListView.getView() );
 
-var setUsersBy = function( newYotoos ) {
+// var retrieveTargetIds = function( yotoos ){
+	// var userIds = "";
+	// newYotoos.map(function(yotoo){
+		// userIds = userIds + "," + yotoo.get('target_id_str');
+	// });
+// 	
+	// return userIds.replace( /^,/g , '');	
+// };
+var fetchYotooUsers = function( newYotoos ) {
 	var userIds = "";
 	newYotoos.map(function(yotoo){
+		if( yotoo.get('unyotooed') ){
+			return;
+		}
 		userIds = userIds + "," + yotoo.get('target_id_str');
 	});
 	
@@ -78,46 +87,49 @@ var setUsersBy = function( newYotoos ) {
 	users.fetchFromServer({
 		'purpose': 'lookupUsers',
 		'params': { 'user_id': userIds },
-		'onSuccess': function(){
-			userListView.setUsers( users );
+		'success': function(){
+			Ti.API.info("[peopleView.fetchUsersBy] success");
 		},
-		'onFailure': function(){
-			Ti.API.info("[peopleView.js] fail to fetch users");
+		'error': function(){
+			Ti.API.info("[peopleView.fetchUsersBy] failure");
 		}
 	});
 };
-setUsersBy(yotoos);
+fetchYotooUsers(yotoos);
 
 
 // should be 'pull to refresh' 
 var testButton = Ti.UI.createButton();
 $.peopleView.add( testButton);
 testButton.addEventListener('click', function(){
-	// yo.cloudApi_ = 2;
 	// alert(JSON.stringify(yotoos.at(0).__proto__.config));
 	
-	
-	// yotoos.at(0).unYotoo(ownerAccount);
-	yotoos.fetchFromServer( ownerAccount );
-	
+	/* 저장을 true로 하지 말고 1로 해야 sql에 저장이 되나? */
+	yotoos.map(function( yotoo){
+	Ti.API.info("[alloy.js] loaded yotoo: " + yotoo.get('id')	
+		+ " " + yotoo.get('platform') + " " + yotoo.get('source_id_str')
+		+ " " + yotoo.get('target_id_str') + " " + yotoo.get('unyotooed'));
+	});
+	Ti.API.info("--------");
+	Alloy.Globals.yotoos.fetch();
+	Alloy.Globals.yotoos.map(function( yotoo){
+		Ti.API.info("[alloy.js] loaded yotoo: " + yotoo.get('id')	
+			+ " " + yotoo.get('platform') + " " + yotoo.get('source_id_str')
+			+ " " + yotoo.get('target_id_str') + " " + yotoo.get('unyotooed'));
+	});
+	/*
+	yotoos.fetchFromServer({ 
+		'mainAgent': ownerAccount,
+		'success': function(){
+			// save fetched yotoos in 'add' event listener
+			Ti.API.info("[peopleView.js]");
+		},
+		'error': function(){
+			Ti.API.info("[peopleView.js]");
+		}
+	});
+	*/
 });
-// var localYotoos = Alloy.createCollection('yotoo');
-// var globalYotoos = Alloy.Globals.yotoos;
-// 
-// localYotoos.on('add', function(e){
-	// alert("local add event fire!!");
-	// Ti.API.info("[peopleView.js] yotoo added");
-// });
-// 
-// globalYotoos.on('add', function(e){
-	// alert("global add event fire!!");
-	// Ti.API.info("[peopleView.js] yotoo added");
-// });
-// 
-// 
-// 
-// // localYotoos.add( Alloy.createModel('yotoo'));
-// localYotoos.testAdd();
 
 
 

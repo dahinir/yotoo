@@ -17,6 +17,16 @@ var getTemplate = function(type){
 			backgroundColor: "#000",
 			opacity: 0.5
 		}
+		// ,childTemplates = [{
+			// type: 'Ti.UI.View',
+			// bindId: 'tt',
+			// properties:{
+				// top:0,
+				// left:0,
+				// width:10,
+				// backgroundColor: "#222"
+			// }
+		// }]
 	}, {
 		type : 'Ti.UI.ImageView',
 		bindId : 'profileImage',
@@ -182,7 +192,6 @@ function openUserView(e) {
 userRowTemplate = getTemplate();
 userSelfRowTemplate = getTemplate("self");
 
-
 if (rightActionButton) {
 	userRowTemplate.childTemplates[8] = rightActionButton;
 }
@@ -202,7 +211,23 @@ $.userListView.add(listView);
 
 var section = Ti.UI.createListSection();
 
-exports.setUsers = function(newUsers, withClear) {
+
+var deleteRow = function(deletedUser){
+	var itemId = deletedUser.get('id_str');
+	var index;
+	var listDataItems = section.getItems();
+	for(index = 0 ; index < listDataItems.length; index++){
+		if( listDataItems[index].properties.itemId === itemId ){
+			break;
+		}
+	}
+	section.deleteItemsAt( index, 1 );
+};
+
+var addRows = function(options){
+	var addedUsers = options.addedUsers;
+	var reset = options.reset;
+	 
 	var dataArray = [];
 	var settingData = function(user) {
 		data = {
@@ -247,13 +272,13 @@ exports.setUsers = function(newUsers, withClear) {
 		dataArray.push(data);
 	};
 
-	if( newUsers.map ){	// if newUsers is Collection
-		newUsers.map( settingData );
+	if( addedUsers.map ){	// if newUsers is Collection
+		addedUsers.map( settingData );
 	}else{	// if newusers is Model
-		settingData( newUsers );
+		settingData( addedUsers );
 	}
 	
-	if( withClear ){
+	if( reset ){
 		// listView.deleteSectionAt(0);
 		section.setItems(dataArray);
 	}else{
@@ -269,21 +294,20 @@ exports.setUsers = function(newUsers, withClear) {
 	listView.scrollToItem(0, 0);
 };
 
-var deleteRow = function(deletedUser){
-	var itemId = deletedUser.get('id_str');
-	var index;
-	var listDataItems = section.getItems();
-	for(index = 0 ; index < listDataItems.length; index++){
-		if( listDataItems[index].properties.itemId === itemId ){
-			break;
-		}
-	}
-	// alert(index);
-	section.deleteItemsAt( index, 1 );
-};
 
-if( users ){
-	users.on('remove', deleteRow );
-}
+users.on('remove', deleteRow );
+
+var tempAddedUsers = Alloy.createCollection('user');
+users.on('add', function(addedUser, collection, options){
+	// alert( options.index + ", " + (users.length - 1) );
+	tempAddedUsers.add(addedUser);
+	if( options.index === users.length - 1){
+		addRows({ 
+			'addedUsers': tempAddedUsers,
+			'reset': false 
+		});
+		tempAddedUsers.reset();
+	}
+});
 
 
