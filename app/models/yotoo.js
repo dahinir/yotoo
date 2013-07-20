@@ -43,9 +43,7 @@ exports.definition = {
 					'fields': fields,
 					'onSuccess': function( result ){
 						// alert(JSON.stringify(result));
-						thisModel.set({
-							'unyotooed': true,
-						});
+						thisModel.set(fields);
 						// to persistence :must save after success of server post
 						thisModel.save();
 					},

@@ -1,9 +1,8 @@
 var args = arguments[0] || {};
 
-var rightActionButton = args.rightActionButton;
 var ownerAccount = args.ownerAccount || Alloy.Globals.accounts.getCurrentAccount();
 var users = args.users;
-// || ownerAccount.createCollection('user');
+var rightActionButton = args.rightActionButton;
 
 var getTemplate = function(type){
 	var childTemplates = [{
@@ -204,7 +203,6 @@ $.userListView.add(listView);
 var section = Ti.UI.createListSection();
 
 exports.setUsers = function(newUsers, withClear) {
-
 	var dataArray = [];
 	var settingData = function(user) {
 		data = {
@@ -271,10 +269,21 @@ exports.setUsers = function(newUsers, withClear) {
 	listView.scrollToItem(0, 0);
 };
 
+var deleteRow = function(deletedUser){
+	var itemId = deletedUser.get('id_str');
+	var index;
+	var listDataItems = section.getItems();
+	for(index = 0 ; index < listDataItems.length; index++){
+		if( listDataItems[index].properties.itemId === itemId ){
+			break;
+		}
+	}
+	// alert(index);
+	section.deleteItemsAt( index, 1 );
+};
 
-exports.deleteUser = function( deletedUser ) {
-	alert('deleted: '+ deletedUser.get('screen_name'));
-	// 여기 구현 할 차례 
+if( users ){
+	users.on('remove', deleteRow );
 }
 
 

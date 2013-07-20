@@ -5,7 +5,7 @@ var users = ownerAccount.createCollection('user');
 var yotoos = ownerAccount.getYotoos();
 
 users.on('remove', function(removedUser){
-	userListView.deleteUser(removedUser);
+	// userListView.deleteUser(removedUser);
 });
 
 yotoos.on('add', function(addedYotoo){
@@ -39,6 +39,7 @@ yotoos.on('change:hided change:completed change:past', function(e){
 // });
 
 var userListView = Alloy.createController('userListView', {
+	'users': users,
 	'rightActionButton': {
 		type: 'Ti.UI.Button',
 		bindId: 'hehe',
@@ -51,7 +52,9 @@ var userListView = Alloy.createController('userListView', {
 		events: {
 			'click': function(e){
 				alert("unyotoo");
-				yotoos.where({'target_id_str':  e.itemId}).pop().unYotoo(ownerAccount);
+				var yt = yotoos.where({'target_id_str':  e.itemId}).pop();
+				yt.unYotoo(ownerAccount);
+				// alert(yt.get('unyotooed'));
 				// Ti.API.info(JSON.stringify(e));
 				// yotoos.where({'target_id_str':  e.itemId}).pop().destroy();
 			}
