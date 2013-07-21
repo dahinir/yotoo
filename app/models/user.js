@@ -121,7 +121,6 @@ exports.definition = {
 							// Ti.API.info(JSON.stringify(resultJSON));
 						}
 						
-						
 						thisCollection.add( resultJSON );
 						if( success ){
 							success(thisCollection, resultJSON, options);

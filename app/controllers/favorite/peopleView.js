@@ -23,13 +23,15 @@ yotoos.on('add', function(addedYotoo, collection, options){
 	Ti.API.info("[peopleView.js] yotoo add event");
 });
 yotoos.on('change:unyotooed', function(yotoo){
+	var changedUser = users.where({'id_str': yotoo.get('target_id_str')}).pop();
 	/* case of unyotoo */
 	if( yotoo.get('unyotooed') ){
-		var unYotooedUser = users.where({'id_str': yotoo.get('target_id_str')}).pop();
-		users.remove( unYotooedUser );
+		// users.remove( unYotooedUser );
+		users.trigger('disabled', changedUser);
 	/* case of reyotoo */
 	}else{
-		users.add( yotoo.targetUser );
+		users.trigger('enabled', changedUser);
+		// users.add( yotoo.targetUser );
 	}
 });
 yotoos.on('change:hided change:completed change:past', function(e){
@@ -47,6 +49,7 @@ var userListView = Alloy.createController('userListView', {
 			width: 80,
 			height: 30,
 			right: 10,
+			zIndex: 10,
 			title: 'kia'
 		},
 		events: {
@@ -73,10 +76,12 @@ $.peopleView.add( userListView.getView() );
 	// return userIds.replace( /^,/g , '');	
 // };
 var fetchYotooUsers = function( newYotoos ) {
+	var unYotooedUsers = Alloy.createCollection('user');
 	var userIds = "";
 	newYotoos.map(function(yotoo){
 		if( yotoo.get('unyotooed') ){
-			return;
+			var unYotooedUser = users.where({'id_str': yotoo.get('target_id_str')}).pop();
+			unYotooedUsers.add( unYotooedUser );
 		}
 		userIds = userIds + "," + yotoo.get('target_id_str');
 	});
@@ -91,6 +96,9 @@ var fetchYotooUsers = function( newYotoos ) {
 		'purpose': 'lookupUsers',
 		'params': { 'user_id': userIds },
 		'success': function(){
+			unYotooedUsers.map(function(user){
+				// users.trigger('disabled', user);
+			});
 			Ti.API.info("[peopleView.fetchUsersBy] success");
 		},
 		'error': function(){
@@ -109,6 +117,7 @@ testButton.addEventListener('click', function(){
 	// require('cloudProxy').getCloud().deleteAllYotoos( ownerAccount );
 	
 	yotoos.map(function(yotoo){
+		yotoo.save({'unyotooed': 0});
 		Ti.API.info( yotoo.get('id')	
 			+ " " + yotoo.get('platform') + " " + yotoo.get('source_id_str')
 			+ " " + yotoo.get('target_id_str') + " " + yotoo.get('unyotooed'));

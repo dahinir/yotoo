@@ -128,7 +128,7 @@ var getTemplate = function(type){
 		type : 'Ti.UI.Button',
 		bindId : 'defaultActionButton',
 		properties : {
-			width : 80,
+			width : 90,
 			height : 30,
 			right : 10,
 			title : 'action'
@@ -138,9 +138,26 @@ var getTemplate = function(type){
 		}
 	}];
 	
+	if (rightActionButton) {
+		childTemplates[8] = rightActionButton;
+	}
 	if( type === 'self'){
 		delete childTemplates[8];
+	}else if( type === 'disabled'){
+		 childTemplates.push({
+			type: 'Ti.UI.View',
+			bindId: 'blackoutScreen',
+			properties: {
+				zIndex: 1,
+				visible: true,
+				top: 0,
+				left: 0,
+				backgroundColor: "#000",
+				opacity: 0.5
+			}
+		});
 	}
+	
 	
 	return {
 		childTemplates: childTemplates,
@@ -188,17 +205,15 @@ function openUserView(e) {
 	Ti.API.info("dpi: " + Titanium.Platform.displayCaps.dpi);
 }
 
-
 userRowTemplate = getTemplate();
-userSelfRowTemplate = getTemplate("self");
+selfUserRowTemplate = getTemplate("self");
+disabledUserRowTemplate = getTemplate('disabled');
 
-if (rightActionButton) {
-	userRowTemplate.childTemplates[8] = rightActionButton;
-}
 var listView = Ti.UI.createListView({
 	templates : {
 		'plain' : userRowTemplate,
-		'userSelf': userSelfRowTemplate
+		'self': selfUserRowTemplate,
+		'disabled': disabledUserRowTemplate
 	},
 	defaultItemTemplate : 'plain'
 });
@@ -209,20 +224,8 @@ $.userListView.add(listView);
 	// alert(e);
 // });
 
+
 var section = Ti.UI.createListSection();
-
-
-var deleteRow = function(deletedUser){
-	var itemId = deletedUser.get('id_str');
-	var index;
-	var listDataItems = section.getItems();
-	for(index = 0 ; index < listDataItems.length; index++){
-		if( listDataItems[index].properties.itemId === itemId ){
-			break;
-		}
-	}
-	section.deleteItemsAt( index, 1 );
-};
 
 var addRows = function(options){
 	var addedUsers = options.addedUsers;
@@ -254,7 +257,7 @@ var addRows = function(options){
 			}
 		};
 		if( user.get('id_str') === ownerAccount.get('id_str')){
-			data.template = 'userSelf';
+			data.template = 'self';
 		}
 
 		if (OS_ANDROID) {
@@ -294,8 +297,23 @@ var addRows = function(options){
 	listView.scrollToItem(0, 0);
 };
 
+var getIndexByItemId = function(itemId){
+	var index;
+	var listDataItems = section.getItems();
+	for ( index = 0; index < listDataItems.length; index++) {
+		if (listDataItems[index].properties.itemId === itemId) {
+			break;
+		}
+	}
+	return index;
+};
 
-users.on('remove', deleteRow );
+
+/* event listeners */
+users.on('remove', function(deletedUser){
+	var index = getIndexByItemId( deletedUser.get('id_str') );
+	section.deleteItemsAt( index, 1 );
+});
 
 users.on('reset', function(){
 	section.deleteItemsAt( 0, section.getItems().length);
@@ -312,6 +330,24 @@ users.on('add', function(addedUser, collection, options){
 		});
 		tempAddedUsers.reset();
 	}
+});
+
+users.on('disabled', function(disabledUser) {
+	var index = getIndexByItemId(disabledUser.get('id_str'));
+// alert(index);
+	var data = section.getItemAt(index);
+	
+	data.template = 'disabled';
+	section.updateItemAt(index, data);
+});
+
+users.on('enabled', function(enabledUser){
+	var index = getIndexByItemId(enabledUser.get('id_str'));
+// alert(index);
+	var data = section.getItemAt(index);
+	
+	data.template = 'enabled';
+	section.updateItemAt(index, data);
 });
 
 
