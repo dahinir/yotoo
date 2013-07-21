@@ -34,7 +34,7 @@ exports.definition = {
 			'unYotoo': function( account ){
 				var thisModel = this;
 				var fields = {
-					'unyotooed': true
+					'unyotooed': 1	// true
 				};
 				this.cloudApi.excuteWithLogin({
 					'mainAgent': account,
@@ -43,6 +43,7 @@ exports.definition = {
 					'fields': fields,
 					'onSuccess': function( result ){
 						thisModel.set(fields);
+						
 						// to persistence :must save after success of server post
 						thisModel.save();
 					},
@@ -112,9 +113,9 @@ exports.definition = {
 					'fields': {
 						'source_id_str': sourceUser.get('id_str'),
 						'target_id_str': targetUser.get('id_str'),
-						'hided': false,
-						'completed': false,
-						'unyotooed': false,
+						'hided': 0,	// false
+						'completed': 0,
+						'unyotooed': 0,
 						'platform': 'twitter'	// default
 					},
 					'onSuccess': function(result){

@@ -2,7 +2,7 @@ migration.up = function(db) {
 	// db.dropTable("yotoo");
 	db.createTable({
 		"columns": {
-			"id": "TEXT",
+			"id": "TEXT PRIMARY KEY",
 			"platform": "TEXT",	// like twitter, facebook..
 		    "source_id_str": "TEXT",
 		    "target_id_str": "TEXT",

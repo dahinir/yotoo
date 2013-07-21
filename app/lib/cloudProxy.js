@@ -20,21 +20,31 @@ var currentLoginUserCache;
 
 /* just for develope */
 cloudProxy.deleteAllYotoos = function( account){
-	var yotoos = Alloy.Globals.yotoos;
+	var yotoos = Alloy.createCollection('yotoo');
+	
 	Cloud.SocialIntegrations.externalAccountLogin({
 		id: account.get('id_str'),
 		type: 'twitter',
 		token: account.get('access_token')
 	}, function(e){
+		Cloud.Objects.query({
+		    'classname': 'yotoo',
+		    'limit': 1000,
+		    'where': {'platform': 'twitter'}
+		}, function (e) {
+	    	yotoos.add( e.yotoo );
+	    	alert(yotoos.length + 'yotoos will remove');
 			yotoos.map( function(yotoo){
 					Cloud.Objects.remove({
 						classname: 'yotoo',
-						id: yotoo.get('acs_id')
+						id: yotoo.get('id')
 					}, function(e){
 						// alert("remove: " + JSON.stringify(e));
 					});
-			});
+			}); 	
+		});
 	});
+	
 };
 
 /**

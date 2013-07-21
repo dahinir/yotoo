@@ -23,11 +23,10 @@ yotoos.on('add', function(addedYotoo, collection, options){
 	Ti.API.info("[peopleView.js] yotoo add event");
 });
 yotoos.on('change:unyotooed', function(yotoo){
-	alert(yotoo.get('unyotooed'));
+	// alert(yotoo.get('unyotooed'));
 	// yotoo.get('target_id_str')
 	var unYotooedUser = users.where({'id_str': yotoo.get('target_id_str')}).pop();
 	users.remove( unYotooedUser );
-	// userListView.deleteUser(yotoo.get('target_id_str'));
 });
 yotoos.on('change:hided change:completed change:past', function(e){
 	alert('[peopleView.js] yotoo changed');
@@ -50,7 +49,7 @@ var userListView = Alloy.createController('userListView', {
 			'click': function(e){
 				alert("unyotoo");
 				var yt = yotoos.where({'target_id_str':  e.itemId}).pop();
-				alert(".." + yt.get('unyotooed'));
+				// alert(".." + yt.get('unyotooed'));
 				yt.unYotoo(ownerAccount);
 				// alert(yt.get('unyotooed'));
 				// Ti.API.info(JSON.stringify(e));
@@ -103,20 +102,14 @@ var testButton = Ti.UI.createButton();
 $.peopleView.add( testButton);
 testButton.addEventListener('click', function(){
 	// alert(JSON.stringify(yotoos.at(0).__proto__.config));
+	// require('cloudProxy').getCloud().deleteAllYotoos( ownerAccount );
 	
-	/* 저장을 true로 하지 말고 1로 해야 sql에 저장이 되나? */
-	yotoos.map(function( yotoo){
-	Ti.API.info("[alloy.js] loaded yotoo: " + yotoo.get('id')	
-		+ " " + yotoo.get('platform') + " " + yotoo.get('source_id_str')
-		+ " " + yotoo.get('target_id_str') + " " + yotoo.get('unyotooed'));
-	});
-	Ti.API.info("--------");
-	Alloy.Globals.yotoos.fetch();
-	Alloy.Globals.yotoos.map(function( yotoo){
-		Ti.API.info("[alloy.js] loaded yotoo: " + yotoo.get('id')	
+	yotoos.map(function(yotoo){
+		Ti.API.info( yotoo.get('id')	
 			+ " " + yotoo.get('platform') + " " + yotoo.get('source_id_str')
 			+ " " + yotoo.get('target_id_str') + " " + yotoo.get('unyotooed'));
 	});
+			
 	/*
 	yotoos.fetchFromServer({ 
 		'mainAgent': ownerAccount,

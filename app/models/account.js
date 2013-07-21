@@ -21,7 +21,7 @@ exports.definition = {
 			"status_active_tab_index": "int"
 		},
 		adapter: {
-			// idAttribute: "id_str", // 64bit.. but TEXT
+			// idAttribute: "id_str", // must PRIMARY KEY
 			type: "sql",
 			collection_name: "account"
 		}
@@ -43,22 +43,23 @@ exports.definition = {
                     Ti.API.info("testFunction: "+ value);
                 }
 			},
-			getYotoos: function(){
+			'getYotoos': function(){
 				if( this.yotoos ){
 					// alert("exist yotoos: " + this.yotoos.length);
 				}else{
 					var yotooArray = Alloy.Globals.yotoos.where({'source_id_str': this.get('id_str')});
+					
 					this.yotoos = Alloy.createCollection('yotoo', yotooArray);
 					// this.yotoos.cloudApi = require('cloudProxy').getCloud();
 				}
 				return this.yotoos;
 			},
-			createCollection: function(typeOfCollection){
+			'createCollection': function(typeOfCollection){
 				var collection = Alloy.createCollection(typeOfCollection);
 				collection.twitterApi = this.twitterApi;
 				return collection;
 			},
-			createModel: function(typeOfModel){
+			'createModel': function(typeOfModel){
 				var model = Alloy.createModel(typeOfModel);
 				model.twitterApi = this.twitterApi;
 				return model;
@@ -92,7 +93,7 @@ exports.definition = {
 				var isInCollection = false;
 				Alloy.Globals.accounts.map(function(account){
 					if(account.get('active')){
-						account.set('active', false);
+						account.set('active', 0);	// false
 						account.save();
 					}
 					if(account === currentAccount){
@@ -104,7 +105,7 @@ exports.definition = {
 					Ti.API.info(currentAccount.get('name')+" will added in Collection");
 					Alloy.Globals.accounts.add(currentAccount);
 				}
-				currentAccount.set('active', true);
+				currentAccount.set('active', 1);	// ture
 				currentAccount.save();
 				
 				Alloy.Globals.currentAccount = currentAccount;
@@ -148,7 +149,11 @@ exports.definition = {
 						var user = newAccount.createModel('user');
 						
 						var yotoos = newAccount.getYotoos();
-						yotoos.fetchFromServer( newAccount );
+						yotoos.fetchFromServer({
+							'mainAgent': newAccount,
+							'success': function(){},
+							'error': function(){}
+						});
 						
 						user.fetchFromServer({
 							'purpose': 'profile',

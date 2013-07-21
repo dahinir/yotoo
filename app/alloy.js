@@ -51,7 +51,10 @@ Alloy.Globals.yotoos = yotoos;
 
 var twitterAdapter = require('twitter');
 accounts.map(function(account){
-	Ti.API.info("[alloy.js] load account: @" + account.get('screen_name')+"\t, "+account.get('session_id_acs')+" ," +account.get('id_str_acs')+", "+ account.id + ", "+ account.get('active') );
+	// account.save({'status_active_tab_index': 12})
+	Ti.API.info("[alloy.js] load account: @" + account.get('screen_name')
+	+"\t, "+account.get('id_str')+" ," +account.get('id_str_acs')
+	+", "+ account.id + ", "+ account.get('active') +", "+account.get('status_active_tab_index'));
 
 	account.twitterApi = twitterAdapter.create({
 		accessTokenKey: account.get('access_token'),
@@ -61,12 +64,19 @@ accounts.map(function(account){
 }); // accounts.map()
 
 yotoos.map(function( yotoo){
+	// yotoo.set({'unyotooed': 12});
+	// yotoo.save({'platform': "fuck"},"",{
+		// error:function(){
+			// alert("e");
+		// },
+		// success: function(){
+			// alert("s");
+		// }
+	// });
 	Ti.API.info("[alloy.js] loaded yotoo: " + yotoo.get('id')	
 		+ " " + yotoo.get('platform') + " " + yotoo.get('source_id_str')
 		+ " " + yotoo.get('target_id_str') + " " + yotoo.get('unyotooed'));
 });
-
-
 
 
 if( ENV_DEV ){

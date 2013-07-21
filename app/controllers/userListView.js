@@ -297,6 +297,10 @@ var addRows = function(options){
 
 users.on('remove', deleteRow );
 
+users.on('reset', function(){
+	section.deleteItemsAt( 0, section.getItems().length);
+});
+
 var tempAddedUsers = Alloy.createCollection('user');
 users.on('add', function(addedUser, collection, options){
 	// alert( options.index + ", " + (users.length - 1) );

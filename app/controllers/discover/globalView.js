@@ -8,7 +8,6 @@ var autoComplete = function(){
 };
 
 
-
 var userListView = Alloy.createController('userListView', {
 	'users': users,
 	'rightActionButton': {
@@ -36,18 +35,25 @@ var userListView = Alloy.createController('userListView', {
 userListView.getView().setTop( $.searchBar.getHeight() );
 $.globalView.add( userListView.getView() );
 
-function updateUserListView(query){
+var lastSearchQuery;
+function searchUsers(query){
+	if(lastSearchQuery === query){
+		return;
+	}else{
+		lastSearchQuery = query;
+	}
 	users.fetchFromServer({
 		'purpose': 'searchUsers',
 		'params': {
 			'count': 20, // maxium 20
 			'q': query
 		},
-		'onSuccess': function(){
-			userListView.setUsers( users, true );
+		'reset': true,
+		'success': function(){
+			Ti.API.debug("[globalView.js] success");
 		},
-		'onFailure': function(){
-			Ti.API.debug("[globalView.js] fail to fetch users");
+		'error': function(){
+			Ti.API.debug("[globalView.js] error");
 		}
 	});
 }
@@ -61,7 +67,7 @@ $.searchBar.setHintText( L('search_twitter_users') );
 $.searchBar.addEventListener('return', function(e){
 	$.searchBar.blur();
 /* e.value와 정확히 일치하는 유저를 보여주는 특별한 row (실제론 평범한 view겠지?)  하나 추가 */
-	updateUserListView( e.value );
+	searchUsers( e.value );
 });
 $.searchBar.addEventListener('cancel', function(){
 	$.searchBar.blur();
@@ -78,7 +84,7 @@ $.searchBar.addEventListener('change', function(e){
 		clearTimeout( typeDelayTimerId );
 	}
 	typeDelayTimerId = setTimeout(function(){
-		updateUserListView( e.value );
+		searchUsers( e.value );
 	}, 1000);
 });
 
