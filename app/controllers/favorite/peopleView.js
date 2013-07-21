@@ -8,10 +8,11 @@ var tempAddedYotoos = Alloy.createCollection('yotoo');
 yotoos.on('add', function(addedYotoo, collection, options){
 	// alert(JSON.stringify(b));	// collection
 	// alert(JSON.stringify(options));	// {index: collections index}
-	// alert( options.index + ", " + (yotoos.length - 1) );
 	if( addedYotoo.targetUser ){
 		users.add( addedYotoo.targetUser );
+		// delete addedYotoo.targetUser;
 	}else{
+		// alert( options.index + ", " + (yotoos.length - 1) );
 		tempAddedYotoos.add(addedYotoo);
 		if( options.index === yotoos.length - 1){
 			fetchYotooUsers( tempAddedYotoos );
@@ -19,14 +20,17 @@ yotoos.on('add', function(addedYotoo, collection, options){
 		}
 		addedYotoo.save();
 	}
-	
 	Ti.API.info("[peopleView.js] yotoo add event");
 });
 yotoos.on('change:unyotooed', function(yotoo){
-	// alert(yotoo.get('unyotooed'));
-	// yotoo.get('target_id_str')
-	var unYotooedUser = users.where({'id_str': yotoo.get('target_id_str')}).pop();
-	users.remove( unYotooedUser );
+	/* case of unyotoo */
+	if( yotoo.get('unyotooed') ){
+		var unYotooedUser = users.where({'id_str': yotoo.get('target_id_str')}).pop();
+		users.remove( unYotooedUser );
+	/* case of reyotoo */
+	}else{
+		users.add( yotoo.targetUser );
+	}
 });
 yotoos.on('change:hided change:completed change:past', function(e){
 	alert('[peopleView.js] yotoo changed');

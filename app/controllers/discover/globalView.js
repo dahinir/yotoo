@@ -36,7 +36,7 @@ userListView.getView().setTop( $.searchBar.getHeight() );
 $.globalView.add( userListView.getView() );
 
 var lastSearchQuery;
-function searchUsers(query){
+function fetchUsers(query){
 	if(lastSearchQuery === query){
 		return;
 	}else{
@@ -67,7 +67,7 @@ $.searchBar.setHintText( L('search_twitter_users') );
 $.searchBar.addEventListener('return', function(e){
 	$.searchBar.blur();
 /* e.value와 정확히 일치하는 유저를 보여주는 특별한 row (실제론 평범한 view겠지?)  하나 추가 */
-	searchUsers( e.value );
+	fetchUsers( e.value );
 });
 $.searchBar.addEventListener('cancel', function(){
 	$.searchBar.blur();
@@ -84,7 +84,7 @@ $.searchBar.addEventListener('change', function(e){
 		clearTimeout( typeDelayTimerId );
 	}
 	typeDelayTimerId = setTimeout(function(){
-		searchUsers( e.value );
+		fetchUsers( e.value );
 	}, 1000);
 });
 

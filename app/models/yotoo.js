@@ -104,6 +104,33 @@ exports.definition = {
 				var thisCollection = this;
 
 				// 기존 yotoo 있는지 검사 부터..
+				var existYotoo = this.where({'target_id_str': targetUser.get('id_str')}).pop();
+				if ( existYotoo ){
+					// alert("exist");
+					this.cloudApi.excuteWithLogin({
+						'mainAgent': sourceUser,
+						'method': 'put',
+						'acsId': existYotoo.get('id'),
+						'fields': {
+							'hided': 0,	// false
+							'completed': 0,
+							'unyotooed': 0
+						},
+						'onSuccess': function( result ){
+							existYotoo.targetUser = targetUser;
+							existYotoo.set(result);
+							
+							// to persistence :must save after success of server post
+							existYotoo.save();
+							Ti.API.info("[yotoo.addNewYotoo] success ");
+						},
+						'onError': function(e){
+							// alert(JSON.stringify(e));
+							Ti.API.info("[yotoo.addNewYotoo] error ");
+						}
+					});
+					return;
+				}
 				
 				// remote save
 				this.cloudApi.excuteWithLogin({
