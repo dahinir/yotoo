@@ -76,12 +76,10 @@ $.peopleView.add( userListView.getView() );
 	// return userIds.replace( /^,/g , '');	
 // };
 var fetchYotooUsers = function( newYotoos ) {
-	var unYotooedUsers = Alloy.createCollection('user');
 	var userIds = "";
 	newYotoos.map(function(yotoo){
 		if( yotoo.get('unyotooed') ){
-			var unYotooedUser = users.where({'id_str': yotoo.get('target_id_str')}).pop();
-			unYotooedUsers.add( unYotooedUser );
+			// return;
 		}
 		userIds = userIds + "," + yotoo.get('target_id_str');
 	});
@@ -96,9 +94,13 @@ var fetchYotooUsers = function( newYotoos ) {
 		'purpose': 'lookupUsers',
 		'params': { 'user_id': userIds },
 		'success': function(){
-			unYotooedUsers.map(function(user){
-				// users.trigger('disabled', user);
+			newYotoos.map(function(newYotoo){
+				if( newYotoo.get('unyotooed') ){
+					var disabledUser = users.where({'id_str': newYotoo.get('target_id_str')}).pop();
+					users.trigger('disabled', disabledUser);
+				} 
 			});
+			
 			Ti.API.info("[peopleView.fetchUsersBy] success");
 		},
 		'error': function(){

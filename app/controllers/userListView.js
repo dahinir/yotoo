@@ -259,6 +259,9 @@ var addRows = function(options){
 		if( user.get('id_str') === ownerAccount.get('id_str')){
 			data.template = 'self';
 		}
+		if( user.get('disabled') ){
+			data.template = 'disabled';
+		}
 
 		if (OS_ANDROID) {
 			data.description_ = {
@@ -305,6 +308,9 @@ var getIndexByItemId = function(itemId){
 			break;
 		}
 	}
+	if( index === listDataItems.length){
+		alert("there is no matched itemId");
+	}
 	return index;
 };
 
@@ -323,7 +329,7 @@ var tempAddedUsers = Alloy.createCollection('user');
 users.on('add', function(addedUser, collection, options){
 	// alert( options.index + ", " + (users.length - 1) );
 	tempAddedUsers.add(addedUser);
-	if( options.index === users.length - 1){
+	if( options.index === (users.length - 1) ){
 		addRows({ 
 			'addedUsers': tempAddedUsers,
 			'reset': false 
@@ -334,7 +340,7 @@ users.on('add', function(addedUser, collection, options){
 
 users.on('disabled', function(disabledUser) {
 	var index = getIndexByItemId(disabledUser.get('id_str'));
-// alert(index);
+// alert(index + disabledUser.get('id_str'));
 	var data = section.getItemAt(index);
 	
 	data.template = 'disabled';
@@ -346,7 +352,7 @@ users.on('enabled', function(enabledUser){
 // alert(index);
 	var data = section.getItemAt(index);
 	
-	data.template = 'enabled';
+	data.template = 'plain';
 	section.updateItemAt(index, data);
 });
 
