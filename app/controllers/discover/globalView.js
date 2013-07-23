@@ -3,35 +3,17 @@ var args = arguments[0] || {};
 var ownerAccount = args.ownerAccount || Alloy.Globals.accounts.getCurrentAccount();
 // Ti.API.info("[globalView.js] currentAccount\'s screen_name: " + ownerAccount.get('screen_name'));
 var users = ownerAccount.createCollection('user');
+var yotoos = ownerAccount.getYotoos();
 
 var autoComplete = function(){
 };
 
-
-var userListView = Alloy.createController('userListView', {
+var userListView = Alloy.createController('favorite/favoriteUserListView',{
 	'users': users,
-	'rightActionButton': {
-            type: 'Ti.UI.Button',   // Use a button
-            bindId: 'yotooButton',       // Bind ID for this button
-            properties: {           // Sets several button properties
-                width: 80,
-                height: 30,                        	
-                right: 10,
-                title: 'yotoo'
-            },
-            events: { 
-            	click : function(e){
-					alert( L('yotoo_effect')  + e.itemId);
-				
-					var targetUser = users.where({'id_str': e.itemId}).pop();
-					// Ti.API.info( users.where({'id_str': e.itemId}).pop().get('screen_name') );
-					// Ti.API.info( users.findWhere({'id_str': e.itemId}).get('screen_name') );
-				
-					ownerAccount.getYotoos().addNewYotoo(ownerAccount, targetUser);
-            	}
-            }
-        }
+	'yotoos': yotoos
 });
+
+
 userListView.getView().setTop( $.searchBar.getHeight() );
 $.globalView.add( userListView.getView() );
 

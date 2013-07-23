@@ -34,7 +34,6 @@ if (typeof Object.create !== 'function'){
 }
 
 
-
 // load loged account from persistent storage //
 // This will create a singleton if it has not been previously created, or retrieves the singleton if it already exists.
 var accounts = Alloy.Collections.instance('account');
@@ -42,6 +41,7 @@ var yotoos = Alloy.Collections.instance('yotoo');
 
 accounts.fetch();
 yotoos.fetch();
+
 
 Ti.API.info("[alloy.js] " + accounts.length + " loged in accounts loaded");
 Ti.API.info("[alloy.js] " + yotoos.length + " yotoos");

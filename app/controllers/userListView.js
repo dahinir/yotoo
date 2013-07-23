@@ -3,6 +3,7 @@ var args = arguments[0] || {};
 var ownerAccount = args.ownerAccount || Alloy.Globals.accounts.getCurrentAccount();
 var users = args.users;
 var rightActionButton = args.rightActionButton;
+var getRightActionButtonProps = args.getRightActionButtonProps;
 
 var getTemplate = function(type){
 	var childTemplates = [{
@@ -17,16 +18,21 @@ var getTemplate = function(type){
 			backgroundColor: "#000",
 			opacity: 0.5
 		}
-		// ,childTemplates = [{
-			// type: 'Ti.UI.View',
-			// bindId: 'tt',
-			// properties:{
-				// top:0,
-				// left:0,
-				// width:10,
-				// backgroundColor: "#222"
-			// }
-		// }]
+		,childTemplates : [{
+			type: 'Ti.UI.View',
+			bindId: 'ttfased',
+			properties:{
+				top:0,
+				left:0,
+				width:10,
+				backgroundColor: "#222"
+			},
+			events: {
+				click: function(){
+					$.userListView.fireEvent('wow');
+				}
+			}
+		}]
 	}, {
 		type : 'Ti.UI.ImageView',
 		bindId : 'profileImage',
@@ -126,23 +132,28 @@ var getTemplate = function(type){
 		}
 	}, {
 		type : 'Ti.UI.Button',
-		bindId : 'defaultActionButton',
+		bindId : 'rightActionButton',
 		properties : {
 			width : 90,
 			height : 30,
 			right : 10,
-			title : 'action'
+			zIndex: 10,
+			title: 'action'
 		},
 		events : {
 			click : defaultAction
 		}
 	}];
 	
+	var rightActionButttonIndex = 8;
+	
 	if (rightActionButton) {
-		childTemplates[8] = rightActionButton;
+		rightActionButton.properties.zIndex = 10;
+		childTemplates[rightActionButttonIndex] = rightActionButton;
 	}
+
 	if( type === 'self'){
-		delete childTemplates[8];
+		delete childTemplates[rightActionButttonIndex];
 	}else if( type === 'disabled'){
 		 childTemplates.push({
 			type: 'Ti.UI.View',
@@ -157,7 +168,6 @@ var getTemplate = function(type){
 			}
 		});
 	}
-	
 	
 	return {
 		childTemplates: childTemplates,
@@ -258,9 +268,12 @@ var addRows = function(options){
 		};
 		if( user.get('id_str') === ownerAccount.get('id_str')){
 			data.template = 'self';
-		}
-		if( user.get('disabled') ){
+		}else if( user.get('disabled') ){
 			data.template = 'disabled';
+		}
+		
+		if (getRightActionButtonProps){
+			data.rightActionButton = getRightActionButtonProps(user); 
 		}
 
 		if (OS_ANDROID) {
@@ -327,6 +340,7 @@ users.on('reset', function(){
 
 var tempAddedUsers = Alloy.createCollection('user');
 users.on('add', function(addedUser, collection, options){
+	// alert(addedUser.get('id_str'));
 	// alert( options.index + ", " + (users.length - 1) );
 	tempAddedUsers.add(addedUser);
 	if( options.index === (users.length - 1) ){
@@ -340,7 +354,6 @@ users.on('add', function(addedUser, collection, options){
 
 users.on('disabled', function(disabledUser) {
 	var index = getIndexByItemId(disabledUser.get('id_str'));
-// alert(index + disabledUser.get('id_str'));
 	var data = section.getItemAt(index);
 	
 	data.template = 'disabled';
@@ -349,11 +362,22 @@ users.on('disabled', function(disabledUser) {
 
 users.on('enabled', function(enabledUser){
 	var index = getIndexByItemId(enabledUser.get('id_str'));
-// alert(index);
 	var data = section.getItemAt(index);
 	
 	data.template = 'plain';
 	section.updateItemAt(index, data);
 });
+
+// users.on('yotooed', function(yotooedUser, collection, options){
+	// // alert("y");
+	// var index = getIndexByItemId(yotooedUser.get('id_str'));
+	// var data = section.getItemAt(index);
+// 	
+	// data.name.text = "asdfasdfawef";
+	// // data.rightActionButton.title = "uiu";
+	// // data.rightActionButton = options.rightActionButton;
+	// // data.template = 'disabled';
+	// section.updateItemAt(index, data);
+// });
 
 

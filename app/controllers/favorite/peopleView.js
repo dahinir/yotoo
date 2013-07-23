@@ -4,6 +4,11 @@ var ownerAccount = args.ownerAccount || Alloy.Globals.accounts.getCurrentAccount
 var users = ownerAccount.createCollection('user');
 var yotoos = ownerAccount.getYotoos();
 
+/* sort this users as oder of yotoo */
+users.comparator = function(user) {
+	return yotoos.where({'target_id_str': user.get('id_str') }).pop().get('id');
+};
+
 var tempAddedYotoos = Alloy.createCollection('yotoo');
 yotoos.on('add', function(addedYotoo, collection, options){
 	// alert(JSON.stringify(b));	// collection
@@ -44,12 +49,11 @@ var userListView = Alloy.createController('userListView', {
 	'users': users,
 	'rightActionButton': {
 		type: 'Ti.UI.Button',
-		bindId: 'hehe',
+		bindId: 'rightAciontButton',
 		properties: {
 			width: 80,
 			height: 30,
 			right: 10,
-			zIndex: 10,
 			title: 'kia'
 		},
 		events: {
@@ -57,7 +61,11 @@ var userListView = Alloy.createController('userListView', {
 				alert("unyotoo");
 				var yt = yotoos.where({'target_id_str':  e.itemId}).pop();
 				// alert(".." + yt.get('unyotooed'));
-				yt.unYotoo(ownerAccount);
+				yt.unyotoo({
+					'maintAgent': ownerAccount,
+					'success': function(){},
+					'error': function(){}
+				});
 				// alert(yt.get('unyotooed'));
 				// Ti.API.info(JSON.stringify(e));
 				// yotoos.where({'target_id_str':  e.itemId}).pop().destroy();
@@ -118,14 +126,16 @@ testButton.addEventListener('click', function(){
 	// alert(JSON.stringify(yotoos.at(0).__proto__.config));
 	// require('cloudProxy').getCloud().deleteAllYotoos( ownerAccount );
 	
+	/*
 	yotoos.map(function(yotoo){
 		yotoo.save({'unyotooed': 0});
 		Ti.API.info( yotoo.get('id')	
 			+ " " + yotoo.get('platform') + " " + yotoo.get('source_id_str')
 			+ " " + yotoo.get('target_id_str') + " " + yotoo.get('unyotooed'));
 	});
-			
-	/*
+	*/
+
+/*
 	yotoos.fetchFromServer({ 
 		'mainAgent': ownerAccount,
 		'success': function(){
@@ -137,8 +147,29 @@ testButton.addEventListener('click', function(){
 		}
 	});
 	*/
+// var Cloud = require('ti.cloud');
+// Cloud.Users.logout(function (e) {
+    // if (e.success) {
+		// Cloud.SocialIntegrations.externalAccountLogin({
+			// id: ownerAccount.get('id_str'),
+		    // type: "twitter",
+		    // token: "dfas"
+		// }, function (e) {
+			// // Ti.API.info( JSON.stringify(e) );
+			// Ti.API.info( Cloud.sessionId );
+		    // if (e.success) {
+				// alert("ss");
+		    // } else {	// ACS login error
+		    	// alert("f");
+		    // }
+		// });
+    // } else {
+    // }
+// });
 });
 
 
 
- 
+
+
+

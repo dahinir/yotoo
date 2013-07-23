@@ -83,6 +83,7 @@ for heavy user, specialized relationship
 * Ti.Network.HTTPClient.cache 상황에 맞게 true
 * image cache :https://github.com/FokkeZB/nl.fokkezb.cachedImageView :http://docs.appcelerator.com/titanium/latest/#!/guide/Image_Best_Practices-section-30082525_ImageBestPractices-Cachingremoteimages
 * 네트웤 상태등의 이유로 밀려 있는 할일 저장해 놓고 실행하는 로직 ex) cloudProxy.postYotoo() 에서 checkTargetYotoo()는 실패 했을때 조용히 다시 시도 되어야 한다.
+* yotooed 유저의 hide 구현은 앱 발표 이후로 미루자. 
 
 
 ## work now
@@ -106,18 +107,18 @@ for heavy user, specialized relationship
 	v:yotoo객체를 서버에 저장할때 hide, completed등의 필드도 저장해야 한다.
 	:yotoo객체의 hide, completed등의 필드 변경이 되었을때 서버에 저장 해야 한다.   
 * 서버에 저장된 yotoo는 언제 refresh해서 로컬과 싱크를 맞추지? -로컬엔 있지만 서버에 없는 경우는 없음 
-	:트위터에 새 계정 추가 했을 때.
+	v:트위터에 새 계정 추가 했을 때.
 	:changeCurrentUser시 마지막 yotoo채킹을 해서 일정기간 이상이면 체킹? - no
 	:pull to refresh 구현 
 * peopleView.js 에 users의 컴페어러는 datetime으로 하면 날짜순으로 자동정렬 되겠지?
 	:그럼 users 이벤트의 add 이벤트 리스너로 userListView를 호출할까.. 
-v* yotoo의 past는 삭제 하고 unyotooed로 통합 사용 하자 
+
 
 탭별로 디렉토리를 나누자
 Discover/
-localMapView (한글론 주변)
-localListView
-globalSearchView
+	localMapView (한글론 주변)
+	localListView
+	globalSearchView
 
 
 yotoo 추가 프로필사진(숨겨진 기능 정도로 :플픽사진 크게 봤을때 다음장 볼수 있는 화살표가 나오게)

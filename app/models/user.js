@@ -117,7 +117,7 @@ exports.definition = {
 						if( add || reset ){
 							thisCollection.reset();
 						}
-						if( options.purpose === 'searchUsers'){
+						if( options.purpose === 'lookupUsers'){
 							// Ti.API.info(JSON.stringify(resultJSON));
 						}
 						

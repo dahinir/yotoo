@@ -31,13 +31,17 @@ exports.definition = {
 				// alert("init2" + JSON.stringify(e2));
 				this.cloudApi = require('cloudProxy').getCloud();
 			},
-			'unYotoo': function( account ){
+			'unyotoo': function( options ){
+				var mainAgent = options.mainAgent;
+				var success = options.success;
+				var error = options.error;
+				
 				var thisModel = this;
 				var fields = {
 					'unyotooed': 1	// true
 				};
 				this.cloudApi.excuteWithLogin({
-					'mainAgent': account,
+					'mainAgent': mainAgent,
 					'method': 'put',
 					'acsId': this.get('id'),
 					'fields': fields,
@@ -46,10 +50,15 @@ exports.definition = {
 						
 						// to persistence :must save after success of server post
 						thisModel.save();
+						if( success ){
+							success();
+						}
 					},
 					'onError': function(e){
-						alert(JSON.stringify(e));
 						Ti.API.info("[yotoo.unYotoo] error ");
+						if( error ){
+							error(e);
+						}
 					}
 				});
 			}
@@ -61,6 +70,7 @@ exports.definition = {
 		_.extend(Collection.prototype, {
 			'initialize': function(e) {
 				this.cloudApi = require('cloudProxy').getCloud();
+				
 			},
 			/**
 			 * designed like backbone.fetch()
@@ -100,10 +110,14 @@ exports.definition = {
 					}
 				});
 			},
-			'addNewYotoo': function(sourceUser, targetUser){
+			'addNewYotoo': function(options){
+				var sourceUser = options.sourceUser;
+				var targetUser = options.targetUser;
+				var success = options.success;
+				var error = options.error;
 				var thisCollection = this;
 
-				// 기존 yotoo 있는지 검사 부터..
+				// case of reyotoo
 				var existYotoo = this.where({'target_id_str': targetUser.get('id_str')}).pop();
 				if ( existYotoo ){
 					// alert("exist");
@@ -122,9 +136,18 @@ exports.definition = {
 							
 							// to persistence :must save after success of server post
 							existYotoo.save();
+							thisCollection.checkTargetYotoo({
+								'sourceUser': sourceUser,
+								'targetUser': targetUser,
+								'success': success,
+								'error': error
+							});
 							Ti.API.info("[yotoo.addNewYotoo] success ");
 						},
 						'onError': function(e){
+							if( error ){
+								error(e);
+							}
 							// alert(JSON.stringify(e));
 							Ti.API.info("[yotoo.addNewYotoo] error ");
 						}
@@ -158,16 +181,29 @@ exports.definition = {
 						
 						// It'll see whether opponent is yotoo me
 						// should be add retry action..
-						thisCollection.checkTargetYotoo( sourceUser, targetUser);
+						thisCollection.checkTargetYotoo({
+							'sourceUser': sourceUser,
+							'targetUser': targetUser,
+							'success': success,
+							'error': error
+						});
 					},
-					'onError': function(){
+					'onError': function(e){
+						if( error ){
+							error(e);
+						}
 						Ti.API.info("[yotoo.addNewYotoo] error");
 					}
 				});
 				return;
 			},
-			'checkTargetYotoo': function(sourceUser, targetUser){
+			'checkTargetYotoo': function(options){
+				var sourceUser = options.sourceUser;
+				var targetUser = options.targetUser;
+				var success = options.success;
+				var error = options.error;
 				var thisCollection = this;
+				
 				var query ={
 					'source_id_str': targetUser.get('id_str'),
 					'target_id_str': sourceUser.get('id_str')
@@ -180,18 +216,39 @@ exports.definition = {
 					'onSuccess': function( resultsJSON ){
 						if( resultsJSON.length === 0 ){
 							Ti.API.info("[yotoo.checkTargetYotoo] not yet. haha");
+							if( success ){
+								var returnYotoo = thisCollection.where({
+									'source_id_str': sourceUser.get('id_str'),
+									'target_id_str': targetUser.get('id_str')
+								}).pop();
+								success(returnYotoo);
+							}
 						}else if( resultsJSON.length > 0){
 							alert('YOTOO!!');
-							thisCollection.sendYotooNotification( sourceUser, targetUser);
+							thisCollection.sendYotooNotification({
+								'sourceUser': sourceUser,
+								'targetUser': targetUser,
+								'success': success,
+								'error': error
+							});
 						};
 						var result = resultsJSON[0];
 					},
 					'onError': function(e){
+						if(error){
+							error(e);
+						}
 						Ti.API.info("[yotoo.checkTargetYotoo] error ");
 					}
 				});
 			},
-			'sendYotooNotification': function(sourceUser, targetUser){
+			'sendYotooNotification': function(options){
+				var sourceUser = options.sourceUser;
+				var targetUser = options.targetUser;
+				var success = options.success;
+				var error = options.error;
+				var thisCollection = this;
+				
 				var fields = {
 					'channel': 'yotoo',
 					'receiverAcsId': targetUser.get('id_str_acs'),
@@ -203,6 +260,13 @@ exports.definition = {
 					'method': 'sendPushNotification',
 					'fields': fields,
 					'onSuccess': function(e){
+						if( success ){
+							var returnYotoo = thisCollection.where({
+								'source_id_str': sourceUser.get('id_str'),
+								'target_id_str': targetUser.get('id_str')
+							}).pop();
+							success( returnYotoo );
+						}
 						Ti.API.info("[yotoo.sendYotooNotification] success");
 					},
 					'onError': function(e){
