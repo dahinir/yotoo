@@ -148,9 +148,9 @@ var getTemplate = function(type){
 	var rightActionButttonIndex = 8;
 	
 	if (rightActionButton) {
-		rightActionButton.properties.zIndex = 10;
 		childTemplates[rightActionButttonIndex] = rightActionButton;
 	}
+	childTemplates[rightActionButttonIndex].properties.zIndex = 10;
 
 	if( type === 'self'){
 		delete childTemplates[rightActionButttonIndex];
@@ -273,7 +273,7 @@ var addRows = function(options){
 		}
 		
 		if (getRightActionButtonProps){
-			data.rightActionButton = getRightActionButtonProps(user); 
+			data.rightActionButton = getRightActionButtonProps(user);
 		}
 
 		if (OS_ANDROID) {

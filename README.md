@@ -100,18 +100,18 @@ for heavy user, specialized relationship
 	:캐쉬 개념으로 일정 시간 이상되면 업데이트 하고
 	:프로필 보기를 했으면 리프레쉬후 로컬 저장
 	:프로필 이미지는 업데이트 했을때 url이 바뀌나? 그렇다면 프로필 이미지 로딩 실퍠시에도 리프레쉬
-
-## work right now!
 * yotoo sync
-	v:yotoo.fetchFromServer() 구현  
-	v:yotoo객체를 서버에 저장할때 hide, completed등의 필드도 저장해야 한다.
 	:yotoo객체의 hide, completed등의 필드 변경이 되었을때 서버에 저장 해야 한다.   
 * 서버에 저장된 yotoo는 언제 refresh해서 로컬과 싱크를 맞추지? -로컬엔 있지만 서버에 없는 경우는 없음 
 	v:트위터에 새 계정 추가 했을 때.
 	:changeCurrentUser시 마지막 yotoo채킹을 해서 일정기간 이상이면 체킹? - no
 	:pull to refresh 구현 
-* peopleView.js 에 users의 컴페어러는 datetime으로 하면 날짜순으로 자동정렬 되겠지?
-	:그럼 users 이벤트의 add 이벤트 리스너로 userListView를 호출할까.. 
+* yotoo.checkTargetYotoo() 에서 유투 성공 했을때 보내는 노티피케이션 실패시 큐에 넣던지 해서 성공할때까지 다시 시
+	:노티피케이션을 활성화 하지 않는 사용자도 생각해서 프로그램 시작시 컴플릿된 유투가 있는지 확인 해야 한다.
+
+## work right now!
+* chat muther fucker!
+
 
 
 탭별로 디렉토리를 나누자

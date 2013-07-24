@@ -66,7 +66,7 @@ cloudProxy.externalAccountLoginAdapter = function(options){
 		    type: options.type,
 		    token: options.token
 		}, function (e) {
-			alert(e.sessionId);
+			// alert(e.sessionId);
 		    if (e.success) {
 		        var user = e.users[0];
 		        // Ti.API.info('[cloudProxy.js] Cloud login success! sessionId:'+Cloud.sessionId+ ' id: ' + user.id + ' first name: ' + user.first_name +' last name: ' + user.last_name);

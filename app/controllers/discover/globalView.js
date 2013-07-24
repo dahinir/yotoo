@@ -8,7 +8,7 @@ var yotoos = ownerAccount.getYotoos();
 var autoComplete = function(){
 };
 
-var userListView = Alloy.createController('favorite/favoriteUserListView',{
+var userListView = Alloy.createController('discover/userListView',{
 	'users': users,
 	'yotoos': yotoos
 });

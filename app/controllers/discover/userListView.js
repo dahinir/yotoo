@@ -14,7 +14,7 @@ var unyotooButtonProps = {
 	width: 80,
 	height: 30,
 	right: 10,
-	title: 'unyotoo'
+	title: 'un yotoo'
 };
 var yotooButton = {
 	type : 'Ti.UI.Button',
@@ -59,16 +59,20 @@ var yotooButton = {
 	}
 };
 
-
 var userListView = Alloy.createController('userListView', {
 	'users': users,
 	'getRightActionButtonProps': function( user ){
-		if( yotoos.where({'target_id_str': user.get('id_str') }).pop() ){
+		var yotoo = yotoos.where({'target_id_str': user.get('id_str') }).pop();
+		if( yotoo && !yotoo.get('unyotooed') ){
 			return unyotooButtonProps;
-		}else{
-			return yotooButtonProps;
 		}
+		return yotooButtonProps;
 	},
 	'rightActionButton': yotooButton
 }); 
-$.favoriteUserListView.add( userListView.getView() );
+$.userListView.add( userListView.getView() );
+
+
+
+
+

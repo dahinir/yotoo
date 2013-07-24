@@ -4,7 +4,7 @@ var ownerAccount = args.ownerAccount || Alloy.Globals.accounts.getCurrentAccount
 var users = ownerAccount.createCollection('user');
 var yotoos = ownerAccount.getYotoos();
 
-/* sort this users as oder of yotoo */
+/* sort this users by order of yotoo id */
 users.comparator = function(user) {
 	return yotoos.where({'target_id_str': user.get('id_str') }).pop().get('id');
 };
@@ -45,33 +45,34 @@ yotoos.on('change:hided change:completed change:past', function(e){
 });
 
 
-var userListView = Alloy.createController('userListView', {
+var userListView = Alloy.createController('favorite/userListView', {
 	'users': users,
-	'rightActionButton': {
-		type: 'Ti.UI.Button',
-		bindId: 'rightAciontButton',
-		properties: {
-			width: 80,
-			height: 30,
-			right: 10,
-			title: 'kia'
-		},
-		events: {
-			'click': function(e){
-				alert("unyotoo");
-				var yt = yotoos.where({'target_id_str':  e.itemId}).pop();
-				// alert(".." + yt.get('unyotooed'));
-				yt.unyotoo({
-					'maintAgent': ownerAccount,
-					'success': function(){},
-					'error': function(){}
-				});
-				// alert(yt.get('unyotooed'));
-				// Ti.API.info(JSON.stringify(e));
-				// yotoos.where({'target_id_str':  e.itemId}).pop().destroy();
-			}
-		}
-	}
+	'yotoos': yotoos
+	// ,'rightActionButton': {
+		// type: 'Ti.UI.Button',
+		// bindId: 'rightAciontButton',
+		// properties: {
+			// width: 80,
+			// height: 30,
+			// right: 10,
+			// title: 'kia'
+		// },
+		// events: {
+			// 'click': function(e){
+				// alert("unyotoo");
+				// var yt = yotoos.where({'target_id_str':  e.itemId}).pop();
+				// // alert(".." + yt.get('unyotooed'));
+				// yt.unyotoo({
+					// 'mainAgent': ownerAccount,
+					// 'success': function(){},
+					// 'error': function(){}
+				// });
+				// // alert(yt.get('unyotooed'));
+				// // Ti.API.info(JSON.stringify(e));
+				// // yotoos.where({'target_id_str':  e.itemId}).pop().destroy();
+			// }
+		// }
+	// }
 });
 $.peopleView.add( userListView.getView() );
 
@@ -147,25 +148,27 @@ testButton.addEventListener('click', function(){
 		}
 	});
 	*/
-// var Cloud = require('ti.cloud');
-// Cloud.Users.logout(function (e) {
-    // if (e.success) {
-		// Cloud.SocialIntegrations.externalAccountLogin({
-			// id: ownerAccount.get('id_str'),
-		    // type: "twitter",
-		    // token: "dfas"
-		// }, function (e) {
-			// // Ti.API.info( JSON.stringify(e) );
-			// Ti.API.info( Cloud.sessionId );
-		    // if (e.success) {
-				// alert("ss");
-		    // } else {	// ACS login error
-		    	// alert("f");
-		    // }
-		// });
-    // } else {
-    // }
-// });
+/*
+var Cloud = require('ti.cloud');
+Cloud.Users.logout(function (e) {
+    if (e.success) {
+		Cloud.SocialIntegrations.externalAccountLogin({
+			id: ownerAccount.get('id_str'),
+		    type: "twitter",
+		    token: "dfas"
+		}, function (e) {
+			// Ti.API.info( JSON.stringify(e) );
+			Ti.API.info( Cloud.sessionId );
+		    if (e.success) {
+				alert("ss");
+		    } else {	// ACS login error
+		    	alert("f");
+		    }
+		});
+    } else {
+    }
+});
+*/
 });
 
 

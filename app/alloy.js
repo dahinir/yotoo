@@ -73,9 +73,10 @@ yotoos.map(function( yotoo){
 			// alert("s");
 		// }
 	// });
-	Ti.API.info("[alloy.js] loaded yotoo: " + yotoo.get('id')	
+	Ti.API.info("[alloy.js] yotoo: " + yotoo.get('id')	
 		+ " " + yotoo.get('platform') + " " + yotoo.get('source_id_str')
-		+ " " + yotoo.get('target_id_str') + " " + yotoo.get('unyotooed'));
+		+ " " + yotoo.get('target_id_str') + " " + yotoo.get('unyotooed')
+		+ " " + yotoo.get('completed'));
 });
 
 
