@@ -7,16 +7,6 @@
 // $.index.open();
 
 
-// load loged account from persistent storage //
-// This will create a singleton if it has not been previously created, or retrieves the singleton if it already exists.
-// var accounts = Alloy.Collections.instance('account');
-// accounts.fetch();
-// Ti.API.debug("[index.js] " + accounts.length + " loged in accounts loaded");
-// Alloy.Globals.accounts = accounts;
-// 
-// var yotoos = Alloy.Collections.instance('yotoo');
-// yotoos.fetch();
-// Alloy.Globals.yotoos = yotoos;
 var accounts = Alloy.Globals.accounts;
 var yotoos = Alloy.Globals.yotoos;
 

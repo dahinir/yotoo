@@ -1,0 +1,7 @@
+<Alloy>
+	<Window id="chatWindow">
+		<View>
+			<Label>hahahah</Label>
+		</View>
+	</Window>
+</Alloy>

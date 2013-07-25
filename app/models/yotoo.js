@@ -230,8 +230,7 @@ exports.definition = {
 							checkingYotoo.save();
 							alert(L('YOTOO!!'));
 							
-							// 노티피케이션을 보냈는지 확인하고 실패했으면 큐에 넣던지
-							// 해서 반드시 성공 시켜야 한다. 
+
 							thisCollection.sendYotooNotification({
 								'sourceUser': sourceUser,
 								'targetUser': targetUser,
@@ -259,7 +258,7 @@ exports.definition = {
 				var fields = {
 					'channel': 'yotoo',
 					'receiverAcsId': targetUser.get('id_str_acs'),
-					'message':  sourceUser.get('name') + " " + L('yotoo_you_too')
+					'payload':  sourceUser.get('name') + " " + L('yotoo_you_too')
 				};
 				
 				this.cloudApi.excuteWithLogin({
@@ -297,6 +296,8 @@ exports.definition = {
 						});		
 					},
 					'onError': function(e){
+						// 노티피케이션을 보냈는지 확인하고 실패했으면 큐에 넣던지
+						// 해서 반드시 성공 시켜야 한다. 
 						Ti.API.info("[yotoo.sendYotooNotification] error");
 						if( error ){
 							error(e);

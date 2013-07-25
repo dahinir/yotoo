@@ -1,0 +1,11 @@
+"#chatWindow": {
+	modal: false,
+	height: Ti.UI.SIZE,
+	width: Ti.UI.SIZE,
+	fullscreen: false,
+	// bubbleParent : true,
+	// translucent : true,
+	backgroundColor: "transparent"
+}
+
+

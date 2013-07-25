@@ -28,18 +28,16 @@ yotoos.on('add', function(addedYotoo, collection, options){
 	Ti.API.info("[peopleView.js] yotoo add event");
 });
 yotoos.on('change:unyotooed', function(yotoo){
-	var changedUser = users.where({'id_str': yotoo.get('target_id_str')}).pop();
+	// var changedUser = users.where({'id_str': yotoo.get('target_id_str')}).pop();
 	/* case of unyotoo */
 	if( yotoo.get('unyotooed') ){
-		// users.remove( unYotooedUser );
-		users.trigger('disabled', changedUser);
+		// users.trigger('disabled', changedUser);
 	/* case of reyotoo */
 	}else{
-		users.trigger('enabled', changedUser);
-		// users.add( yotoo.targetUser );
+		// users.trigger('enabled', changedUser);
 	}
 });
-yotoos.on('change:hided change:completed change:past', function(e){
+yotoos.on('change:hided change:past', function(e){
 	alert('[peopleView.js] yotoo changed');
 	Ti.API.info("[peopleView.js] change yotoo status");
 });
@@ -49,29 +47,40 @@ var userListView = Alloy.createController('userListView', {
 	'users': users
 });
 userListView.getView().addEventListener('rightButtonClick', function(e){
-	// alert(e);
+	var id_str = e.id_str;
 	var dialogOptions = {
 	  'title': 'hello?',
-	  'options': ['unyotoo', 'Help', 'Cancel'],
+	  'options': [L('unyotoo'), L('yotoo'), L('cancel')],
 	  'cancel': 2,
-	  'selectedIndex': 2,
+	  'selectedIndex': 1,
 	  'destructive': 0
 	};
 	var optionDialog = Ti.UI.createOptionDialog(dialogOptions)
 	optionDialog.show();
 	optionDialog.addEventListener('click', function(e){
-		// alert(e.index);
 		if( e.index === 0){
-			var yt = yotoos.where({'target_id_str':  e.itemId}).pop();
-			// alert(".." + yt.get('unyotooed'));
+			var yt = yotoos.where({'target_id_str':  id_str}).pop();
 			yt.unyotoo({
 				'mainAgent': ownerAccount,
-				'success': function(){},
-				'error': function(){}
+				'success': function(){
+				},
+				'error': function(){
+				}
 			});
-			// alert(yt.get('unyotooed'));
-			// Ti.API.info(JSON.stringify(e));
 			// yotoos.where({'target_id_str':  e.itemId}).pop().destroy();
+		}else if( e.index === 1){
+			var targetUser = users.where({
+				'id_str': id_str
+			}).pop();
+
+			yotoos.addNewYotoo({
+				'sourceUser': ownerAccount,
+				'targetUser': targetUser,
+				'success': function(){
+				},
+				'error': function(){
+				}
+			});
 		}
 	});
 });

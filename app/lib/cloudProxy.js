@@ -210,7 +210,7 @@ cloudProxy.sendPushNotification = function(options){
 	
 	var channel = fields.channel || 'yotoo';
 	var receiverAcsId = fields.receiverAcsId;
-	var message = fields.message;
+	var payload = fields.payload;
 	var onSuccess = options.onSuccess;
 	var onError = options.onError;
 
@@ -218,7 +218,7 @@ cloudProxy.sendPushNotification = function(options){
 		'channel' : channel,
 		// 'friends' : Any,
 		'to_ids' : receiverAcsId,
-		'payload' : message
+		'payload' : payload
 		// 'payload': {
 		    // "atras": "your_user_id",
 		    // "tags": [

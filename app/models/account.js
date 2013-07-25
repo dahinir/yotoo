@@ -183,6 +183,7 @@ exports.definition = {
 								        // alert('[account.js] current '+ currentAccount.get('session_id_acs') );
 								        
 								        // push notification subscribe.. only fo iOS?
+								        // 클라우드 사용자는 다른데 device_token은 같아도 될까..
 										Cloud.PushNotifications.subscribe({
 										    channel: 'yotoo',
 										    type: 'ios',

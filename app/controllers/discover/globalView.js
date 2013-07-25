@@ -12,45 +12,40 @@ var userListView = Alloy.createController('userListView',{
 	'users': users
 });
 userListView.getView().addEventListener('rightButtonClick', function(e){
-	// alert(e);
+	var id_str = e.id_str;
 	var dialogOptions = {
 	  'title': 'hello?',
-	  'options': ['unyotoo', 'yotoo', 'Cancel'],
+	  'options': [L('unyotoo'), L('yotoo'), L('cancel')],
 	  'cancel': 2,
-	  'selectedIndex': 2,
+	  'selectedIndex': 1,
 	  'destructive': 0
 	};
 	var optionDialog = Ti.UI.createOptionDialog(dialogOptions)
 	optionDialog.show();
 	optionDialog.addEventListener('click', function(e){
-		// alert(e.index);
 		if( e.index === 0){
-			var yt = yotoos.where({'target_id_str':  e.itemId}).pop();
-			// alert(".." + yt.get('unyotooed'));
+			alert(L('unyotoo_effect'));
+			var yt = yotoos.where({'target_id_str':  id_str}).pop();
 			yt.unyotoo({
 				'mainAgent': ownerAccount,
-				'success': function(){},
-				'error': function(){}
+				'success': function(){
+				},
+				'error': function(){
+				}
 			});
-			// alert(yt.get('unyotooed'));
-			// Ti.API.info(JSON.stringify(e));
-			// yotoos.where({'target_id_str':  e.itemId}).pop().destroy();
 		}else if( e.index === 1 ){
-			alert(L('yotoo_effect') + e.itemId);
+			alert(L('yotoo_effect'));
 			
 			var targetUser = users.where({
-				'id_str' : e.itemId
+				'id_str' : id_str
 			}).pop();
 			
 			yotoos.addNewYotoo({
 				'sourceUser' : ownerAccount,
 				'targetUser' : targetUser,
 				'success' : function() {
-					alert("suc");
-					e.source.title = unyotooButtonProps.title;
 				},
 				'error' : function() {
-					alert("e");
 				}
 			}); 			
 		}

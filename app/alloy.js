@@ -110,13 +110,9 @@ if( OS_IOS ){
 			 * Connection 탭의 activity history를 보여줄까?
 			 */
 			alert("callback");
-			alert("push " + e.data + ", " + e.inBackground );
-			var pushData = e.data;
-			for(key in pushData){
-				alert("key: " + key + "\ndata:" + pushData[key]);
-			}
-			// e.data.aps : object
-			
+			alert(JSON.stringify(e));
+			var chatWindow = Alloy.createController('chatWindow');
+			chatWindow.getView().open();
 			// e.data.alert: hi hehe
 			// e.data.badge: 7
 			// e.data.sound: 

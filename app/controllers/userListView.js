@@ -204,7 +204,7 @@ function rightButtonAction(e) {
 	// alert("defaultAction\nitemId: " + e.itemId+"\nitemIndex:"+ e.itemIndex);
 	
 	$.userListView.fireEvent('rightButtonClick', {
-		'haha': 'vyvy'
+		'id_str': e.itemId
 	});
 	/*
 	var user = ownerAccount.createModel('user');
@@ -373,32 +373,26 @@ users.on('add', function(addedUser, collection, options){
 	}
 });
 
-users.on('unyotooed', function(unyotooedUser) {
-	var index = getIndexByItemId(unyotooedUser.get('id_str'));
+
+yotoos.on('change:unyotooed change:completed', function(yotoo){
+	// 왜 그런지는 모르겠으나 이게 호출될때마다 두번씩 호출되고 처음엔 users.length가 0이다..
+	if( users.length === 0 ){
+		return;
+	}
+
+	var changedUser = users.where({'id_str': yotoo.get('target_id_str')}).pop();
+	var index = getIndexByItemId(changedUser.get('id_str'));
 	var data = section.getItemAt(index);
 	
-	data.template = 'unyotooed';
+	if( yotoo.get('completed') ){
+		data.template = 'completed';
+	}else if( yotoo.get('unyotooed') ){
+		data.template = 'unyotooed';
+	}else{
+		data.template = 'plain';
+	}
 	section.updateItemAt(index, data);
 });
 
-users.on('enabled', function(enabledUser){
-	var index = getIndexByItemId(enabledUser.get('id_str'));
-	var data = section.getItemAt(index);
-	
-	data.template = 'plain';
-	section.updateItemAt(index, data);
-});
-
-// users.on('yotooed', function(yotooedUser, collection, options){
-	// // alert("y");
-	// var index = getIndexByItemId(yotooedUser.get('id_str'));
-	// var data = section.getItemAt(index);
-// 	
-	// data.name.text = "asdfasdfawef";
-	// // data.rightActionButton.title = "uiu";
-	// // data.rightActionButton = options.rightActionButton;
-	// // data.template = 'unyotooed';
-	// section.updateItemAt(index, data);
-// });
 
 
