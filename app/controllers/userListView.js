@@ -1,12 +1,20 @@
 var args = arguments[0] || {};
 
 var ownerAccount = args.ownerAccount || Alloy.Globals.accounts.getCurrentAccount();
+var yotoos = args.yotoos || ownerAccount.getYotoos();
 var users = args.users;
-var rightActionButton = args.rightActionButton;
-var getRightActionButtonProps = args.getRightActionButtonProps;
+// var rightActionButton = args.rightActionButton;
+// var getRightActionButtonProps = args.getRightActionButtonProps;
+
+var _PLAIN = 1; 
+var _SELF = 2;
+var _UNYOTOOED = 3;
+var _COMPLETED = 4;
+var _HIDED = 5;
+var _BURNED = 6;
 
 var getTemplate = function(type){
-	var childTemplates = [{
+	var plainTemplates = [{
 		type: 'Ti.UI.View',
 		bindId: 'relationshipIndicator',
 		properties: {
@@ -141,21 +149,27 @@ var getTemplate = function(type){
 			title: 'action'
 		},
 		events : {
-			click : defaultAction
+			click : rightButtonAction
 		}
 	}];
 	
-	var rightActionButttonIndex = 8;
+	var listItemProps = {
+		// accessoryType: Ti.UI.LIST_ACCESSORY_TYPE_NONE,
+		// backgroundColor: '#0F0',
+		height : 80,
+		selectionStyle : Ti.UI.iPhone.ListViewCellSelectionStyle.NONE	// only iOS
+	};
+	var rightActionButtonIndex = 8;
 	
-	if (rightActionButton) {
-		childTemplates[rightActionButttonIndex] = rightActionButton;
-	}
-	childTemplates[rightActionButttonIndex].properties.zIndex = 10;
+	// if (rightActionButton) {
+		// plainTemplates[rightActionButttonIndex] = rightActionButton;
+	// }
+	plainTemplates[rightActionButtonIndex].properties.zIndex = 10;
 
 	if( type === 'self'){
-		delete childTemplates[rightActionButttonIndex];
-	}else if( type === 'disabled'){
-		 childTemplates.push({
+		delete plainTemplates[rightActionButtonIndex];
+	}else if( type === 'unyotooed'){
+		 plainTemplates.push({
 			type: 'Ti.UI.View',
 			bindId: 'blackoutScreen',
 			properties: {
@@ -167,25 +181,32 @@ var getTemplate = function(type){
 				opacity: 0.5
 			}
 		});
+	}else if( type === 'completed'){
+		listItemProps.backgroundColor = '#AFA';
+		// plainTemplates[rightActionButtonIndex].properties.width = 80;
+		// plainTemplates[rightActionButtonIndex].properties.borderWidth = 1;
+		// plainTemplates[rightActionButtonIndex].properties.borderRadius = 2;
+		// plainTemplates[rightActionButtonIndex].properties.borderColor = '#0F0';
+		// plainTemplates[rightActionButtonIndex].properties.title = 'completed';
 	}
 	
 	return {
-		childTemplates: childTemplates,
-		events: {
+		'childTemplates': plainTemplates,
+		'events': {
 			'swipe': function(e){
 				alert( JSON.stringify(e) + e.itemIndex + ": " + e.itemId );
 			}
 		},
-		properties : {
-			// accessoryType: Ti.UI.LIST_ACCESSORY_TYPE_NONE,
-			// backgroundColor: '#FFF',
-			height : 80,
-			selectionStyle : Ti.UI.iPhone.ListViewCellSelectionStyle.NONE	// only iOS
-		}
+		'properties' : listItemProps
 	};
 };
-function defaultAction(e) {
-	alert("defaultAction\nitemId: " + e.itemId+"\nitemIndex:"+ e.itemIndex);
+function rightButtonAction(e) {
+	// alert("defaultAction\nitemId: " + e.itemId+"\nitemIndex:"+ e.itemIndex);
+	
+	$.userListView.fireEvent('rightButtonClick', {
+		'haha': 'vyvy'
+	});
+	/*
 	var user = ownerAccount.createModel('user');
 	user.fetchMetaData({
 		'purpose': 'relationship',
@@ -208,6 +229,7 @@ function defaultAction(e) {
 			Ti.API.debug("[userView] fetchFromServer(for relationship) failure");
 		}				
 	});
+	*/
 }
 function openUserView(e) {
 	alert("openUserView");
@@ -215,17 +237,14 @@ function openUserView(e) {
 	Ti.API.info("dpi: " + Titanium.Platform.displayCaps.dpi);
 }
 
-userRowTemplate = getTemplate();
-selfUserRowTemplate = getTemplate("self");
-disabledUserRowTemplate = getTemplate('disabled');
-
 var listView = Ti.UI.createListView({
-	templates : {
-		'plain' : userRowTemplate,
-		'self': selfUserRowTemplate,
-		'disabled': disabledUserRowTemplate
+	'templates' : {
+		'plain' : getTemplate(),
+		'self': getTemplate('self'),
+		'unyotooed': getTemplate('unyotooed'),
+		'completed': getTemplate('completed')
 	},
-	defaultItemTemplate : 'plain'
+	'defaultItemTemplate' : 'plain'
 });
 
 // listView.setTop( $.searchBar.getHeight() );
@@ -266,16 +285,18 @@ var addRows = function(options){
 				itemId : user.get('id_str')
 			}
 		};
+		
+		/* template select */
+		var relevantYotoo = yotoos.where({'target_id_str': user.get('id_str')}).pop();
 		if( user.get('id_str') === ownerAccount.get('id_str')){
 			data.template = 'self';
-		}else if( user.get('disabled') ){
-			data.template = 'disabled';
+		}else if( relevantYotoo && relevantYotoo.get('completed') ){
+			data.template = 'completed';
+		// }else if( user.get('unyotooed') ){
+		}else if( relevantYotoo && relevantYotoo.get('unyotooed') ){
+			data.template = 'unyotooed';
 		}
 		
-		if (getRightActionButtonProps){
-			data.rightActionButton = getRightActionButtonProps(user);
-		}
-
 		if (OS_ANDROID) {
 			data.description_ = {
 				text : user.get('description')
@@ -328,7 +349,7 @@ var getIndexByItemId = function(itemId){
 };
 
 
-/* event listeners */
+/* event listeners of models; users, yotoos*/
 users.on('remove', function(deletedUser){
 	var index = getIndexByItemId( deletedUser.get('id_str') );
 	section.deleteItemsAt( index, 1 );
@@ -352,11 +373,11 @@ users.on('add', function(addedUser, collection, options){
 	}
 });
 
-users.on('disabled', function(disabledUser) {
-	var index = getIndexByItemId(disabledUser.get('id_str'));
+users.on('unyotooed', function(unyotooedUser) {
+	var index = getIndexByItemId(unyotooedUser.get('id_str'));
 	var data = section.getItemAt(index);
 	
-	data.template = 'disabled';
+	data.template = 'unyotooed';
 	section.updateItemAt(index, data);
 });
 
@@ -376,7 +397,7 @@ users.on('enabled', function(enabledUser){
 	// data.name.text = "asdfasdfawef";
 	// // data.rightActionButton.title = "uiu";
 	// // data.rightActionButton = options.rightActionButton;
-	// // data.template = 'disabled';
+	// // data.template = 'unyotooed';
 	// section.updateItemAt(index, data);
 // });
 

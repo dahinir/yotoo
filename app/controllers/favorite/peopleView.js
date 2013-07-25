@@ -45,34 +45,35 @@ yotoos.on('change:hided change:completed change:past', function(e){
 });
 
 
-var userListView = Alloy.createController('favorite/userListView', {
-	'users': users,
-	'yotoos': yotoos
-	// ,'rightActionButton': {
-		// type: 'Ti.UI.Button',
-		// bindId: 'rightAciontButton',
-		// properties: {
-			// width: 80,
-			// height: 30,
-			// right: 10,
-			// title: 'kia'
-		// },
-		// events: {
-			// 'click': function(e){
-				// alert("unyotoo");
-				// var yt = yotoos.where({'target_id_str':  e.itemId}).pop();
-				// // alert(".." + yt.get('unyotooed'));
-				// yt.unyotoo({
-					// 'mainAgent': ownerAccount,
-					// 'success': function(){},
-					// 'error': function(){}
-				// });
-				// // alert(yt.get('unyotooed'));
-				// // Ti.API.info(JSON.stringify(e));
-				// // yotoos.where({'target_id_str':  e.itemId}).pop().destroy();
-			// }
-		// }
-	// }
+var userListView = Alloy.createController('userListView', {
+	'users': users
+});
+userListView.getView().addEventListener('rightButtonClick', function(e){
+	// alert(e);
+	var dialogOptions = {
+	  'title': 'hello?',
+	  'options': ['unyotoo', 'Help', 'Cancel'],
+	  'cancel': 2,
+	  'selectedIndex': 2,
+	  'destructive': 0
+	};
+	var optionDialog = Ti.UI.createOptionDialog(dialogOptions)
+	optionDialog.show();
+	optionDialog.addEventListener('click', function(e){
+		// alert(e.index);
+		if( e.index === 0){
+			var yt = yotoos.where({'target_id_str':  e.itemId}).pop();
+			// alert(".." + yt.get('unyotooed'));
+			yt.unyotoo({
+				'mainAgent': ownerAccount,
+				'success': function(){},
+				'error': function(){}
+			});
+			// alert(yt.get('unyotooed'));
+			// Ti.API.info(JSON.stringify(e));
+			// yotoos.where({'target_id_str':  e.itemId}).pop().destroy();
+		}
+	});
 });
 $.peopleView.add( userListView.getView() );
 

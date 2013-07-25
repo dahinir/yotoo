@@ -8,11 +8,54 @@ var yotoos = ownerAccount.getYotoos();
 var autoComplete = function(){
 };
 
-var userListView = Alloy.createController('discover/userListView',{
-	'users': users,
-	'yotoos': yotoos
+var userListView = Alloy.createController('userListView',{
+	'users': users
 });
-
+userListView.getView().addEventListener('rightButtonClick', function(e){
+	// alert(e);
+	var dialogOptions = {
+	  'title': 'hello?',
+	  'options': ['unyotoo', 'yotoo', 'Cancel'],
+	  'cancel': 2,
+	  'selectedIndex': 2,
+	  'destructive': 0
+	};
+	var optionDialog = Ti.UI.createOptionDialog(dialogOptions)
+	optionDialog.show();
+	optionDialog.addEventListener('click', function(e){
+		// alert(e.index);
+		if( e.index === 0){
+			var yt = yotoos.where({'target_id_str':  e.itemId}).pop();
+			// alert(".." + yt.get('unyotooed'));
+			yt.unyotoo({
+				'mainAgent': ownerAccount,
+				'success': function(){},
+				'error': function(){}
+			});
+			// alert(yt.get('unyotooed'));
+			// Ti.API.info(JSON.stringify(e));
+			// yotoos.where({'target_id_str':  e.itemId}).pop().destroy();
+		}else if( e.index === 1 ){
+			alert(L('yotoo_effect') + e.itemId);
+			
+			var targetUser = users.where({
+				'id_str' : e.itemId
+			}).pop();
+			
+			yotoos.addNewYotoo({
+				'sourceUser' : ownerAccount,
+				'targetUser' : targetUser,
+				'success' : function() {
+					alert("suc");
+					e.source.title = unyotooButtonProps.title;
+				},
+				'error' : function() {
+					alert("e");
+				}
+			}); 			
+		}
+	});
+});
 
 userListView.getView().setTop( $.searchBar.getHeight() );
 $.globalView.add( userListView.getView() );
