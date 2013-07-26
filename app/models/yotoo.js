@@ -43,6 +43,39 @@ exports.definition = {
 				this.cloudApi.excuteWithLogin({
 					'mainAgent': mainAgent,
 					'method': 'put',
+					'modelType': 'yotoo',
+					'acsId': this.get('id'),
+					'fields': fields,
+					'onSuccess': function( result ){
+						thisModel.set(fields);
+						
+						// to persistence :must save after success of server post
+						thisModel.save();
+						if( success ){
+							success();
+						}
+					},
+					'onError': function(e){
+						Ti.API.info("[yotoo.unYotoo] error ");
+						if( error ){
+							error(e);
+						}
+					}
+				});
+			},
+			'hide': function( options ){
+				var mainAgent = options.mainAgent;
+				var success = options.success;
+				var error = options.error;
+
+				var thisModel = this;
+				var fields = {
+					'hided': 1	// true
+				};
+				this.cloudApi.excuteWithLogin({
+					'mainAgent': mainAgent,
+					'method': 'put',
+					'modelType': 'yotoo',
 					'acsId': this.get('id'),
 					'fields': fields,
 					'onSuccess': function( result ){
@@ -128,7 +161,8 @@ exports.definition = {
 						'fields': {
 							'hided': 0,	// false
 							'completed': 0,
-							'unyotooed': 0
+							'unyotooed': 0,
+							'burned': 0
 						},
 						'onSuccess': function( result ){
 							existYotoo.targetUser = targetUser;
@@ -165,6 +199,7 @@ exports.definition = {
 							'hided': 0,	// false
 							'completed': 0,
 							'unyotooed': 0,
+							'burned': 0,
 							'platform': 'twitter'	// default
 						},
 						'onSuccess': function(result){

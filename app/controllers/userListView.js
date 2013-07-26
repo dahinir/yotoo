@@ -320,15 +320,15 @@ var addRows = function(options){
 	
 	if( reset ){
 		// listView.deleteSectionAt(0);
-		section.setItems(dataArray);
+		section.setItems(dataArray, {'animated': true});
 	}else{
-		section.appendItems(dataArray);
+		section.appendItems(dataArray, {'animated': true});
 	}
 
 	if (listView.getSectionCount() === 0) {
 		listView.setSections([section]);
 	} else {
-		listView.replaceSectionAt(0, section);
+		listView.replaceSectionAt(0, section, {'animated': true});
 		//, {animated: true, position: Ti.UI.iPhone.ListViewScrollPosition.TOP});
 	}
 	listView.scrollToItem(0, 0);
@@ -361,8 +361,9 @@ users.on('reset', function(){
 
 var tempAddedUsers = Alloy.createCollection('user');
 users.on('add', function(addedUser, collection, options){
-	// alert(addedUser.get('id_str'));
+	// alert("add"+addedUser.get('id_str'));
 	// alert( options.index + ", " + (users.length - 1) );
+	
 	tempAddedUsers.add(addedUser);
 	if( options.index === (users.length - 1) ){
 		addRows({ 
@@ -372,7 +373,6 @@ users.on('add', function(addedUser, collection, options){
 		tempAddedUsers.reset();
 	}
 });
-
 
 yotoos.on('change:unyotooed change:completed', function(yotoo){
 	// 왜 그런지는 모르겠으나 이게 호출될때마다 두번씩 호출되고 처음엔 users.length가 0이다..
@@ -391,7 +391,7 @@ yotoos.on('change:unyotooed change:completed', function(yotoo){
 	}else{
 		data.template = 'plain';
 	}
-	section.updateItemAt(index, data);
+	section.updateItemAt(index, data, {'animated': true});
 });
 
 

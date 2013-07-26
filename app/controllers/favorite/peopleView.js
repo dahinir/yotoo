@@ -27,21 +27,17 @@ yotoos.on('add', function(addedYotoo, collection, options){
 	}
 	Ti.API.info("[peopleView.js] yotoo add event");
 });
-yotoos.on('change:unyotooed', function(yotoo){
-	// var changedUser = users.where({'id_str': yotoo.get('target_id_str')}).pop();
-	/* case of unyotoo */
-	if( yotoo.get('unyotooed') ){
-		// users.trigger('disabled', changedUser);
-	/* case of reyotoo */
+
+yotoos.on('change:hided', function(yotoo){
+	var changedUser = users.where({'id_str': yotoo.get('target_id_str')}).pop();
+	if( yotoo.get('hided') ){
+		users.remove( changedUser );
 	}else{
-		// users.trigger('enabled', changedUser);
+		var tempUnhidedYotoos = Alloy.createCollection('yotoo');
+		tempUnhidedYotoos.add( yotoo );
+		fetchYotooUsers( tempUnhidedYotoos );
 	}
 });
-yotoos.on('change:hided change:past', function(e){
-	alert('[peopleView.js] yotoo changed');
-	Ti.API.info("[peopleView.js] change yotoo status");
-});
-
 
 var userListView = Alloy.createController('userListView', {
 	'users': users
@@ -50,16 +46,16 @@ userListView.getView().addEventListener('rightButtonClick', function(e){
 	var id_str = e.id_str;
 	var dialogOptions = {
 	  'title': 'hello?',
-	  'options': [L('unyotoo'), L('yotoo'), L('cancel')],
-	  'cancel': 2,
+	  'options': [L('unyotoo'), L('yotoo'), L('hide'), L('cancel')],
+	  'cancel': 3,
 	  'selectedIndex': 1,
 	  'destructive': 0
 	};
 	var optionDialog = Ti.UI.createOptionDialog(dialogOptions)
 	optionDialog.show();
 	optionDialog.addEventListener('click', function(e){
+		var yt = yotoos.where({'target_id_str':  id_str}).pop();
 		if( e.index === 0){
-			var yt = yotoos.where({'target_id_str':  id_str}).pop();
 			yt.unyotoo({
 				'mainAgent': ownerAccount,
 				'success': function(){
@@ -81,6 +77,10 @@ userListView.getView().addEventListener('rightButtonClick', function(e){
 				'error': function(){
 				}
 			});
+		}else if( e.index === 2 ){
+			yt.hide({
+				'mainAgent': ownerAccount
+			});
 		}
 	});
 });
@@ -97,8 +97,8 @@ $.peopleView.add( userListView.getView() );
 var fetchYotooUsers = function( newYotoos ) {
 	var userIds = "";
 	newYotoos.map(function(yotoo){
-		if( yotoo.get('unyotooed') ){
-			// return;
+		if( yotoo.get('hided') ){
+			return;
 		}
 		userIds = userIds + "," + yotoo.get('target_id_str');
 	});
