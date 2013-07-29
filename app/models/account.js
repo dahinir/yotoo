@@ -13,7 +13,7 @@ exports.definition = {
 			"access_token_secret":"string",
 			
 			// for ACS
-			"id_str_acs": "string",
+			"id": "string",
 			// "session_id_acs": "string",
 			
 			// for this app
@@ -21,7 +21,7 @@ exports.definition = {
 			"status_active_tab_index": "int"
 		},
 		adapter: {
-			// idAttribute: "id_str", // must PRIMARY KEY
+			idAttribute: "id",
 			type: "sql",
 			collection_name: "account"
 		}
@@ -47,12 +47,18 @@ exports.definition = {
 				if( this.yotoos ){
 					// alert("exist yotoos: " + this.yotoos.length);
 				}else{
-					var yotooArray = Alloy.Globals.yotoos.where({'source_id_str': this.get('id_str')});
-					
-					this.yotoos = Alloy.createCollection('yotoo', yotooArray);
-					// this.yotoos.cloudApi = require('cloudProxy').getCloud();
+					var relevantYotoos = Alloy.Globals.yotoos.where({'source_id_str': this.get('id_str')});
+					this.yotoos = Alloy.createCollection('yotoo', relevantYotoos);
 				}
 				return this.yotoos;
+			},
+			'getChats': function(){
+				if( this.chats ){
+				}else {
+					var relevantChats = Alloy.Globals.chats.where({'owner_id': this.get('id')});
+					this.chats = Alloy.createCollection('chat', relevantChats);
+				}
+				return this.chats;
 			},
 			'createCollection': function(typeOfCollection){
 				var collection = Alloy.createCollection(typeOfCollection);
@@ -126,26 +132,22 @@ exports.definition = {
 			addNewAccount: function (callback){
 				var newAccount = Alloy.createModel('account');
 				var twitterAdapter = require('twitter');
-				////// var twitterAPI = new TwitterAdapter.Twitter(TwitterAdapter.tokens);
 				var twitterApi = twitterAdapter.create();
 				
 				// log in via webView
 				twitterApi.authorize({
 					'onSuccess': function(){
-						// Ti.API.debug("authorize success");
-						// after log in.
 						newAccount.set({
 							'access_token': twitterApi.getAccessTokenKey(),
-							'access_token_secret': twitterApi.getAccessTokenSecret()
+							'access_token_secret': twitterApi.getAccessTokenSecret(),
+							'status_active_tab': 0
 						});
-						
-						// newAccount.set('active', true);
-						newAccount.set('status_active_tab', 0);
+						// authorized twitter api
 						newAccount.twitterApi = twitterApi;
-						Ti.API.debug("[account.js] accessTokenKey: " + newAccount.get('access_token'));
-						Ti.API.debug("[account.js] accessTokenSecret: " + newAccount.get('access_token_secret'));
-						/////var user = Alloy.createModel('User');
-						/////user.ownerAccount = newAccount;
+
+						// Ti.API.debug("[account.js] accessTokenKey: " + newAccount.get('access_token'));
+						// Ti.API.debug("[account.js] accessTokenSecret: " + newAccount.get('access_token_secret'));
+
 						var user = newAccount.createModel('user');
 						
 						var yotoos = newAccount.getYotoos();
@@ -167,37 +169,44 @@ exports.definition = {
 									'profile_background_image_url': user.get('profile_background_image_url')
 								});
 								Ti.API.info("[account.js] name: " + newAccount.get('name'));
-								
+
 								// cloud externalAccount create (twitter) //
-								var Cloud = require('cloudProxy').getCloud();
-								Cloud.externalAccountLoginAdapter({
-									id: user.get('id_str'),
-									type: 'twitter',
-									token: newAccount.get('access_token')
-								}, function (e) {
-								    if (e.success) {
+								var cloudApi = require('cloudProxy').getCloud();
+								cloudApi.externalAccountLoginAdapter({
+									'id': user.get('id_str'),
+									'type': 'twitter',
+									'token': newAccount.get('access_token'),
+									'onSuccess': function(e){
 								        var user = e.users[0];
-								        Ti.API.info('[account.js] Cloud login success! sessionId:'+Cloud.sessionId+ ' id: ' + user.id + ' first name: ' + user.first_name +' last name: ' + user.last_name);
-								        newAccount.set('id_str_acs', user.id);
+								        Ti.API.info('[account.js] Cloud login success! sessionId:'+cloudApi.sessionId+ ' id: ' + user.id + ' first name: ' + user.first_name +' last name: ' + user.last_name);
+
+								        newAccount.set('id', user.id);
+										// must save() with id attr.
 								        newAccount.save();
-								        // alert('[account.js] current '+ currentAccount.get('session_id_acs') );
+								        
+										// accounts managed globally
+										Alloy.Globals.accounts.add( newAccount);
+										Alloy.Globals.accounts.changeCurrentAccount( newAccount );
+										
+										callback(newAccount);
 								        
 								        // push notification subscribe.. only fo iOS?
 								        // 클라우드 사용자는 다른데 device_token은 같아도 될까..
-										Cloud.PushNotifications.subscribe({
+										cloudApi.PushNotifications.subscribe({
 										    channel: 'yotoo',
 										    type: 'ios',
 										    device_token: Ti.Network.getRemoteDeviceUUID()
 										}, function (e) {
 										    if (e.success) {
-										        alert('Success subscribe');
+										        alert('[accounts.js] Success subscribe');
 										    } else {
-										        alert('Error subscribe:\n' + ((e.error && e.message) || JSON.stringify(e)));
+										        alert('[accounts.js] Error subscribe:\n' + ((e.error && e.message) || JSON.stringify(e)));
 										    }
-										});								        
-								    } else {
-								        Ti.API.info('[accounts.js] Error: ' + ((e.error && e.message) || JSON.stringify(e)));
-								    }
+										});				        
+									},
+									'onError': function(){
+								        Ti.API.info('[accounts.js] Error acs login: ' + ((e.error && e.message) || JSON.stringify(e)));
+									}
 								});
 								
 								
@@ -211,15 +220,6 @@ exports.definition = {
 								}
 								*/
 								
-								// save new account to persistence store
-								newAccount.save(); // must call after callback
-								Ti.API.info("[account.js] new account saved");
-									
-								// accounts managed globally
-								Alloy.Globals.accounts.add( newAccount);
-								Alloy.Globals.accounts.changeCurrentAccount( newAccount );
-								
-								callback(newAccount);
 							},
 							'onFailure': function(){
 								Ti.API.info("[account.js] user.fetchFromServer failure")

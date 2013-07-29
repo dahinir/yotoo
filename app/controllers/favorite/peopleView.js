@@ -46,8 +46,8 @@ userListView.getView().addEventListener('rightButtonClick', function(e){
 	var id_str = e.id_str;
 	var dialogOptions = {
 	  'title': 'hello?',
-	  'options': [L('unyotoo'), L('yotoo'), L('hide'), L('cancel')],
-	  'cancel': 3,
+	  'options': [L('unyotoo'), L('yotoo'), L('hide'), L('chat'), L('cancel')],
+	  'cancel': 4,
 	  'selectedIndex': 1,
 	  'destructive': 0
 	};
@@ -81,6 +81,11 @@ userListView.getView().addEventListener('rightButtonClick', function(e){
 			yt.hide({
 				'mainAgent': ownerAccount
 			});
+		}else if( e.index === 3){
+			var chatWindow = Alloy.createController('chatWindow', {
+				'targetIdStr': id_str
+			});
+			chatWindow.getView().open();
 		}
 	});
 });
@@ -134,6 +139,9 @@ fetchYotooUsers(yotoos);
 var testButton = Ti.UI.createButton();
 $.peopleView.add( testButton);
 testButton.addEventListener('click', function(){
+	users.map(function(user){
+		alert(JSON.stringify(user));
+	});
 	// alert(JSON.stringify(yotoos.at(0).__proto__.config));
 	// require('cloudProxy').getCloud().deleteAllYotoos( ownerAccount );
 	

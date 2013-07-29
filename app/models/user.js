@@ -49,7 +49,7 @@ exports.definition = {
 				var onFailure = options.onFailure;
 				
 				var thisModel = this;
-				var twitterApi = thisModel.twitterApi;
+				var twitterApi = this.twitterApi;
 				twitterApi.fetch({
 					'purpose': options.purpose,
 					'params': params,

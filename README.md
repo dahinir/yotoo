@@ -108,6 +108,7 @@ for heavy user, specialized relationship
 	:pull to refresh 구현 
 * yotoo.checkTargetYotoo() 에서 유투 성공 했을때 보내는 노티피케이션 실패시 큐에 넣던지 해서 성공할때까지 다시 시
 	:노티피케이션을 활성화 하지 않는 사용자도 생각해서 프로그램 시작시 컴플릿된 유투가 있는지 확인 해야 한다.
+* 노티피케이션 보낼때 최종 길이 200보다 크면 alert를 말줄임표로 줄이는 코드  
 
 ## work right now!
 * chat muther fucker!

@@ -38,23 +38,27 @@ if (typeof Object.create !== 'function'){
 // This will create a singleton if it has not been previously created, or retrieves the singleton if it already exists.
 var accounts = Alloy.Collections.instance('account');
 var yotoos = Alloy.Collections.instance('yotoo');
+var chats = Alloy.Collections.instance('chat');
 
 accounts.fetch();
 yotoos.fetch();
-
+chats.fetch();
 
 Ti.API.info("[alloy.js] " + accounts.length + " loged in accounts loaded");
 Ti.API.info("[alloy.js] " + yotoos.length + " yotoos");
+Ti.API.info("[alloy.js] " + chats.length + " chats");
 
 Alloy.Globals.accounts = accounts;
 Alloy.Globals.yotoos = yotoos;
+Alloy.Globals.chats = chats;
 
 var twitterAdapter = require('twitter');
 accounts.map(function(account){
+	
 	// account.save({'status_active_tab_index': 12})
 	Ti.API.info("[alloy.js] load account: @" + account.get('screen_name')
-	+"\t, "+account.get('id_str')+" ," +account.get('id_str_acs')
-	+", "+ account.id + ", "+ account.get('active') +", "+account.get('status_active_tab_index'));
+	+"\t, "+account.get('id_str')+" ," +account.get('id')
+	+", "+ account.get('active') +", "+account.get('status_active_tab_index'));
 
 	account.twitterApi = twitterAdapter.create({
 		accessTokenKey: account.get('access_token'),
@@ -79,6 +83,11 @@ yotoos.map(function( yotoo){
 		+ " " + yotoo.get('completed'));
 });
 
+chats.map(function( chat ){
+	Ti.API.info("[alloy.js] chats: " + chat.get('id')
+		+ " " + chat.get('chatgroup') + " " + chat.get('message'));
+});
+
 
 if( ENV_DEV ){
 	// alert("ENV_DEV");
@@ -95,6 +104,7 @@ if( OS_IOS ){
 	// alert("os");
 	// Ti.API.debug("[index.js] this is IOS");
 	// alert("[index.js] this is IOS");
+	Ti.UI.iPhone.setAppBadge( 12 );
 	Ti.Network.registerForPushNotifications({
 		type: [
 			Ti.Network.NOTIFICATION_TYPE_ALERT,
@@ -111,6 +121,7 @@ if( OS_IOS ){
 			 */
 			alert("callback");
 			alert(JSON.stringify(e));
+			Ti.API.info(JSON.stringify(e.data));
 			var chatWindow = Alloy.createController('chatWindow');
 			chatWindow.getView().open();
 			// e.data.alert: hi hehe

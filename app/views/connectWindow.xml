@@ -1,5 +1,5 @@
 <Alloy>
-	<Window id="connectWindow" class="appWindow">
+	<Window id="connectWindow" class="tapWindow">
 		<Require id="navBarView" src="navBarView" />
 		<Require id="tweetsView" src="tweetsView" />
 	</Window>

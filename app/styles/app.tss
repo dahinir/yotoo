@@ -18,6 +18,9 @@
 ".appWindow": {
 	layout: "vertical"
 },
+".tapWindow":{
+	layout: "vertical"
+},
 "Button": {
 	// backgroundImage:'images/button_bg.png',
 	// height:expr(10+20),

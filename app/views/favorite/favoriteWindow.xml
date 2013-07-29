@@ -1,5 +1,5 @@
 <Alloy>
-	<Window id="favoriteWindow" class="appWindow" >
+	<Window id="favoriteWindow" class="tapWindow" >
 		<Require id="navBarView" src="navBarView" />
 		<!-- <Require id="tweetsView" src="favorit/tweetsView" /> -->
 		<Require id="peopleView" src="favorite/peopleView" />

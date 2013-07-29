@@ -1,5 +1,5 @@
 <Alloy>
-	<Window id="timelineWindow" class="appWindow">
+	<Window id="timelineWindow" class="tapWindow">
 		<Require id="navBarView" src="navBarView" />
 		<Require id="tweetsView" src="tweetsView" />
 	</Window>

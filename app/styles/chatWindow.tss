@@ -1,11 +1,65 @@
 "#chatWindow": {
-	modal: false,
-	height: Ti.UI.SIZE,
-	width: Ti.UI.SIZE,
-	fullscreen: false,
+	// layout: "vertical",
+	modal: true
+	// height: 200,
+	// width: 200
+	// fullscreen: false
 	// bubbleParent : true,
 	// translucent : true,
-	backgroundColor: "transparent"
+	// backgroundColor: "transparent"
+},
+"#titleView": {
+	height: 50,
+	width: "100%",
+	top: 0,
+	backgroundColor: "#090"
+},
+"#titleLabel": {
+	color: '#FFF',
+	font: {
+		fontFamily:'Arial',
+		fontSize: 19,
+		fontWeight: 'bold'
+	}
+},
+"#remainCountToBurn": {
+	top: 40,
+	width: 60,
+	height: 27,
+	borderRadius: 10,
+	backgroundColor: "#090",
+	textAlign: Ti.UI.TEXT_ALIGNMENT_CENTER,
+	color: "#FFF", 
+	font: {
+		fontFamily:'Arial',
+		fontSize: 16
+	},
+	zIndex: 10
+},
+"#chatTableView": {
+	top: 50,
+	width: "100%",
+	separatorColor: "#F00"
+},
+"#toolBarView": {
+	// layout: "horizontal",
+	backgroundColor: "#500",
+	// top: 0,
+	height: 45,
+	width: "100%",
+	borderRadius: 20,
+	bottom: 216 // 216 is softkeyboard size
+},
+"#chatTextArea": {
+	font: {fontSize: 16},
+	// top: 0,
+	left: 0,
+	width: "80%",
+	borderRadius: 20,
+	backgroundColor: "#DDD"
+},
+"#sendButton": {
+	right: 0,
+	width: 50,
+	height: 32
 }
-
-

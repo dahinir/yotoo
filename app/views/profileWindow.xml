@@ -1,5 +1,5 @@
 <Alloy>
-	<Window id="profileWindow" class="appWindow">
+	<Window id="profileWindow" class="tapWindow">
 		<Require id="navBarView" src="navBarView" />
 		<Require id="userView" src="userView" />
 	</Window>

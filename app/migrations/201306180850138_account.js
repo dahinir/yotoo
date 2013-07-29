@@ -1,4 +1,5 @@
 migration.up = function(db) {
+	// db.dropTable("account");
 	db.createTable({
 		"columns": {
 			"id_str":"TEXT",
@@ -10,14 +11,14 @@ migration.up = function(db) {
 			"access_token":"TEXT",
 			"access_token_secret":"TEXT",
 			
-			"id_str_acs":"TEXT", 
+			"id":"TEXT PRIMARY KEY", 
 			// "session_id_acs": "TEXT",
 			
 			"active":"INTEGER",
 			"status_active_tab_index":"INTEGER"
 		},
 		"adapter": {
-			// "idAttribute": "id_str",
+			"idAttribute": "id",
 			"type": "sql",
 			"collection_name": "account"
 		}

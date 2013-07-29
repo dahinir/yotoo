@@ -111,14 +111,15 @@ exports.definition = {
 			 */
 			'fetchFromServer': function(options){
 				var mainAgent = options.mainAgent;
-				var thisCollection = this;
-				var query ={
-					'source_id_str': mainAgent.get('id_str')
-				};
 				var add = options.add;
 				var reset = options.reset;
 				var success = options.success;
 				var error = options.error;
+				
+				var thisCollection = this;
+				var query ={
+					'source_id_str': mainAgent.get('id_str')
+				};
 				
 				this.cloudApi.excuteWithLogin({
 					'mainAgent': mainAgent,
@@ -149,6 +150,12 @@ exports.definition = {
 				var success = options.success;
 				var error = options.error;
 				var thisCollection = this;
+				var fields = {
+						'hided': 0,	// false
+						'completed': 0,
+						'unyotooed': 0,
+						'burned': 0
+				};
 
 				var existYotoo = this.where({'target_id_str': targetUser.get('id_str')}).pop();
 				/* case of reyotoo */
@@ -156,14 +163,10 @@ exports.definition = {
 					// alert("exist");
 					this.cloudApi.excuteWithLogin({
 						'mainAgent': sourceUser,
+						'modelType': 'yotoo',
 						'method': 'put',
 						'acsId': existYotoo.get('id'),
-						'fields': {
-							'hided': 0,	// false
-							'completed': 0,
-							'unyotooed': 0,
-							'burned': 0
-						},
+						'fields': fields,
 						'onSuccess': function( result ){
 							existYotoo.targetUser = targetUser;
 							existYotoo.set(result);
@@ -189,19 +192,16 @@ exports.definition = {
 					});
 				/* case of new yotoo */
 				}else{
+					_.extend(fields, {
+						'source_id_str': sourceUser.get('id_str'),
+						'target_id_str': targetUser.get('id_str'),
+						'platform': 'twitter'	// default
+					});
 					this.cloudApi.excuteWithLogin({
 						'mainAgent': sourceUser,
 						'method': 'post',
 						'modelType': 'yotoo',
-						'fields': {
-							'source_id_str': sourceUser.get('id_str'),
-							'target_id_str': targetUser.get('id_str'),
-							'hided': 0,	// false
-							'completed': 0,
-							'unyotooed': 0,
-							'burned': 0,
-							'platform': 'twitter'	// default
-						},
+						'fields': fields,
 						'onSuccess': function(result){
 							// for local save
 							var newYotoo = Alloy.createModel('yotoo');
@@ -264,7 +264,6 @@ exports.definition = {
 							checkingYotoo.set({'completed': 1});
 							checkingYotoo.save();
 							alert(L('YOTOO!!'));
-							
 
 							thisCollection.sendYotooNotification({
 								'sourceUser': sourceUser,
@@ -290,10 +289,18 @@ exports.definition = {
 				var error = options.error;
 				var thisCollection = this;
 				
+				var payload = {
+					'sound':'default',
+					'alert':"@"+sourceUser.get('screen_name') + " " + L('yotoo_you_too'),
+					'f':sourceUser.get('id_str'),
+					't':targetUser.get('id_str')
+				};
+				alert(targetUser.get('id'));
+				
 				var fields = {
 					'channel': 'yotoo',
-					'receiverAcsId': targetUser.get('id_str_acs'),
-					'payload':  sourceUser.get('name') + " " + L('yotoo_you_too')
+					'receiverAcsId': targetUser.get('id'),
+					'payload': payload
 				};
 				
 				this.cloudApi.excuteWithLogin({

@@ -1,5 +1,5 @@
 <Alloy>
-	<Window id="discoverWindow" class="appWindow" >
+	<Window id="discoverWindow" class="tapWindow" >
 		<Require id="navBarView" src="navBarView" />
 		<!-- <Require id="localView" src="discover/localView" /> -->
 		<Require id="globalView" src="discover/globalView" />
