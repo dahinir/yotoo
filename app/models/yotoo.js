@@ -44,7 +44,7 @@ exports.definition = {
 					'mainAgent': mainAgent,
 					'method': 'put',
 					'modelType': 'yotoo',
-					'acsId': this.get('id'),
+					'id': this.get('id'),
 					'fields': fields,
 					'onSuccess': function( result ){
 						thisModel.set(fields);
@@ -76,7 +76,7 @@ exports.definition = {
 					'mainAgent': mainAgent,
 					'method': 'put',
 					'modelType': 'yotoo',
-					'acsId': this.get('id'),
+					'id': this.get('id'),
 					'fields': fields,
 					'onSuccess': function( result ){
 						thisModel.set(fields);
@@ -165,7 +165,7 @@ exports.definition = {
 						'mainAgent': sourceUser,
 						'modelType': 'yotoo',
 						'method': 'put',
-						'acsId': existYotoo.get('id'),
+						'id': existYotoo.get('id'),
 						'fields': fields,
 						'onSuccess': function( result ){
 							existYotoo.targetUser = targetUser;
@@ -247,7 +247,7 @@ exports.definition = {
 					'mainAgent': sourceUser,
 					'method': 'get',
 					'modelType': 'yotoo',
-					'fields': query,
+					'query': query,
 					'onSuccess': function( resultsJSON ){
 						var checkingYotoo = thisCollection.where({
 							'source_id_str' : sourceUser.get('id_str'),
@@ -295,18 +295,14 @@ exports.definition = {
 					'f':sourceUser.get('id_str'),
 					't':targetUser.get('id_str')
 				};
-				alert(targetUser.get('id'));
 				
-				var fields = {
-					'channel': 'yotoo',
-					'receiverAcsId': targetUser.get('id'),
-					'payload': payload
-				};
-				
-				this.cloudApi.excuteWithLogin({
+				thisCollection.cloudApi.excuteWithLogin({
 					'mainAgent': sourceUser,
+					'targetUser': targetUser,
 					'method': 'sendPushNotification',
-					'fields': fields,
+					'channel': 'yotoo',
+					// 'receiverAcsId': targetUser.get('id'),
+					'payload': payload,
 					'onSuccess': function(e){
 						Ti.API.info("[yotoo.sendYotooNotification] success");
 
@@ -319,7 +315,7 @@ exports.definition = {
 						thisCollection.cloudApi.excuteWithLogin({
 							'mainAgent': sourceUser,
 							'method': 'put',
-							'acsId': relevantYotoo.get('id'),
+							'id': relevantYotoo.get('id'),
 							'fields': {
 								'completed': 1
 							},

@@ -139,9 +139,6 @@ fetchYotooUsers(yotoos);
 var testButton = Ti.UI.createButton();
 $.peopleView.add( testButton);
 testButton.addEventListener('click', function(){
-	users.map(function(user){
-		alert(JSON.stringify(user));
-	});
 	// alert(JSON.stringify(yotoos.at(0).__proto__.config));
 	// require('cloudProxy').getCloud().deleteAllYotoos( ownerAccount );
 	

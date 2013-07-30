@@ -87,6 +87,7 @@ for heavy user, specialized relationship
 
 
 ## work now
+* 사용자 token이 다 노출 되잖아. access control list로 해결 가능 하나?
 * appStatus 모델을 만들어 저장. account.js의 active 필드 같은걸 이쪽으로 옮겨?
 * addNewYotoo() 할 때 source_id_str, target_id_str 같은것이 있으면 
 	:hided일 경우 알람창으로 유저 확인후 hided를 false (무료)

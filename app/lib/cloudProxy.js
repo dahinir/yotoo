@@ -93,6 +93,7 @@ cloudProxy.externalAccountLoginAdapter = function(options){
 	}
 };
 
+
 /**
  * @param {Object} [options.mainAgent] account model
  * @param {String} [options.method] 'get', 'post', 'sendPushNotification'
@@ -102,7 +103,7 @@ cloudProxy.externalAccountLoginAdapter = function(options){
  * @param {Function} [options.onSuccess]
  * @param {Function} [options.onError]
  */
-cloudProxy.excuteWithLogin = function( options){
+cloudProxy.excuteWithLogin = function(options){
 	var mainAgent = options.mainAgent;
 	var method = options.method;
 	
@@ -121,6 +122,40 @@ cloudProxy.excuteWithLogin = function( options){
 		}
 	});
 };
+
+cloudProxy.getAcsUser = function(options) {
+	var query = options.query;
+	var onSuccess = options.onSuccess;
+	var onError = options.onError;
+	
+	query.type = query.type || "twitter";
+	query.id = query.id + "";	// number to string
+	var query = {
+			"external_accounts.external_id" : query.id,
+			"external_accounts.external_type" : query.type
+	};
+	
+	Cloud.Users.query({
+		"where": query 
+	}, function(e) {
+		if (e.success) {
+			if ( e.users.length === 0 && onError){
+				Ti.API.info('[cloudProxy.getAcsUser] no match user');
+				onError(e);
+				return;
+			}
+			if (onSuccess) {
+				onSuccess( e.users[0] );
+			}
+		} else {
+			Ti.API.info('[cloudProxy.getAcsUser] Error:\n' + ((e.error && e.message) || JSON.stringify(e)));
+			if (onError) {
+				onError(e);
+			}
+		}
+	});
+}; 
+
 
 cloudProxy.post = function(options){
 	var modelType = options.modelType || 'yotoo';
@@ -155,14 +190,14 @@ cloudProxy.post = function(options){
 
 cloudProxy.put = function(options){
 	var modelType = options.modelType || 'yotoo';
-	var acsId = options.acsId;
+	var id = options.id;
 	var fields = options.fields;
 	var onSuccess = options.onSuccess;
 	var onError = options.onError;
 
 	Cloud.Objects.update({
 	    'classname': modelType,
-	    'id': acsId,
+	    'id': id,
 	    'fields': fields
 	}, function (e) {
 	    if (e.success) {
@@ -181,7 +216,7 @@ cloudProxy.put = function(options){
 
 cloudProxy.get = function(options){
 	var modelType = options.modelType || 'yotoo';
-	var query = options.fields;
+	var query = options.query;
 	var onSuccess = options.onSuccess;
 	var onError = options.onError;
 
@@ -206,42 +241,59 @@ cloudProxy.get = function(options){
 };
 
 cloudProxy.sendPushNotification = function(options){
-	var fields = options.fields;
-	
-	var channel = fields.channel || 'yotoo';
-	var receiverAcsId = fields.receiverAcsId;
-	var payload = fields.payload;
+	var targetUser = options.targetUser;
+	var channel = options.channel || 'yotoo';
+	var receiverAcsId = options.receiverAcsId;
+	var payload = options.payload;
 	var onSuccess = options.onSuccess;
 	var onError = options.onError;
 
-	Cloud.PushNotifications.notify({
-		'channel' : channel,
-		// 'friends' : Any,
-		'to_ids' : receiverAcsId,
-		'payload' : payload
-		// 'payload': {
-		    // "atras": "your_user_id",
-		    // "tags": [
-		        // "tag1",
-		        // "tag2"
-		    // ],
-		    // "badge": 2,
-		    // "sound": "default",
-		    // "alert" : "Push Notification Test"
-		// }
-	}, function(e) {
-		if (e.success) {
-			alert('[cloudProxy.sendNotification] Success');
-			if( onSuccess ){
-				onSuccess(e);
+	var excute = function(acsId){
+		Cloud.PushNotifications.notify({
+			'channel' : channel,
+			// 'friends' : Any,
+			'to_ids' : acsId,
+			'payload' : payload
+			// 'payload': {
+			    // "atras": "your_user_id",
+			    // "tags": [
+			        // "tag1",
+			        // "tag2"
+			    // ],
+			    // "badge": 2,
+			    // "sound": "default",
+			    // "alert" : "Push Notification Test"
+			// }
+		}, function(e) {
+			if (e.success) {
+				alert('[cloudProxy.sendNotification] Success');
+				if( onSuccess ){
+					onSuccess(e);
+				}
+			} else {
+				alert('[cloudProxy.sendNotification] Error:\n' + ((e.error && e.message) || JSON.stringify(e)));
+				if( onError ){
+					onError(e);
+				}
 			}
-		} else {
-			alert('[cloudProxy.sendNotification] Error:\n' + ((e.error && e.message) || JSON.stringify(e)));
-			if( onError ){
-				onError(e);
+		});
+	};
+	
+	if( receiverAcsId ){
+		excute(receiverAcsId);
+	}else{
+		cloudProxy.getAcsUser({
+			'query': {'id': targetUser.get('id')},
+			'onSuccess': function( user ){
+				excute( user.id );	// user.id is ACS ID
+			},
+			'onError': function(){
+				if( onError ){
+					onError(e);
+				}
 			}
-		}
-	});
+		});
+	}
 };
 
 cloudProxy.getChatGroup = function(options){
