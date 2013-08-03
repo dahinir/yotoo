@@ -18,7 +18,7 @@ exports.definition = {
 		},
 		adapter: {
 			// 'migration': ,
-			'idAttribute': "id",
+			'idAttribute': "id",	// ACS id
 			'type': "sql",
 			'collection_name': "yotoo"
 		}
@@ -301,7 +301,6 @@ exports.definition = {
 					'targetUser': targetUser,
 					'method': 'sendPushNotification',
 					'channel': 'yotoo',
-					// 'receiverAcsId': targetUser.get('id'),
 					'payload': payload,
 					'onSuccess': function(e){
 						Ti.API.info("[yotoo.sendYotooNotification] success");

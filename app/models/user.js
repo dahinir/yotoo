@@ -2,11 +2,10 @@ exports.definition = {
 	
 	config: {
 		"columns": {
-			/*
-			"name":"string"
-			*/
+			"acs_id":"string"
 		},
 		"adapter": {
+			// "idAttribute": "id_str",	// twitter id
 			"type": "properties",
 			"collection_name": "user"
 		}

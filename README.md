@@ -113,7 +113,11 @@ for heavy user, specialized relationship
 
 ## work right now!
 * chat muther fucker!
-
+	:chatWindow.exports 함수로 .show()같은걸 사용해 노티피케이션을 받았을때 적절한 채팅창을 보여준다.
+		:채팅창이 활성화 상태면 채팅을 이어가고 채팅창이 활성화 상태가 아니면 적절한 알람만 보여준다.
+	:notification에 메세지를 최대한 넣고 보낸다.
+		:노티피케이션의 메세지가 풀 일때만 chat를 패치한다.
+* account의 idAttribute를 user와 동일하게 acs_id로 바꾸는게 좋을것 같은데..
 
 
 탭별로 디렉토리를 나누자

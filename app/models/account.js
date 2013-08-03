@@ -21,7 +21,7 @@ exports.definition = {
 			"status_active_tab_index": "int"
 		},
 		adapter: {
-			idAttribute: "id",
+			idAttribute: "id",	// ACS id
 			type: "sql",
 			collection_name: "account"
 		}
@@ -30,18 +30,9 @@ exports.definition = {
 	extendModel: function(Model) {		
 		_.extend(Model.prototype, {
 			// Implement the initialize method	
-			initialize: function(e, e2){
+			'initialize': function(e, e2){
 				// alert("init" + JSON.stringify(e));
 				// alert("init2" + JSON.stringify(e2));
-			},
-			
-			// Extend Backbone.Model
-			testFunction: function (attrs){
-				Ti.API.info("testFunc: "+ this.get('name'));	// it works!
-				for (var key in attrs) {
-                    var value = attrs[key];
-                    Ti.API.info("testFunction: "+ value);
-                }
 			},
 			'getYotoos': function(){
 				if( this.yotoos ){

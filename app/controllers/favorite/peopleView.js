@@ -51,10 +51,13 @@ userListView.getView().addEventListener('rightButtonClick', function(e){
 	  'selectedIndex': 1,
 	  'destructive': 0
 	};
-	var optionDialog = Ti.UI.createOptionDialog(dialogOptions)
-	optionDialog.show();
+	var optionDialog = Ti.UI.createOptionDialog(dialogOptions);
 	optionDialog.addEventListener('click', function(e){
 		var yt = yotoos.where({'target_id_str':  id_str}).pop();
+		var targetUser = users.where({
+			'id_str': id_str
+		}).pop();
+
 		if( e.index === 0){
 			yt.unyotoo({
 				'mainAgent': ownerAccount,
@@ -65,10 +68,6 @@ userListView.getView().addEventListener('rightButtonClick', function(e){
 			});
 			// yotoos.where({'target_id_str':  e.itemId}).pop().destroy();
 		}else if( e.index === 1){
-			var targetUser = users.where({
-				'id_str': id_str
-			}).pop();
-
 			yotoos.addNewYotoo({
 				'sourceUser': ownerAccount,
 				'targetUser': targetUser,
@@ -83,11 +82,12 @@ userListView.getView().addEventListener('rightButtonClick', function(e){
 			});
 		}else if( e.index === 3){
 			var chatWindow = Alloy.createController('chatWindow', {
-				'targetIdStr': id_str
+				'targetUser': targetUser
 			});
 			chatWindow.getView().open();
 		}
 	});
+	optionDialog.show();
 });
 $.peopleView.add( userListView.getView() );
 

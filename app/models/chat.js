@@ -31,41 +31,53 @@ exports.definition = {
 			'initialize': function(e) {
 				this.cloudApi = require('cloudProxy').getCloud();
 			},
+			'comparator': function(chat){
+				return chat.get('updated_at');
+			},
+			/* custom functions */
 			'fetchFromServer': function(options){
 				var mainAgent = options.mainAgent;
-				var thisCollection = this;
 				var success = options.success;
 				var error = options.error;
-				var query = {};
+				
 				var lastUpdateDateTime;
+				var query = {};
+				var thisCollection = this;
 				
 				if( lastUpdateDateTime ){
-					query.where = {
-						'updated_at': { '$gt': lastUpdateDateTime }
-					};
+					query.updated_at = { '$gt': lastUpdateDateTime };
 				}
 				
 				this.cloudApi.excuteWithLogin({
 					'mainAgent': mainAgent,
 					'method': 'getChats',
 					'query': query,
-					'onSuccess': function(){},
+					'onSuccess': function(chats){
+						thisCollection.add(chats);
+					},
 					'onError': function(){}
 				});
 			},
 			'createNewChat': function(options){
 				var mainAgent = options.mainAgent;
-				var thisCollection = this;
+				var targetUser = options.targetUser;
+				var message = options.message;
 				var success = options.success;
 				var error = options.error;
-				var fields;
+				
+				var thisCollection = this;
 				
 				this.cloudApi.excuteWithLogin({
 					'mainAgent': mainAgent,
+					'targetUser': targetUser,
 					'method': 'postChat',
-					'fields': fields,
-					'onSuccess': function(){},
-					'onError': function(){}
+					'message': message,
+					'onSuccess': function(chat){
+						thisCollection.add(chat);
+					},
+					'onError': function(e){
+						Ti.API.info(JSON.stringify(e));
+					}
 				});
 			}
 		});

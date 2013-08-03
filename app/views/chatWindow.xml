@@ -1,19 +1,20 @@
 <Alloy>
-	<Window id="chatWindow">
+	<Window id="chatWindow" >
 		<View id="titleView" >
 			<Button id="cancelButton" class="leftNavButton" />
 			<Label id="titleLabel" />
 		</View>
 		<Label id="remainCountToBurn" >100</Label>
 		<!-- <View id="chatScreen"> -->
-		<TableView id="chatTableView">
-			
-		</TableView>
-		<View id="toolBarView" >
-			<TextArea id="chatTextArea" textAlign="left" 
-				keyboardType="Ti.UI.KEYBOARD_DEFAULT" 
-				returnKeyType="Ti.UI.RETURNKEY_DEFAULT" suppressReturn="false" />
-			<Button id="sendButton" />
+		<View id="chatView" scrollingEnabled ="true">
+			<TableView id="chatTableView" bubbleParent="false">
+			</TableView>
+			<View id="toolBarView" >
+				<TextArea id="chatTextArea" textAlign="left" 
+					keyboardType="Ti.UI.KEYBOARD_DEFAULT" 
+					returnKeyType="Ti.UI.RETURNKEY_DEFAULT" suppressReturn="false" />
+				<Button id="sendButton" />
+			</View>
 		</View>
 
 	</Window>

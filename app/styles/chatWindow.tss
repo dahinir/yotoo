@@ -36,19 +36,29 @@
 	},
 	zIndex: 10
 },
-"#chatTableView": {
+"#chatView": {
+	// layout: "vertical",
 	top: 50,
+	height: "auto",
+	borderColor: "#00F",
+	borderRadius: 20
+},
+"#chatTableView": {
+	top: 0,
 	width: "100%",
+	// height: 'auto',
+	bottom: 45,	// toolBarView's height
 	separatorColor: "#F00"
 },
 "#toolBarView": {
 	// layout: "horizontal",
 	backgroundColor: "#500",
 	// top: 0,
+	bottom: 0,
 	height: 45,
 	width: "100%",
-	borderRadius: 20,
-	bottom: 216 // 216 is softkeyboard size
+	// bottom: 216, // 216 is softkeyboard size
+	borderRadius: 20
 },
 "#chatTextArea": {
 	font: {fontSize: 16},
