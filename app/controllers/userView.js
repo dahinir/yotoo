@@ -80,7 +80,7 @@ var setUser = function( userId ){
 	user.fetchFromServer({
 		'purpose': purpose,
 		'params': params,
-		'onSuccess': function(){
+		'success': function(){
 			$.profileImage.image = user.get('profile_image_url_https').replace(/_normal\./g, '_bigger.');
 			$.name.text = user.get('name');
 			if( user.get('verified') ){
@@ -144,7 +144,7 @@ var setUser = function( userId ){
 						'source_id': ownerAccount.get('id_str'),
 						'target_id': userId
 					},
-					'onSuccess': function( results ){
+					'success': function( results ){
 						if( user.get('following') ){
 							if(results.relationship.source.want_retweets){
 								moreTaskOptions.options[2] = L('disable_retweets');
@@ -164,14 +164,14 @@ var setUser = function( userId ){
 						}
 						moreTaskOptions.title = $.relationshipIndicator.text;
 					},
-					'onFailure': function(){
+					'error': function(){
 						Ti.API.debug("[userView] fetchFromServer(for relationship) failure");
 					}				
 				});
 
 			} // end of if(purpose == "userView" )
 		},
-		'onFailure': function(){
+		'error': function(){
 			Ti.API.debug("[userView] fetchFromServer failure");
 		}
 	});
@@ -183,14 +183,14 @@ var setUser = function( userId ){
 	user.fetchMetaData({
 		'purpose': 'profileBanner',
 		'params': {'user_id': userId },
-		'onSuccess': function( result ){
+		'success': function( result ){
 			if( typeof(result) === 'object' && typeof(result.sizes) === 'object' ){
 				$.profileBannerImage.image = result.sizes.mobile_retina.url;
 			}else{
 				Ti.API.debug("[userView] what the hell is going on?");
 			}
 		},
-		'onFailure': function( result ){
+		'error': function( result ){
 			if( result.errors[0].code === 34 ){
 				Ti.API.debug("[userView] does not exist profileBanner");
 				$.userScrollableView.backgroundColor = '#666';

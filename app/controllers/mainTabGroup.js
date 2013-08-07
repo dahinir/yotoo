@@ -3,7 +3,7 @@
  * -rapodor
  */
 var args = arguments[0] || {};
-var ownerAccount = args.ownerAccount; // || yotoo.currentAccount;
+var ownerAccount = args.ownerAccount || Alloy.Globals.accounts.getCurrentAccount();
 
 $.timelineTab.title = L('timeline');
 $.connectTab.title = L('connect');

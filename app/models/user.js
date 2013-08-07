@@ -1,12 +1,22 @@
 exports.definition = {
-	
 	config: {
 		"columns": {
+			// twitter column
+			"id_str":"string",
+			"name":"string",
+			"screen_name":"string",
+			"profile_image_url_https":"string",
+			"profile_background_image_url": "string",
+			
+			// for ACS
 			"acs_id":"string"
+			
+			// for this app
+			// "cached_at":
 		},
 		"adapter": {
-			// "idAttribute": "id_str",	// twitter id
-			"type": "properties",
+			"idAttribute": "id_str",	// twitter id
+			"type": "sql",
 			"collection_name": "user"
 		}
 	},		
@@ -31,21 +41,21 @@ exports.definition = {
 			},
 			/**
 			 * @method fetchFromServer
+			 * designed like backbone.fetch()
 			 * @param {Object} options
 			 * @param {String} options.purpose Will match url
 			 * @param {Object} options.params Will use url parameter
-			 * @param {Function} [options.onSuccess] Callback function executed after a successful fetch tweets.
-			 * @param {Function} [options.onFailure] Callback function executed after a failed fetch.
+			 * @param {Function} [options.success] Callback function executed after a successful fetch tweets.
+			 * @param {Function} [options.error] Callback function executed after a failed fetch.
 			 */
-			// collection에 있는 fetch보고 배워 
 			fetchFromServer: function(options){
 				var params = {
 					'include_entities' : true,
 					'skip_status' : true
 				}; 
 				_.extend(params, options.params);
-				var onSuccess = options.onSuccess;
-				var onFailure = options.onFailure;
+				var success = options.success;
+				var error = options.error;
 				
 				var thisModel = this;
 				var twitterApi = this.twitterApi;
@@ -55,10 +65,10 @@ exports.definition = {
 					'onSuccess': function( resultJSON ){
 						// thisModel.clear();
 						thisModel.set( resultJSON );
-						onSuccess();
+						success();
 					},
 					'onFailure': function( resultJSON ){
-						onFailure();
+						error();
 					}
 				});
 			},
@@ -66,18 +76,18 @@ exports.definition = {
 			fetchMetaData: function(options){
 				var params = {};
 				_.extend(params, options.params);
-				var onSuccess = options.onSuccess;
-				var onFailure = options.onFailure;
+				var success = options.success;
+				var error = options.error;
 				
 				var twitterApi = this.twitterApi;
 				twitterApi.fetch({
 					'purpose': options.purpose,
 					'params': params,
 					'onSuccess': function( resultJSON ){
-						onSuccess( resultJSON );
+						success( resultJSON );
 					},
 					'onFailure': function( resultJSON ){
-						onFailure( resultJSON );
+						error( resultJSON );
 					}
 				});
 			}
@@ -109,6 +119,14 @@ exports.definition = {
 				
 				var thisCollection = this;
 				
+				// cached user
+				if( options.purpose === 'lookupUsers'){
+					var userIds = params.user_id.split(',');
+					for(var i = 0; i < userIds.length; i++){
+						thisCollection.add( Alloy.Globals.users.get(userIds[i]).clone() );
+					}
+				}
+				// alert(thisCollection.at(0).get('following'));
 				this.twitterApi.fetch({
 					'purpose': purpose,
 					'params': params,
@@ -116,11 +134,28 @@ exports.definition = {
 						if( add || reset ){
 							thisCollection.reset();
 						}
-						if( options.purpose === 'lookupUsers'){
-							// Ti.API.info(JSON.stringify(resultJSON));
+						
+						// var A = Alloy.createCollection('user');
+						// A.add({id_str: "123", ff: "haha"});
+						// alert(A.at(0).get('ff') + ", "+ A.length);
+						// A.get('123').set({id_str: "123", ff: "ddd"});
+						// alert(A.at(0).get('ff') + ", "+ A.length);
+						
+						for(var i=0; i < resultJSON.length; i++){
+							var user = thisCollection.get(resultJSON[i].id_str);
+							if( user ){
+								user.set(resultJSON[i]);
+							}else{
+								// alert( JSON.stringify(resultJSON[i].id_str) );
+								thisCollection.add(resultJSON[i]);
+							}
+							Alloy.Globals.users.add(resultJSON[i]);
 						}
 						
-						thisCollection.add( resultJSON );
+						// thisCollection.add( resultJSON );
+				// alert(thisCollection.at(0).get('followers_count'));
+						Ti.API.info(Alloy.Globals.users.get('20428265').get('screen_name'));
+						
 						if( success ){
 							success(thisCollection, resultJSON, options);
 						}
@@ -132,7 +167,7 @@ exports.definition = {
 						}
 					}
 				});
-			},
+			}
 		}); // end extend
 		
 		return Collection;

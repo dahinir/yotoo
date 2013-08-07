@@ -37,21 +37,31 @@ if (typeof Object.create !== 'function'){
 // load loged account from persistent storage //
 // This will create a singleton if it has not been previously created, or retrieves the singleton if it already exists.
 var accounts = Alloy.Collections.instance('account');
+var users = Alloy.Collections.instance('user');
 var yotoos = Alloy.Collections.instance('yotoo');
 var chats = Alloy.Collections.instance('chat');
 
 accounts.fetch();
+users.fetch();
 yotoos.fetch();
 chats.fetch();
 
 Ti.API.info("[alloy.js] " + accounts.length + " loged in accounts loaded");
+Ti.API.info("[alloy.js] " + users.length + " users loaded");
 Ti.API.info("[alloy.js] " + yotoos.length + " yotoos");
 Ti.API.info("[alloy.js] " + chats.length + " chats");
 
 Alloy.Globals.accounts = accounts;
+Alloy.Globals.users = users;
 Alloy.Globals.yotoos = yotoos;
 Alloy.Globals.chats = chats;
 
+/*
+var w = Titanium.UI.createWindow({
+  url:'cloudProxy.js'
+});
+w.open();
+*/
 var twitterAdapter = require('twitter');
 accounts.map(function(account){
 	
@@ -66,6 +76,12 @@ accounts.map(function(account){
 	});
 
 }); // accounts.map()
+
+users.map(function(user){
+	// account.save({'status_active_tab_index': 12})
+	Ti.API.info("[alloy.js] load user: @" + user.get('screen_name')
+	+", "+user.get('id_str')+", " +user.get('acs_id'));
+});
 
 yotoos.map(function( yotoo){
 	// yotoo.set({'unyotooed': 12});
@@ -113,17 +129,81 @@ if( OS_IOS ){
 		],
 		callback: function(e){
 			/* 
-			 * 앱 실행중 푸시를 받으면 실행될 코드
-			 * 실행중이 아닐때는 노티피케이션을 탭해서 앱이 실행되면 실행된다.
-			 * 고로 앱 실행 상태를 체크해서 동작하도록 해야 할 듯.
-			 * 
 			 * Connection 탭의 activity history를 보여줄까?
 			 */
-			alert("callback");
-			alert(JSON.stringify(e));
-			Ti.API.info(JSON.stringify(e.data));
-			var chatWindow = Alloy.createController('chatWindow');
-			chatWindow.getView().open();
+			// alert("notification callback");
+			// alert(JSON.stringify(e));
+			// Ti.API.info(JSON.stringify(e.data));
+			var recipientAccount = accounts.where({'id_str': e.data.t}).pop();
+
+	
+			/* 상황에 맞게 상대에게 유투 노티피케이션을 보낸다.
+			if( e.data.sound === 'yotoo' ){
+				// 로컬 유투를 컴플릿 하고 새이브 하는 코드 삽입, 서버의 요투도. 
+				
+				var relevantYotoo = recipientAccount.getYotoos().where({
+					'source_id_str': e.data.t,
+					'target_id_str': e.data.f
+				}).pop(); 
+				// 유투 알람 완료를 acs에서 관리할까..
+				recipientAccount.getYotoos().sendYotooNotification({
+					'sourceUser': recipientAccount,
+					'targetUser': dd,
+					'sound': 'yotoo2',
+					'success': function(){
+					},
+					'error': function(){
+						
+					}
+				});
+			}
+			if( e.data.sound === 'yotoo2' ){
+				// 요투 노티는 안보내고 로컬 요투를 컴플릿 하고 세이브 하는 코드 삽입, 서버도. 
+			}
+			*/
+			
+			var openChatWindow = function(){
+				// e.data.t
+				if( !recipientAccount ){
+					// 당신이 사용 정지한 receiverAccount와 e.data.f가 서로 유투 했으니
+					// 로긴만 하면 시크릿 채팅을 할 수 있어용..
+					alert(L('you must loggin'));
+					return;
+				}
+				var user = recipientAccount.createModel('user');
+				user.fetchFromServer({
+					'purpose': "userView",
+					'params': {
+						'user_id': e.data.f
+					},
+					'success': function(){
+						alert(user.get('screen_name'));
+						var chatWindow = Alloy.createController('chatWindow', {
+							'ownerAccount': recipientAccount,	// must setted!
+							'targetUser': user
+						});
+						chatWindow.getView().open();
+					},
+					'error': function(){}
+				});
+			};
+			
+			// case of background
+			if( e.inBackground ) {
+				openChatWindow();
+			// case of running
+			}else {
+				recipientAccount.getChats().fetchFromServer({
+					'mainAgent': recipientAccount
+				});
+				// case of chatting with Notified user
+				if( recipientAccount.currentChatTarget === e.data.f ){
+					// do notting
+				// case of chatting with other user
+				}else{
+					alert(JSON.stringify(e.data));
+				}
+			}
 			// e.data.alert: hi hehe
 			// e.data.badge: 7
 			// e.data.sound: 
@@ -143,6 +223,8 @@ if( OS_IOS ){
 	});
 }
 
+
+// Alloy.builtins.moment 로 대체하자 
 /**
  * Returns a description of this past date in relative terms.
  * Takes an optional parameter (default: 0) setting the threshold in ms which

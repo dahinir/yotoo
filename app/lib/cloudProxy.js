@@ -47,6 +47,25 @@ cloudProxy.deleteAllYotoos = function( account){
 	
 };
 
+/* ellipsis */
+var ellipsis = function(payload){
+	// var maxLength = length || 200;
+
+	// 78, 234
+	// temp = "일이삼사오육칠팔구십일이삼사오육칠팔구십일이삼사오육칠팔구십일이삼사오육칠팔구십일이삼사오육칠팔구십일이삼사오육칠팔구십일이삼사오육칠팔구십일이삼사오육칠팔";
+	// 200, 200
+	// temp = "12345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890";
+
+	if(payload.alert.length > 40 ){
+		payload.alert = payload.alert.substring(0, 38) + "..";
+	}
+	// var pString = JSON.stringify(payload); 
+	// if( pString > 195 || unescape(encodeURIComponent(pString)) ){
+	// }
+	return payload;
+};
+
+
 /**
  * @param {String} [options.id]
  * @param {String} [options.type]
@@ -248,6 +267,8 @@ cloudProxy.sendPushNotification = function(options){
 	var onSuccess = options.onSuccess;
 	var onError = options.onError;
 
+	payload = ellipsis(payload);
+
 	var excute = function(acsId){
 		Cloud.PushNotifications.notify({
 			'channel' : channel,
@@ -306,6 +327,9 @@ cloudProxy.getChats = function(options){
 	
 	Cloud.Chats.query({
 		'participate_ids': mainAgent.get('id'),
+	    // 'response_json_depth': 2,
+	    'limit': 999,	// max 1000
+	    // 'order': "updated_at",
 		'where': query
 	}, function (e) {
 	    if (e.success) {
@@ -328,19 +352,29 @@ cloudProxy.getChats = function(options){
 	});
 };
 cloudProxy.postChat = function(options){
+	var mainAgent = options.mainAgent;
 	var targetUser = options.targetUser;
 	var message = options.message;
+	var channel = options.channel || 'yotoo';
 	var onSuccess = options.onSuccess;
 	var onError = options.onError;
-
+	
+	var payload = {
+		'sound':'default',
+		'alert':"@"+mainAgent.get('screen_name') + ": " + message,
+		'f':mainAgent.get('id_str'),
+		't':targetUser.get('id_str')
+	};
+	
+	payload = ellipsis(payload);
+	
 	var excute = function(acsId){
 		Cloud.Chats.create({
 		    'to_ids': acsId,
 		    // chat_group_id :
 		    // photo : 
-		    // channel :
-		    // payload :
-		    // response_json_depth : 2
+		    'channel': channel,
+		    'payload': payload,
 		    'message': message
 		}, function (e) {
 		    if (e.success) {
@@ -366,7 +400,7 @@ cloudProxy.postChat = function(options){
 		excute( targetUser.get('acs_id') );
 	}else{
 		cloudProxy.getAcsUser({
-			'query': {'id': targetUser.get('id')},
+			'query': {'id': targetUser.get('id_str')},
 			'onSuccess': function( user ){
 				targetUser.set({'acs_id': user.id});
 				// targetUser.save();

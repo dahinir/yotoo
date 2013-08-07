@@ -8,6 +8,7 @@
 "#profileImage": {
 	top : 7,
 	left : 6,
+	bottom: 10,
 	height : 48,
 	width : 48,
 	// borderRadius : 5,

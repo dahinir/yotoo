@@ -237,6 +237,7 @@ exports.definition = {
 				var targetUser = options.targetUser;
 				var success = options.success;
 				var error = options.error;
+				
 				var thisCollection = this;
 				
 				var query ={
@@ -260,10 +261,10 @@ exports.definition = {
 								success( checkingYotoo );
 							}
 						}else if( resultsJSON.length > 0){
-							// 서버의 yotoo.completed 업데이트는 .sendYotooNotification 에서(성공하)  
-							checkingYotoo.set({'completed': 1});
-							checkingYotoo.save();
-							alert(L('YOTOO!!'));
+							// 요투 컴플릿은 노티를 받았을 때 해야지!  
+							// checkingYotoo.set({'completed': 1});
+							// checkingYotoo.save();
+							// alert(L('YOTOO!!'));
 
 							thisCollection.sendYotooNotification({
 								'sourceUser': sourceUser,
@@ -285,12 +286,14 @@ exports.definition = {
 			'sendYotooNotification': function(options){
 				var sourceUser = options.sourceUser;
 				var targetUser = options.targetUser;
+				var sound = options.sound || 'yotoo';
 				var success = options.success;
 				var error = options.error;
+				
 				var thisCollection = this;
 				
 				var payload = {
-					'sound':'default',
+					'sound': sound,
 					'alert':"@"+sourceUser.get('screen_name') + " " + L('yotoo_you_too'),
 					'f':sourceUser.get('id_str'),
 					't':targetUser.get('id_str')
@@ -310,7 +313,7 @@ exports.definition = {
 							'target_id_str': targetUser.get('id_str')
 						}).pop();
 						
-						// update relevant yotoo's completed
+						/* update relevant yotoo's completed :콜백으로 이전 
 						thisCollection.cloudApi.excuteWithLogin({
 							'mainAgent': sourceUser,
 							'method': 'put',
@@ -330,7 +333,8 @@ exports.definition = {
 									error(e);
 								}
 							}
-						});		
+						});
+						*/		
 					},
 					'onError': function(e){
 						// 노티피케이션을 보냈는지 확인하고 실패했으면 큐에 넣던지

@@ -255,67 +255,70 @@ $.userListView.add(listView);
 
 
 var section = Ti.UI.createListSection();
+var updateRow = function(user){
+	
+};
+var _settingData = function(user) {
+	data = {
+		profileImage : {
+			image : user.get('profile_image_url_https').replace(/_normal\./g, '_bigger.')
+		},
+		name : {
+			text : user.get('name')
+		},
+		screenName : {
+			text : "@" + user.get('screen_name')
+		},
+		following : {
+			text : "Following: " + String.formatDecimal(user.get('friends_count'))
+		},
+		followers : {
+			text : "Followers: " + String.formatDecimal(user.get('followers_count'))
+		},
+		// description_: { text: user.get('description') },
 
+		// template: 'plain',
+		properties : {
+			itemId : user.get('id_str')
+		}
+	};
+	
+	/* template select */
+	var relevantYotoo = yotoos.where({'target_id_str': user.get('id_str')}).pop();
+	if( user.get('id_str') === ownerAccount.get('id_str')){
+		data.template = 'self';
+	}else if( relevantYotoo && relevantYotoo.get('completed') ){
+		data.template = 'completed';
+	// }else if( user.get('unyotooed') ){
+	}else if( relevantYotoo && relevantYotoo.get('unyotooed') ){
+		data.template = 'unyotooed';
+	}
+	
+	if (OS_ANDROID) {
+		data.description_ = {
+			text : user.get('description')
+		};
+		data.properties.height = Ti.UI.SIZE;
+		// not support on iOS
+	}
+	if (user.get('verified')) {
+		data.verifiedAccountIcon = {
+			visible : true
+		};
+	}
+	return data;
+};
 var addRows = function(options){
 	var addedUsers = options.addedUsers;
 	var reset = options.reset;
-	 
 	var dataArray = [];
-	var settingData = function(user) {
-		data = {
-			profileImage : {
-				image : user.get('profile_image_url_https').replace(/_normal\./g, '_bigger.')
-			},
-			name : {
-				text : user.get('name')
-			},
-			screenName : {
-				text : "@" + user.get('screen_name')
-			},
-			following : {
-				text : "Following: " + String.formatDecimal(user.get('friends_count'))
-			},
-			followers : {
-				text : "Followers: " + String.formatDecimal(user.get('followers_count'))
-			},
-			// description_: { text: user.get('description') },
 
-			// template: 'plain',
-			properties : {
-				itemId : user.get('id_str')
-			}
-		};
-		
-		/* template select */
-		var relevantYotoo = yotoos.where({'target_id_str': user.get('id_str')}).pop();
-		if( user.get('id_str') === ownerAccount.get('id_str')){
-			data.template = 'self';
-		}else if( relevantYotoo && relevantYotoo.get('completed') ){
-			data.template = 'completed';
-		// }else if( user.get('unyotooed') ){
-		}else if( relevantYotoo && relevantYotoo.get('unyotooed') ){
-			data.template = 'unyotooed';
+	if( addedUsers.map ){
+		for(var i = 0; i < addedUsers.length; i++){
+			dataArray.push( _settingData( addedUsers.at(i) ) );
 		}
-		
-		if (OS_ANDROID) {
-			data.description_ = {
-				text : user.get('description')
-			};
-			data.properties.height = Ti.UI.SIZE;
-			// not support on iOS
-		}
-		if (user.get('verified')) {
-			data.verifiedAccountIcon = {
-				visible : true
-			};
-		}
-		dataArray.push(data);
-	};
-
-	if( addedUsers.map ){	// if newUsers is Collection
-		addedUsers.map( settingData );
-	}else{	// if newusers is Model
-		settingData( addedUsers );
+	}else{
+		dataArray.push( _settingData( addedUsers ) );
 	}
 	
 	if( reset ){
@@ -334,7 +337,7 @@ var addRows = function(options){
 	listView.scrollToItem(0, 0);
 };
 
-var getIndexByItemId = function(itemId){
+var _getIndexByItemId = function(itemId){
 	var index;
 	var listDataItems = section.getItems();
 	for ( index = 0; index < listDataItems.length; index++) {
@@ -351,7 +354,7 @@ var getIndexByItemId = function(itemId){
 
 /* event listeners of models; users, yotoos*/
 users.on('remove', function(deletedUser){
-	var index = getIndexByItemId( deletedUser.get('id_str') );
+	var index = _getIndexByItemId( deletedUser.get('id_str') );
 	section.deleteItemsAt( index, 1 );
 });
 
@@ -359,29 +362,41 @@ users.on('reset', function(){
 	section.deleteItemsAt( 0, section.getItems().length);
 });
 
-var tempAddedUsers = Alloy.createCollection('user');
-users.on('add', function(addedUser, collection, options){
-	// alert("add"+addedUser.get('id_str'));
-	// alert( options.index + ", " + (users.length - 1) );
-	
-	tempAddedUsers.add(addedUser);
-	if( options.index === (users.length - 1) ){
-		addRows({ 
-			'addedUsers': tempAddedUsers,
-			'reset': false 
-		});
-		tempAddedUsers.reset();
-	}
+users.on('change', function(changedUser){
+	var index = _getIndexByItemId(changedUser.get('id_str'));
+	var data = _settingData( changedUser );
+	section.updateItemAt(index, data, {'animated': true});
 });
 
+users.on('add', function(addedUser, collection, options){
+	addRows({ 
+		'addedUsers': addedUser,
+		'reset': false 
+	});
+});
+// var tempAddedUsers = Alloy.createCollection('user');
+// users.on('add', function(addedUser, collection, options){
+	// // alert("add"+addedUser.get('id_str'));
+	// alert( options.index + ", " + (users.length - 1) );
+// 	
+	// tempAddedUsers.add(addedUser);
+	// if( options.index === (users.length - 1) ){
+		// addRows({ 
+			// 'addedUsers': tempAddedUsers,
+			// 'reset': false 
+		// });
+		// tempAddedUsers.reset();
+	// }
+// });
+
+
 yotoos.on('change:unyotooed change:completed', function(yotoo){
-	// 왜 그런지는 모르겠으나 이게 호출될때마다 두번씩 호출되고 처음엔 users.length가 0이다..
-	if( users.length === 0 ){
+	// Notice! yotoos is shared!
+	var changedUser = users.where({'id_str': yotoo.get('target_id_str')}).pop();
+	if( !changedUser ){
 		return;
 	}
-
-	var changedUser = users.where({'id_str': yotoo.get('target_id_str')}).pop();
-	var index = getIndexByItemId(changedUser.get('id_str'));
+	var index = _getIndexByItemId(changedUser.get('id_str'));
 	var data = section.getItemAt(index);
 	
 	if( yotoo.get('completed') ){

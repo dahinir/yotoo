@@ -19,6 +19,7 @@ accounts.on('change:active', function(e){
 		if( account.mainTabGroup === undefined){
 			Ti.API.info("[index.js] mainTabGroup is undefined, so will be created");
 			var mainTabGroup = Alloy.createController('mainTabGroup');
+
 			mainTabGroup.init({"ownerAccount":account});
 			account.mainTabGroup = mainTabGroup.getView();
 			account.mainTabGroup.open();

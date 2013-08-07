@@ -21,10 +21,12 @@ Ti.App.addEventListener('keyboardFrameChanged', setSoftKeyboardHeight);
 var testButton = Ti.UI.createButton();
 $.chatWindow.add( testButton);
 testButton.addEventListener('click', function(){
+	alert(Alloy);
 });
-	chats.fetchFromServer({
-		'mainAgent': ownerAccount
-	});
+
+chats.fetchFromServer({
+	'mainAgent': ownerAccount
+});
 	
 var addChatTableRow = function(chat, fixScroll){
 	if( chat ){ // 현재 채팅 윈도우와 관계있는 chat일 경우에만 추가  
@@ -54,9 +56,6 @@ if( chats.length > 0){
 }
 
 
-
-
-
 $.cancelButton.addEventListener('click', function(e){
 	$.chatWindow.close();
 });
@@ -70,7 +69,9 @@ $.sendButton.addEventListener('click', function(e){
 		'mainAgent': ownerAccount,
 		'targetUser': targetUser,
 		'message': value,
-		'success': function(){},
+		'success': function(){
+			$.chatTextArea.setValue("");
+		},
 		'error': function(){}
 	});
 });
@@ -107,6 +108,17 @@ $.chatTableView.addEventListener('postlayout', function(e){
 		$.chatTableView.scrollToIndex( chats.length -1 );
 	}
 });
+
+$.chatWindow.addEventListener('open', function(e){
+	ownerAccount.currentChatTarget = targetUser.get('id_str');
+});
+
+$.chatWindow.addEventListener('close', function(){
+	// ownerAccount.currentChatTarget = undefined;
+});
+
+
+
 
 
 

@@ -24,7 +24,6 @@ $.screenName.text = user.get('screen_name');
 $.createdAt.text = new Date(chat.get('created_at')).toRelativeTime();
 $.message.text = _.unescape(chat.get('message'));
 
-
 $.profileImage.addEventListener('click', function(e) {
 	alert('hi');
 });

@@ -54,8 +54,15 @@ exports.definition = {
 					'query': query,
 					'onSuccess': function(chats){
 						thisCollection.add(chats);
+						if( success ){
+							success();
+						}
 					},
-					'onError': function(){}
+					'onError': function(e){
+						if( error ){
+							error(e);
+						}
+					}
 				});
 			},
 			'createNewChat': function(options){
@@ -74,9 +81,15 @@ exports.definition = {
 					'message': message,
 					'onSuccess': function(chat){
 						thisCollection.add(chat);
+						if( success ){
+							success();
+						}
 					},
 					'onError': function(e){
 						Ti.API.info(JSON.stringify(e));
+						if( error ){
+							error(e);
+						}
 					}
 				});
 			}

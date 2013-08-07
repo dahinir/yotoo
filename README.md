@@ -83,11 +83,14 @@ for heavy user, specialized relationship
 * Ti.Network.HTTPClient.cache 상황에 맞게 true
 * image cache :https://github.com/FokkeZB/nl.fokkezb.cachedImageView :http://docs.appcelerator.com/titanium/latest/#!/guide/Image_Best_Practices-section-30082525_ImageBestPractices-Cachingremoteimages
 * 네트웤 상태등의 이유로 밀려 있는 할일 저장해 놓고 실행하는 로직 ex) cloudProxy.postYotoo() 에서 checkTargetYotoo()는 실패 했을때 조용히 다시 시도 되어야 한다.
-* yotooed 유저의 hide 구현은 앱 발표 이후로 미루자. 
+* 의미있는 User객체들을 로컬에 저장해 놓고 쓰자(유투한 아이, 팔로잉(최근 400), 팔로워(최근 400), 내가쓴 맨션, :그냥 유저가 행위에 따라 읽게된 user들만 저장할까.)
+	:캐쉬 개념으로 일정 시간 이상되면 업데이트 하고
+	:프로필 보기를 했으면 리프레쉬후 로컬 저장
+	:프로필 이미지는 업데이트 했을때 url이 바뀌나? 그렇다면 프로필 이미지 로딩 실퍠시에도 리프레쉬
 
 
 ## work now
-* 사용자 token이 다 노출 되잖아. access control list로 해결 가능 하나?
+* twitter 토큰 완료 됬을 경우 대비 
 * appStatus 모델을 만들어 저장. account.js의 active 필드 같은걸 이쪽으로 옮겨?
 * addNewYotoo() 할 때 source_id_str, target_id_str 같은것이 있으면 
 	:hided일 경우 알람창으로 유저 확인후 hided를 false (무료)
@@ -97,10 +100,6 @@ for heavy user, specialized relationship
 	:completed는 true, burned는 false 일 경우 알람창으로 불가능 알람  
 	:서버와 
 	:로컬에 
-* 의미있는 User객체들을 로컬에 저장해 놓고 쓰자(유투한 아이, 팔로잉(최근 400), 팔로워(최근 400), 내가쓴 맨션, :그냥 유저가 행위에 따라 읽게된 user들만 저장할까.)
-	:캐쉬 개념으로 일정 시간 이상되면 업데이트 하고
-	:프로필 보기를 했으면 리프레쉬후 로컬 저장
-	:프로필 이미지는 업데이트 했을때 url이 바뀌나? 그렇다면 프로필 이미지 로딩 실퍠시에도 리프레쉬
 * yotoo sync
 	:yotoo객체의 hide, completed등의 필드 변경이 되었을때 서버에 저장 해야 한다.   
 * 서버에 저장된 yotoo는 언제 refresh해서 로컬과 싱크를 맞추지? -로컬엔 있지만 서버에 없는 경우는 없음 
@@ -109,15 +108,11 @@ for heavy user, specialized relationship
 	:pull to refresh 구현 
 * yotoo.checkTargetYotoo() 에서 유투 성공 했을때 보내는 노티피케이션 실패시 큐에 넣던지 해서 성공할때까지 다시 시
 	:노티피케이션을 활성화 하지 않는 사용자도 생각해서 프로그램 시작시 컴플릿된 유투가 있는지 확인 해야 한다.
-* 노티피케이션 보낼때 최종 길이 200보다 크면 alert를 말줄임표로 줄이는 코드  
 
 ## work right now!
-* chat muther fucker!
-	:chatWindow.exports 함수로 .show()같은걸 사용해 노티피케이션을 받았을때 적절한 채팅창을 보여준다.
-		:채팅창이 활성화 상태면 채팅을 이어가고 채팅창이 활성화 상태가 아니면 적절한 알람만 보여준다.
-	:notification에 메세지를 최대한 넣고 보낸다.
-		:노티피케이션의 메세지가 풀 일때만 chat를 패치한다.
 * account의 idAttribute를 user와 동일하게 acs_id로 바꾸는게 좋을것 같은데..
+* ACL을 이용해 아무나 yotoo 못보게..하는게 소용 없잖아..
+* yotoo 완료 사운드! 
 
 
 탭별로 디렉토리를 나누자

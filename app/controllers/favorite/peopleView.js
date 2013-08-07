@@ -8,6 +8,9 @@ var yotoos = ownerAccount.getYotoos();
 users.comparator = function(user) {
 	return yotoos.where({'target_id_str': user.get('id_str') }).pop().get('id');
 };
+users.on('add', function(user){
+	// user.save();
+});
 
 var tempAddedYotoos = Alloy.createCollection('yotoo');
 yotoos.on('add', function(addedYotoo, collection, options){
@@ -107,24 +110,14 @@ var fetchYotooUsers = function( newYotoos ) {
 		}
 		userIds = userIds + "," + yotoo.get('target_id_str');
 	});
-	
 	userIds = userIds.replace( /^,/g , '');
 
 	/*
-	 * 의미있는 user는 저장되어 있으므로 로컬에서 한번 검색해 보고  
-	 * targetUser를 트위터에서 가져와야 한다.
 	 */ 
 	users.fetchFromServer({
 		'purpose': 'lookupUsers',
 		'params': { 'user_id': userIds },
 		'success': function(){
-			newYotoos.map(function(newYotoo){
-				if( newYotoo.get('unyotooed') ){
-					var disabledUser = users.where({'id_str': newYotoo.get('target_id_str')}).pop();
-					users.trigger('disabled', disabledUser);
-				} 
-			});
-			
 			Ti.API.info("[peopleView.fetchUsersBy] success");
 		},
 		'error': function(){
@@ -139,6 +132,77 @@ fetchYotooUsers(yotoos);
 var testButton = Ti.UI.createButton();
 $.peopleView.add( testButton);
 testButton.addEventListener('click', function(){
+	// /*
+	alert(Alloy.Globals.users.at(0).get('screen_name')
+	+ users.at(0).get('screen_name'));
+	
+	Alloy.Globals.users.at(0).save();
+	users.at(0).save();
+	users.at(0).set('screen_name', 'fuck');
+	
+	alert(Alloy.Globals.users.at(0).get('screen_name')
+	+ users.at(0).get('screen_name'));
+	// */
+	/*
+	yotoos.checkTargetYotoo({
+		sourceUser: ownerAccount,
+		targetUser: users.at(0),
+		success: function(yotoo){
+			alert(JSON.stringify(yotoo));
+		},
+		error: function(e){
+			alert(e);
+		}
+	});
+	*/
+	/*
+	Cloud.Users.login({
+	    login: 'uu',
+	    password: '1111'
+	}, function (e) {
+	    if (e.success) {
+	        var user = e.users[0];
+	        alert('Success:\n' +
+	            'id: ' + user.id + '\n' +
+	            'sessionId: ' + Cloud.sessionId + '\n' +
+	            'first name: ' + user.first_name + '\n' +
+	            'last name: ' + user.last_name);
+	    } else {
+	        alert('Error:\n' +
+	            ((e.error && e.message) || JSON.stringify(e)));
+	    }
+	});
+	*/
+	// if(ownerAccount.currentChatTarget  ){
+		// alert( ownerAccount.currentChatTarget );
+	// }	
+	/*
+	var usersA = Alloy.createCollection('user');
+	var usersB = Alloy.createCollection('user');
+	var uA = Alloy.createModel('user');
+	var uB = Alloy.createModel('user');
+	
+	usersA.on("haha", function(){
+		alert("A");
+	});
+	usersB.on("haha", function(){
+		alert("B");
+	});
+	
+	usersB.trigger("haha");
+	*/
+	// usersA.add( uA );
+	// usersB.add( usersA.models );
+	// alert(usersA.length + ", " + usersB.length);
+	
+	// usersB.reset();
+	// uA.destroy();
+	// alert(usersA.length + ", " + usersB.length);
+	
+	
+	
+	
+	
 	// alert(JSON.stringify(yotoos.at(0).__proto__.config));
 	// require('cloudProxy').getCloud().deleteAllYotoos( ownerAccount );
 	
