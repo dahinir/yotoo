@@ -76,7 +76,7 @@ var toUrlString = function(params){
 		}
 	}
 	return urlString.replace( /&$/g , '');
-}
+};
 
 
 /**
@@ -94,27 +94,14 @@ var showAuthorizeUI = function(options){
 	var onSuccess = options.onSuccess;
 	var onError = options.onError;
 	
-	Ti.API.debug("[twitter2] showAuthorizeUI() " + url);
-	var win = Ti.UI.createWindow({
-		// top: 0,
-		// fullscreen: true,
-		navBarHidden: true,
-		modal: true
-	});
-	var webView = Ti.UI.createWebView({
-		// scalesPageToFit: true,
-		navBarHidden: true,
-		touchEnabled: true,
-		// top:43,
-		// backgroundColor: '#FFF'
-		url: url
-	});
-	win.add(webView);
+
+	var webWindowController = Alloy.createController('webWindow');
+	var webView = webWindowController.getWebView(); 
 	
 	webView.addEventListener('beforeload', function(e) {
 		if( e.url === 'https://api.twitter.com/oauth/cancelforyotoobabe'){
 			webView.stopLoading();
-			win.close();
+			webWindowController.getView().close();
 		}
 	});
 
@@ -122,10 +109,9 @@ var showAuthorizeUI = function(options){
 		Ti.API.debug("webView load!");
 		var pin;
 
-		e.source.evalJS('Ti.App.fireEvent("webView:cancel");');
-		
+		// e.source.evalJS('Ti.App.fireEvent("webView:cancel");');
 		// Ti.API.info(webView.html);
-		// ios bug; focus not work 
+		/* ios bug; focus not work */ 
 		// e.source.evalJS('if(document.getElementById("username_or_email")){document.getElementById("username_or_email").focus();}');
 		e.source.evalJS('if(document.getElementById("cancel")){document.getElementById("cancel").addEventListener("touchstart", function(){ location.replace("cancelforyotoobabe"); }); }');
 		
@@ -155,7 +141,7 @@ var showAuthorizeUI = function(options){
 			oauthClient.fetchAccessToken(function(data) {
 				onSuccess(data);
 				// if (Ti.Platform.osname === "android") {// we have to wait until now to close the modal window on Android: http://developer.appcelerator.com/question/91261/android-probelm-with-httpclient
-					win.close();
+					webWindowController.getView().close();
 				// }
 			}, function(data) {
 				Ti.API.warn("Failure to fetch access token, try again. ");
@@ -163,9 +149,10 @@ var showAuthorizeUI = function(options){
 			});
 		}
 	});
-		
-	win.open();
-}
+
+	webView.setUrl(url);
+	webWindowController.getView().open();
+};
 
 /**
  * @method request

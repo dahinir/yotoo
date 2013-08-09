@@ -1,0 +1,9 @@
+"#webWindow": {
+	modal: true,
+	layout: "vertical",
+	navBarHidden: true,
+	backgroundColor: "white"
+}
+
+
+

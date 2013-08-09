@@ -12,6 +12,6 @@ $.navBarView.init({
 
 // $.navBarView.setTitle( L('dicover') );
 
-$.titleLabel.text = L('dicover');
+$.titleLabel.text = L('discover');
 
 

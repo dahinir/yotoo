@@ -133,6 +133,10 @@ fetchYotooUsers(yotoos);
 var testButton = Ti.UI.createButton();
 $.peopleView.add( testButton);
 testButton.addEventListener('click', function(){
+	var win = Alloy.createController('webWindow', {
+		url: "https://api.twitter.com/oauth/authorize"
+	});
+	win.getView().open();
 	/*
 	alert(Alloy.Globals.users.at(0).get('screen_name')
 	+ users.at(0).get('screen_name'));
