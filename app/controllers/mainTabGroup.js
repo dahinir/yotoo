@@ -5,149 +5,34 @@
 var args = arguments[0] || {};
 var ownerAccount = args.ownerAccount || Alloy.Globals.accounts.getCurrentAccount();
 
-$.timelineTab.title = L('timeline');
-$.connectTab.title = L('connect');
+// $.timelineTab.title = L('timeline');
+// $.connectTab.title = L('connect');
 $.discoverTab.title = L('discover');
 $.favoriteTab.title = L('favorite');
-$.profileTab.title = L('profile');
+// $.profileTab.title = L('profile');
 
-exports.init = function( options ){
-	if( options.ownerAccount ){
-		ownerAccount = options.ownerAccount;
-		// Ti.API.info("[mainTabGroup] mainTabGroup init with owner: " + ownerAccount.get('access_token'));
-
-		$.mainTabGroup.setActiveTab( ownerAccount.get('status_active_tab_index') );
-		
-		$.timelineWindow.init({"ownerAccount" : ownerAccount});
-		$.connectWindow.init({"ownerAccount" : ownerAccount});
-		// $.discoverWindow.init({"ownerAccount" : ownerAccount});
-		$.profileWindow.init({"ownerAccount" : ownerAccount});
-	}
-};
+$.mainTabGroup.setActiveTab( ownerAccount.get('status_active_tab_index') );
 
 $.mainTabGroup.addEventListener('focus', function(e){
 	// Ti.API.debug("[mainTabGroup] focused, index:" + e.index);
 	ownerAccount.set('status_active_tab_index', e.index);
 	ownerAccount.save();
 });
+
 $.mainTabGroup.addEventListener('postlayout', function(e){
 	Ti.API.debug("[mainTabGroup] postlayout");
 	// slow down.. animate 알파값 상승 
 	// $.mainTabGroup.borderWidth = 0;
 });
 
-Alloy.Globals.testVal = 0;
-Alloy.Globals.testVal2 = 0;
-
-
-
-
 /*
- * 
- * 
- * 
- * 
- *  test
-var tweetTemplate = {
-    properties: {
-        // These are the same as the list data item properties
-        // The list data item properties supersedes these if both are defined
-        accessoryType: Ti.UI.LIST_ACCESSORY_TYPE_NONE
-    },
-    events: {
-        // Bind event callbacks for bubbled events
-        // Events caught here are fired by the subcomponent views of the ListItem
-        // click: clickCB
-    },
-    childTemplates: [
-        {
-            type: 'Ti.UI.Label', // Use a label
-            bindId: 'rowtitle',  // Bind ID for this label
-            properties: {        // Sets the Label.left property
-                left: '10dp'
-            }
-        },
-        {
-            type: 'Ti.UI.ImageView',  // Use an image view
-            bindId: 'pic',            // Bind ID for this image view
-            properties: {             // Sets the ImageView.image property
-            	image: 'KS_nav_ui.png'
-            }
-        },                    
-        {
-            type: 'Ti.UI.Button',   // Use a button
-            bindId: 'button',       // Bind ID for this button
-            properties: {           // Sets several button properties
-                width: '80dp',
-                height: '30dp',                        	
-                right: '10dp',
-                title: 'press me'
-            },
-            events: { click : report }  // Binds a callback to the button's click event
-        }
-    ]
+exports.init = function( options ){
+	ownerAccount = options.ownerAccount;
+	Ti.API.info("[mainTabGroup] mainTabGroup init with owner: " + ownerAccount.get('access_token'));
+	
+	$.timelineWindow.init({"ownerAccount" : ownerAccount});
+	$.connectWindow.init({"ownerAccount" : ownerAccount});
+	$.discoverWindow.init({"ownerAccount" : ownerAccount});
+	$.profileWindow.init({"ownerAccount" : ownerAccount});
 };
-
-function report(e) {
-	Ti.API.info(e.type);
-}
-
-var listView = Ti.UI.createListView({
-    // Maps the plainTemplate object to the 'plain' style name
-    templates: { 'plain': tweetTemplate },
-    // Use the plain template, that is, the plainTemplate object defined earlier
-    // for all data list items in this list view
-    defaultItemTemplate: 'plain'               
-});
-
-listView.addEventListener('itemclick', function(e){
-    // Only respond to clicks on the label (rowtitle) or image (pic)
-    if (e.bindId == 'rowtitle' || e.bindId == 'pic') {
-        var item = e.section.getItemAt(e.itemIndex);
-        if (item.properties.accessoryType == Ti.UI.LIST_ACCESSORY_TYPE_NONE) {
-            item.properties.accessoryType = Ti.UI.LIST_ACCESSORY_TYPE_CHECKMARK;
-        }
-        else {
-            item.properties.accessoryType = Ti.UI.LIST_ACCESSORY_TYPE_NONE;
-        }
-        e.section.updateItemAt(e.itemIndex, item);
-    }      
-});
-
-var createDataItem = function( tweet ){
-	var dataItem = {
-		rowtitle : {
-			text : tweet.get('text')
-		},
-		pic : {
-			image : tweet.get('user').profile_image_url_https.replace(/_normal\./g, '_bigger.')
-		},
-		properties : {
-			// itemid :set to identify this item when events are fired by this item.
-			itemId : tweet.get('id_str'),
-			accessoryType : Ti.UI.LIST_ACCESSORY_TYPE_NONE
-		}
-	};
-	return dataItem;
-};
-
-$.testButton.addEventListener("click", function(e){
-	var data = [];
-	var tweets = ownerAccount.createCollection('tweet');
-	tweets.fetchFromServer({
-		'purpose': 'timeline',
-		'params': { 'count': 100},
-		'onSuccess': function(){
-			tweets.map(function(tweet){
-				data.push( createDataItem(tweet) );
-			});
-			listView.sections = [ Ti.UI.createListSection({items: data}) ];
-			$.testView.add(listView);
-		},
-		'onFailure': function(){
-			Ti.API.debug("[] fail tweet fetch");
-		}
-	});
-});
-
 */

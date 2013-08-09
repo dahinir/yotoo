@@ -8,8 +8,9 @@ var yotoos = ownerAccount.getYotoos();
 users.comparator = function(user) {
 	return yotoos.where({'target_id_str': user.get('id_str') }).pop().get('id');
 };
-users.on('add', function(user){
-	// user.save();
+users.on('add change', function(user){
+	// this users is yotooed users that means important
+	user.save();
 });
 
 var tempAddedYotoos = Alloy.createCollection('yotoo');
@@ -132,7 +133,7 @@ fetchYotooUsers(yotoos);
 var testButton = Ti.UI.createButton();
 $.peopleView.add( testButton);
 testButton.addEventListener('click', function(){
-	// /*
+	/*
 	alert(Alloy.Globals.users.at(0).get('screen_name')
 	+ users.at(0).get('screen_name'));
 	
@@ -142,7 +143,7 @@ testButton.addEventListener('click', function(){
 	
 	alert(Alloy.Globals.users.at(0).get('screen_name')
 	+ users.at(0).get('screen_name'));
-	// */
+	*/
 	/*
 	yotoos.checkTargetYotoo({
 		sourceUser: ownerAccount,

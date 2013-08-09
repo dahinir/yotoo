@@ -1,6 +1,10 @@
 <Alloy>
 	<Window id="favoriteWindow" class="tapWindow" >
-		<Require id="navBarView" src="navBarView" />
+		<View id="navBarView" >
+			<Require id="listAccountsButton" src="listAccountsButton" class="leftNavButton" />
+			<Label id="titleLabel" />
+			<Require id="newTweetButton" src="newTweetButton" class="rightNavButton" />
+		</View>
 		<!-- <Require id="tweetsView" src="favorit/tweetsView" /> -->
 		<Require id="peopleView" src="favorite/peopleView" />
 	</Window>

@@ -94,6 +94,14 @@
         		{ color: '#000', offset: 1.0 } ]
     }
 },
+"#titleLabel": {
+	color: '#FFF',
+	font: {
+		fontFamily:'Arial',
+		fontSize: 19,
+		fontWeight: 'bold'
+	}
+},
 ".leftNavButton": {
 	top: 8,
 	left: 8

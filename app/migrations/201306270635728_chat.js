@@ -4,7 +4,7 @@ migration.up = function(db) {
 		"columns": {
 			"id": "TEXT PRIMARY KEY",
 			"chatgroup": "TEXT",	// like twitter, facebook..
-		    "created_at": "DATETIME",
+		    "created_at": "TEXT",	// [WARN] "DATETIME" is not a valid sqlite field, using TEXT instead
 		    "message": "TEXT",
 		    "photo": "TEXT",
 		    

@@ -98,6 +98,7 @@ var showAuthorizeUI = function(options){
 	var win = Ti.UI.createWindow({
 		// top: 0,
 		// fullscreen: true,
+		navBarHidden: true,
 		modal: true
 	});
 	var webView = Ti.UI.createWebView({
@@ -110,19 +111,25 @@ var showAuthorizeUI = function(options){
 	});
 	win.add(webView);
 	
+	webView.addEventListener('beforeload', function(e) {
+		if( e.url === 'https://api.twitter.com/oauth/cancelforyotoobabe'){
+			webView.stopLoading();
+			win.close();
+		}
+	});
+
 	webView.addEventListener('load', function(e) {
 		Ti.API.debug("webView load!");
 		var pin;
+
+		e.source.evalJS('Ti.App.fireEvent("webView:cancel");');
 		
-		if( cfg.callbackUrl === undefined ){
-			Ti.API.debug("callbackUrl is undefined");
-			var response = e.source.evalJS('(p = document.getElementById("oauth_pin")) && p.innerHTML;');
-			if( response ){ 
-				pin = response.split("<code>")[1].split("</code>")[0];
-			}else{ 
-				Ti.API.debug("not yet..");
-			}
-		}else{
+		// Ti.API.info(webView.html);
+		// ios bug; focus not work 
+		// e.source.evalJS('if(document.getElementById("username_or_email")){document.getElementById("username_or_email").focus();}');
+		e.source.evalJS('if(document.getElementById("cancel")){document.getElementById("cancel").addEventListener("touchstart", function(){ location.replace("cancelforyotoobabe"); }); }');
+		
+		if( cfg.callbackUrl ){
 			Ti.API.debug("callbackUrl is defined ");
 			if( e.url.match(cfg.callbackUrl) ){
 				Ti.API.debug("login success.");
@@ -131,6 +138,14 @@ var showAuthorizeUI = function(options){
 						pin = value;
 					}
 				});
+			}
+		}else{
+			Ti.API.debug("callbackUrl is undefined");
+			var response = e.source.evalJS('(p = document.getElementById("oauth_pin")) && p.innerHTML;');
+			if( response ){ 
+				pin = response.split("<code>")[1].split("</code>")[0];
+			}else{ 
+				Ti.API.debug("not yet..");
 			}
 		}
 		if( pin ){

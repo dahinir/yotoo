@@ -135,34 +135,32 @@ if( OS_IOS ){
 			// alert(JSON.stringify(e));
 			// Ti.API.info(JSON.stringify(e.data));
 			var recipientAccount = accounts.where({'id_str': e.data.t}).pop();
-
+			var relevantYotoo = recipientAccount.getYotoos().where({
+				'source_id_str': e.data.t,
+				'target_id_str': e.data.f
+			}).pop(); 
 	
-			/* 상황에 맞게 상대에게 유투 노티피케이션을 보낸다.
+			/* 상황에 맞게 상대에게 유투 노티피케이션을 보낸다. */
 			if( e.data.sound === 'yotoo' ){
-				// 로컬 유투를 컴플릿 하고 새이브 하는 코드 삽입, 서버의 요투도. 
-				
-				var relevantYotoo = recipientAccount.getYotoos().where({
-					'source_id_str': e.data.t,
-					'target_id_str': e.data.f
-				}).pop(); 
-				// 유투 알람 완료를 acs에서 관리할까..
+				// 유투 알람 완료를 acs에서 따로 관리 할까..
 				recipientAccount.getYotoos().sendYotooNotification({
 					'sourceUser': recipientAccount,
-					'targetUser': dd,
+					'targetUser': Alloy.Globals.user.get(e.data.f),
 					'sound': 'yotoo2',
-					'success': function(){
-					},
-					'error': function(){
-						
-					}
+					'success': function(){},
+					'error': function(){}
 				});
 			}
-			if( e.data.sound === 'yotoo2' ){
-				// 요투 노티는 안보내고 로컬 요투를 컴플릿 하고 세이브 하는 코드 삽입, 서버도. 
+			if( e.data.sound === 'yotoo' || e.data.sound === 'yotoo2'){
+				relevantYotoo.complete({
+					'mainAgent': recipientAccount,
+					'success': function(){},
+					'error': function(){}
+				});
 			}
-			*/
 			
-			var openChatWindow = function(){
+			// case of background
+			if( e.inBackground ) {
 				// e.data.t
 				if( !recipientAccount ){
 					// 당신이 사용 정지한 receiverAccount와 e.data.f가 서로 유투 했으니
@@ -170,27 +168,11 @@ if( OS_IOS ){
 					alert(L('you must loggin'));
 					return;
 				}
-				var user = recipientAccount.createModel('user');
-				user.fetchFromServer({
-					'purpose': "userView",
-					'params': {
-						'user_id': e.data.f
-					},
-					'success': function(){
-						alert(user.get('screen_name'));
-						var chatWindow = Alloy.createController('chatWindow', {
-							'ownerAccount': recipientAccount,	// must setted!
-							'targetUser': user
-						});
-						chatWindow.getView().open();
-					},
-					'error': function(){}
+				var chatWindow = Alloy.createController('chatWindow', {
+					'ownerAccount': recipientAccount,	// must setted!
+					'targetUser': Alloy.Globals.user.get(e.data.f)
 				});
-			};
-			
-			// case of background
-			if( e.inBackground ) {
-				openChatWindow();
+				chatWindow.getView().open();
 			// case of running
 			}else {
 				recipientAccount.getChats().fetchFromServer({

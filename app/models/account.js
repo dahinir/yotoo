@@ -151,7 +151,7 @@ exports.definition = {
 						user.fetchFromServer({
 							'purpose': 'profile',
 							'params': {},
-							'onSuccess': function(){
+							'success': function(){
 								newAccount.set({
 									'id_str': user.get('id_str'),
 									'name': user.get('name'),
@@ -210,9 +210,8 @@ exports.definition = {
 									Ti.API.info("[account.js] following is under 300");
 								}
 								*/
-								
 							},
-							'onFailure': function(){
+							'error': function(){
 								Ti.API.info("[account.js] user.fetchFromServer failure")
 							}
 						});	// user.getUser()

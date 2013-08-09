@@ -360,7 +360,7 @@ cloudProxy.postChat = function(options){
 	var onError = options.onError;
 	
 	var payload = {
-		'sound':'default',
+		'sound':'chat',
 		'alert':"@"+mainAgent.get('screen_name') + ": " + message,
 		'f':mainAgent.get('id_str'),
 		't':targetUser.get('id_str')

@@ -112,7 +112,8 @@ for heavy user, specialized relationship
 ## work right now!
 * account의 idAttribute를 user와 동일하게 acs_id로 바꾸는게 좋을것 같은데..
 * ACL을 이용해 아무나 yotoo 못보게..하는게 소용 없잖아..
-* yotoo 완료 사운드! 
+* yotoo 완료 사운드!
+* 100 conversation 일때 삭제   
 
 
 탭별로 디렉토리를 나누자

@@ -11,7 +11,7 @@ exports.definition = {
 		    "target_id_str": "string",
 		    
 		    // status //
-		    "hided": "boolean",
+		    "hided": "boolean",		// 1:true, 0:false
 		    "unyotooed": "boolean",
 		    "completed": "boolean",
 		    "burned": "boolean"
@@ -30,6 +30,38 @@ exports.definition = {
 				// alert("init" + JSON.stringify(e));
 				// alert("init2" + JSON.stringify(e2));
 				this.cloudApi = require('cloudProxy').getCloud();
+			},
+			'complete': function( options ){
+				var mainAgent = options.mainAgent;
+				var success = options.success;
+				var error = options.error;
+				
+				var thisModel = this;
+				var fields = {
+					'completed': 1	// true
+				};
+				this.cloudApi.excuteWithLogin({
+					'mainAgent': mainAgent,
+					'method': 'put',
+					'modelType': 'yotoo',
+					'id': this.get('id'),
+					'fields': fields,
+					'onSuccess': function( result ){
+						thisModel.set(fields);
+						
+						// to persistence :must save after success of server post
+						thisModel.save();
+						if( success ){
+							success();
+						}
+					},
+					'onError': function(e){
+						Ti.API.info("[yotoo.unYotoo] error ");
+						if( error ){
+							error(e);
+						}
+					}
+				});
 			},
 			'unyotoo': function( options ){
 				var mainAgent = options.mainAgent;

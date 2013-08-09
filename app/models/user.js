@@ -65,10 +65,14 @@ exports.definition = {
 					'onSuccess': function( resultJSON ){
 						// thisModel.clear();
 						thisModel.set( resultJSON );
-						success();
+						if( success ){
+							success();
+						}
 					},
 					'onFailure': function( resultJSON ){
-						error();
+						if( error ){
+							error();
+						}
 					}
 				});
 			},
@@ -123,7 +127,10 @@ exports.definition = {
 				if( options.purpose === 'lookupUsers'){
 					var userIds = params.user_id.split(',');
 					for(var i = 0; i < userIds.length; i++){
-						thisCollection.add( Alloy.Globals.users.get(userIds[i]).clone() );
+						if( Alloy.Globals.users.get(userIds[i]) ){
+							// .clone(); model has only one Collection ref that belongs to
+							thisCollection.add( Alloy.Globals.users.get(userIds[i]).clone() );
+						}
 					}
 				}
 				// alert(thisCollection.at(0).get('following'));

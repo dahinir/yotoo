@@ -4,32 +4,32 @@
  * : will be used for globally
  * -rapodor 
  */
-// $.index.open();
-
-
 var accounts = Alloy.Globals.accounts;
 var yotoos = Alloy.Globals.yotoos;
 
 /* Backbone events */
 // on changed current account, reponse UI, create mainTabGroup is only in this.
-accounts.on('change:active', function(e){
-	var account = e;
+accounts.on('change:active', function(account){
 	Ti.API.info("[index.js] BackboneEvent(changed):" + account.get('name') +"\'s active to "+ account.get('active'));
+	
+	// actived account
 	if( account.get('active') ){	// for new current account
-		if( account.mainTabGroup === undefined){
-			Ti.API.info("[index.js] mainTabGroup is undefined, so will be created");
-			var mainTabGroup = Alloy.createController('mainTabGroup');
-
-			mainTabGroup.init({"ownerAccount":account});
-			account.mainTabGroup = mainTabGroup.getView();
-			account.mainTabGroup.open();
-		} else {
+		if( account.mainTabGroup ){
 			Ti.API.info("[index.js] mainTabGroup is defined, call maintabGroup.open()");
 			// account.mainTabGroup.show();
 			account.mainTabGroup.open();
+		}else {
+			Ti.API.info("[index.js] mainTabGroup is undefined, so will be created");
+
+			var mainTabGroup = Alloy.createController('mainTabGroup', {
+				"ownerAccount" : account
+			}); 
+			account.mainTabGroup = mainTabGroup.getView();
+			account.mainTabGroup.open();
 		}
-	}else{	// for previous current account	
-		if( account.mainTabGroup !== undefined){
+	// deactived account
+	}else{	
+		if( account.mainTabGroup ){
 			Ti.API.info("[index.js] "+ account.get('name') + " is deactived, maintabGroup.close()");
 			// account.mainTabGroup.hide();
 			account.mainTabGroup.close();
@@ -40,8 +40,7 @@ accounts.on('add', function(addedAccount){
 	// create mainTabGroup is only in accounts.on('change:active', funtion(e)){}
 	Ti.API.info("BackboneEvent(added):" + addedAccount.get('name') );
 });
-accounts.on('remove', function(e){	// how about 'destroy'
-	var account = e;
+accounts.on('remove', function(account){	// how about 'destroy'
 	Ti.API.info("BackboneEvent(removed):" + account.get('name') );
 	if( account.mainTabGroup !== undefined){
 		account.mainTabGroup.close();

@@ -81,6 +81,9 @@ function fetchUsers(query){
 $.dummyScreen.addEventListener('touchstart', function(){
 	$.searchBar.blur();
 });
+Ti.App.addEventListener('app:buttonClick', function(){
+	$.searchBar.blur();
+});
 
 /* SearchBar */
 $.searchBar.setHintText( L('search_twitter_users') );
