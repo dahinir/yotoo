@@ -4,11 +4,12 @@ var chat = args.chat;
 var targetUser = args.targetUser;
 var user; // user for this Row
 
-// alert(JSON.stringify(chat.get('from').external_accounts[0].external_id));
-if( chat.get('from').external_accounts[0].external_id === ownerAccount.get('id_str') ){
+if( chat.get('sender_id_str') === ownerAccount.get('id_str') ){
 	user = ownerAccount;
-}else if(chat.get('from').external_accounts[0].external_id === targetUser.get('id_str')){
+}else if(chat.get('sender_id_str') === targetUser.get('id_str')){
 	user = targetUser;
+}else{
+	Ti.API.info("[chatTableViewRow.js] invalid row");
 }
 
 

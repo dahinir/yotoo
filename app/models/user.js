@@ -133,7 +133,6 @@ exports.definition = {
 						}
 					}
 				}
-				// alert(thisCollection.at(0).get('following'));
 				this.twitterApi.fetch({
 					'purpose': purpose,
 					'params': params,
@@ -141,12 +140,6 @@ exports.definition = {
 						if( add || reset ){
 							thisCollection.reset();
 						}
-						
-						// var A = Alloy.createCollection('user');
-						// A.add({id_str: "123", ff: "haha"});
-						// alert(A.at(0).get('ff') + ", "+ A.length);
-						// A.get('123').set({id_str: "123", ff: "ddd"});
-						// alert(A.at(0).get('ff') + ", "+ A.length);
 						
 						for(var i=0; i < resultJSON.length; i++){
 							var user = thisCollection.get(resultJSON[i].id_str);
@@ -158,10 +151,6 @@ exports.definition = {
 							}
 							Alloy.Globals.users.add(resultJSON[i]);
 						}
-						
-						// thisCollection.add( resultJSON );
-				// alert(thisCollection.at(0).get('followers_count'));
-						Ti.API.info(Alloy.Globals.users.get('20428265').get('screen_name'));
 						
 						if( success ){
 							success(thisCollection, resultJSON, options);

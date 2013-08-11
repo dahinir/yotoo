@@ -11,4 +11,4 @@ $.navBarView.init({
 
 
 $.titleLabel.text = L('favorite');
-
+$.titleImageView.setImage( ownerAccount.get('profile_image_url_https') );

@@ -104,6 +104,9 @@ $.peopleView.add( userListView.getView() );
 	// return userIds.replace( /^,/g , '');	
 // };
 var fetchYotooUsers = function( newYotoos ) {
+	if( newYotoos.length === 0 ){
+		return;
+	}
 	var userIds = "";
 	newYotoos.map(function(yotoo){
 		if( yotoo.get('hided') ){
@@ -113,8 +116,6 @@ var fetchYotooUsers = function( newYotoos ) {
 	});
 	userIds = userIds.replace( /^,/g , '');
 
-	/*
-	 */ 
 	users.fetchFromServer({
 		'purpose': 'lookupUsers',
 		'params': { 'user_id': userIds },
@@ -133,10 +134,10 @@ fetchYotooUsers(yotoos);
 var testButton = Ti.UI.createButton();
 $.peopleView.add( testButton);
 testButton.addEventListener('click', function(){
-	var win = Alloy.createController('webWindow', {
-		url: "https://api.twitter.com/oauth/authorize"
-	});
-	win.getView().open();
+	// var win = Alloy.createController('webWindow', {
+		// url: "https://api.twitter.com/oauth/authorize"
+	// });
+	// win.getView().open();
 	/*
 	alert(Alloy.Globals.users.at(0).get('screen_name')
 	+ users.at(0).get('screen_name'));
@@ -220,7 +221,6 @@ testButton.addEventListener('click', function(){
 	});
 	*/
 
-/*
 	yotoos.fetchFromServer({ 
 		'mainAgent': ownerAccount,
 		'success': function(){
@@ -231,7 +231,6 @@ testButton.addEventListener('click', function(){
 			Ti.API.info("[peopleView.js]");
 		}
 	});
-	*/
 /*
 var Cloud = require('ti.cloud');
 Cloud.Users.logout(function (e) {

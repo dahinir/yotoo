@@ -3,6 +3,10 @@
 	layout: "vertical",
 	navBarHidden: true,
 	backgroundColor: "white"
+},
+// override app.tss
+"#titleLabel":{
+	right: 5
 }
 
 

@@ -1,12 +1,16 @@
 var args = arguments[0] || {};
 var ownerAccount = args.ownerAccount || Alloy.Globals.accounts.getCurrentAccount();
 var targetUser = args.targetUser;
+var yotoo = ownerAccount.getYotoos().where({'target_id_str': targetUser.get('id_str')}).pop();
+
 
 var chats = ownerAccount.getChats();
 var conversationCount = 100;
 var softKeyboardHeight = 0;
 
-$.titleLabel.setText("secret chat with @" + targetUser.get('screen_name'));
+$.titleImageView.setImage( ownerAccount.get('profile_image_url_https') );
+$.titleTargetImageView.setImage( targetUser.get('profile_image_url_https') );
+$.titleLabel.setText( L('between') );
 $.remainCountToBurn.setText( conversationCount );
 
 var setSoftKeyboardHeight = function(e){
@@ -24,13 +28,19 @@ testButton.addEventListener('click', function(){
 	alert(Alloy);
 });
 
-chats.fetchFromServer({
-	'mainAgent': ownerAccount
-});
-	
 var addChatTableRow = function(chat, fixScroll){
-	if( chat ){ // 현재 채팅 윈도우와 관계있는 chat일 경우에만 추가  
+	/* 현재 채팅 윈도우와 관계있는 chat일 경우에만 추가*/
+	if( yotoo.get('chat_group_id') ){   
+		if( yotoo.get('chat_group_id') !== chat.get('chat_group_id') ){
+			return;
+		}
+	}else if( chat.get('sender_id_str') === targetUser.get('id_str') ){
+			yotoo.set({'chat_group_id': chat.get('chat_group_id')});
+			yotoo.save();
+	}else {
+		return;
 	}
+	
 	var newRow = Alloy.createController('chatTableViewRow', {
 		'ownerAccount': ownerAccount,
 		'chat': chat,
@@ -45,8 +55,8 @@ var addChatTableRow = function(chat, fixScroll){
 chats.on('add', function(addedChat){
 	// alert(JSON.stringify(addedChat));
 	addChatTableRow(addedChat);
+	addedChat.save();
 });
-
 
 if( chats.length > 0){
 	chats.map(function(chat){
@@ -55,8 +65,11 @@ if( chats.length > 0){
 	$.chatTableView.scrollToIndex( chats.length -1 );
 }
 
+chats.fetchFromServer({
+	'mainAgent': ownerAccount
+});
 
-$.cancelButton.addEventListener('click', function(e){
+$.closeButton.addEventListener('click', function(e){
 	$.chatWindow.close();
 });
 

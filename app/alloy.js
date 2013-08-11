@@ -66,7 +66,7 @@ var twitterAdapter = require('twitter');
 accounts.map(function(account){
 	
 	// account.save({'status_active_tab_index': 12})
-	Ti.API.info("[alloy.js] load account: @" + account.get('screen_name')
+	Ti.API.info("[alloy.js] account: @" + account.get('screen_name')
 	+"\t, "+account.get('id_str')+" ," +account.get('id')
 	+", "+ account.get('active') +", "+account.get('status_active_tab_index'));
 
@@ -79,7 +79,7 @@ accounts.map(function(account){
 
 users.map(function(user){
 	// account.save({'status_active_tab_index': 12})
-	Ti.API.info("[alloy.js] load user: @" + user.get('screen_name')
+	Ti.API.info("[alloy.js] user: @" + user.get('screen_name')
 	+", "+user.get('id_str')+", " +user.get('acs_id'));
 });
 
@@ -94,14 +94,14 @@ yotoos.map(function( yotoo){
 		// }
 	// });
 	Ti.API.info("[alloy.js] yotoo: " + yotoo.get('id')	
-		+ " " + yotoo.get('platform') + " " + yotoo.get('source_id_str')
+		+ " " + yotoo.get('chat_group_id') + " " + yotoo.get('source_id_str')
 		+ " " + yotoo.get('target_id_str') + " " + yotoo.get('unyotooed')
 		+ " " + yotoo.get('completed'));
 });
 
 chats.map(function( chat ){
 	Ti.API.info("[alloy.js] chats: " + chat.get('id')
-		+ " " + chat.get('chatgroup') + " " + chat.get('message'));
+		+ " " + chat.get('chat_group_id') + " " + chat.get('message'));
 });
 
 

@@ -1,17 +1,18 @@
 exports.definition = {
 	config: {
-		columns: {
+		'columns': {
 			// ACS fields
 		    "id": "string",	// acs id; make this by ACS	
-		    "chatgroup": "string",
 		    "created_at": "datetime",
+		    "updated_at": "datetime",
 		    "message": "string",
 		    "photo": "string",
 		    
-		    // for this app
-		    "owner_id": "string"
+		    // modified for this app
+		    "chat_group_id": "string",	// acs id
+		    "sender_id_str": "string"	// twitter id
 		},
-		adapter: {
+		'adapter': {
 			'idAttribute': "id",
 			'type': "sql",
 			'collection_name': "chat"
@@ -40,12 +41,13 @@ exports.definition = {
 				var success = options.success;
 				var error = options.error;
 				
-				var lastUpdateDateTime;
 				var query = {};
 				var thisCollection = this;
 				
-				if( lastUpdateDateTime ){
-					query.updated_at = { '$gt': lastUpdateDateTime };
+				if( this.length > 0 ){
+					query.updated_at = { 
+						'$gte': this.at(this.length - 1).get('updated_at')
+					};
 				}
 				
 				this.cloudApi.excuteWithLogin({
@@ -53,6 +55,11 @@ exports.definition = {
 					'method': 'getChats',
 					'query': query,
 					'onSuccess': function(chats){
+						for(var i = 0; i < chats.length; i++){
+							// chats[i].owner_id_str = mainAgent.get('id_str');
+							chats[i].chat_group_id = chats[i].chat_group.id;
+							chats[i].sender_id_str = chats[i].from.external_accounts[0].external_id;
+						}
 						thisCollection.add(chats);
 						if( success ){
 							success();
@@ -80,7 +87,14 @@ exports.definition = {
 					'method': 'postChat',
 					'message': message,
 					'onSuccess': function(chat){
-						thisCollection.add(chat);
+						var newChat = Alloy.createModel('chat');
+						newChat.set({
+							// 'owner_id_str': mainAgent.get('id_str'),
+							'chat_group_id': chat.chat_group.id,
+							'sender_id_str': mainAgent.get('id_str')
+						});
+						newChat.save();
+						thisCollection.add( newChat );
 						if( success ){
 							success();
 						}

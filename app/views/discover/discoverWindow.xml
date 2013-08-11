@@ -2,7 +2,10 @@
 	<Window id="discoverWindow" class="tapWindow" >
 		<View id="navBarView" >
 			<Require id="listAccountsButton" src="listAccountsButton" class="leftNavButton" />
-			<Label id="titleLabel" />
+			<View id="titleView">
+				<ImageView id="titleImageView" />
+				<Label id="titleLabel" />
+			</View>
 			<Require id="newTweetButton" src="newTweetButton" class="rightNavButton" />
 		</View>
 		<!-- <Require id="localView" src="discover/localView" /> -->

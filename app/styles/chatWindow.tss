@@ -8,19 +8,20 @@
 	// translucent : true,
 	// backgroundColor: "transparent"
 },
-"#titleView": {
-	height: 50,
-	width: "100%",
-	top: 0,
-	backgroundColor: "#090"
-},
+// override app.tss
 "#titleLabel": {
-	color: '#FFF',
-	font: {
-		fontFamily:'Arial',
-		fontSize: 19,
-		fontWeight: 'bold'
-	}
+	right: 5
+},
+"#titleTargetImageView":{	
+	// visible: false,
+	height : 36.5, // 73/2 is 36.5
+	width : 36.5,
+	top: 5,
+	right: 5,
+	defaultImage: 'images/defaultImageView.png',
+	borderWidth : 0.5,
+	borderRadius : 9,
+	borderColor : '#030303'
 },
 "#remainCountToBurn": {
 	top: 40,
@@ -34,7 +35,7 @@
 		fontFamily:'Arial',
 		fontSize: 16
 	},
-	zIndex: 10
+	zIndex: 9
 },
 "#chatView": {
 	// layout: "vertical",

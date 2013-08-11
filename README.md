@@ -87,10 +87,14 @@ for heavy user, specialized relationship
 	:캐쉬 개념으로 일정 시간 이상되면 업데이트 하고
 	:프로필 보기를 했으면 리프레쉬후 로컬 저장
 	:프로필 이미지는 업데이트 했을때 url이 바뀌나? 그렇다면 프로필 이미지 로딩 실퍠시에도 리프레쉬
+* twitter 토큰 완료 됬을 경우 대비 
 
 
 ## work now
-* twitter 토큰 완료 됬을 경우 대비 
+* yotoos 객체는 언제 리프레쉬 하지?
+* 서버의 chat는 관리자만 삭제 할 수 있다...어쩔수 없이 재유투시 이어서 읽도록..
+* 지금은 web으로 트위터 로긴할 때 반드시 처음에 성공해야 한다. 
+* ACL을 이용해 아무나 yotoo 못보게..하는게 소용 없잖아..
 * appStatus 모델을 만들어 저장. account.js의 active 필드 같은걸 이쪽으로 옮겨?
 * addNewYotoo() 할 때 source_id_str, target_id_str 같은것이 있으면 
 	:hided일 경우 알람창으로 유저 확인후 hided를 false (무료)
@@ -108,11 +112,10 @@ for heavy user, specialized relationship
 	:pull to refresh 구현 
 * yotoo.checkTargetYotoo() 에서 유투 성공 했을때 보내는 노티피케이션 실패시 큐에 넣던지 해서 성공할때까지 다시 시
 	:노티피케이션을 활성화 하지 않는 사용자도 생각해서 프로그램 시작시 컴플릿된 유투가 있는지 확인 해야 한다.
+* yotoo 완료 사운드!
 
 ## work right now!
 * account의 idAttribute를 user와 동일하게 acs_id로 바꾸는게 좋을것 같은데..
-* ACL을 이용해 아무나 yotoo 못보게..하는게 소용 없잖아..
-* yotoo 완료 사운드!
 * 100 conversation 일때 삭제   
 
 

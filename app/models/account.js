@@ -29,11 +29,11 @@ exports.definition = {
 
 	extendModel: function(Model) {		
 		_.extend(Model.prototype, {
-			// Implement the initialize method	
 			'initialize': function(e, e2){
 				// alert("init" + JSON.stringify(e));
 				// alert("init2" + JSON.stringify(e2));
 			},
+			/* custom functions */
 			'getYotoos': function(){
 				if( this.yotoos ){
 					// alert("exist yotoos: " + this.yotoos.length);
@@ -46,9 +46,20 @@ exports.definition = {
 			'getChats': function(){
 				if( this.chats ){
 				}else {
-					var relevantChats = Alloy.Globals.chats.where({'owner_id': this.get('id')});
+					var relevantChats = [];
+					this.getYotoos().map(function(yotoo){
+						if( yotoo.get('chat_group_id') ){
+							if(relevantChats.length > 0){
+								relevantChats.concat( Alloy.Globals.chats.where({'chat_group_id': yotoo.get('chat_group_id')}) );
+							}else{
+								relevantChats = Alloy.Globals.chats.where({'chat_group_id': yotoo.get('chat_group_id')});
+							}
+						}
+					});
+					// var relevantChats = Alloy.Globals.chats.where({'owner_id_str': this.get('id_str')});
 					this.chats = Alloy.createCollection('chat', relevantChats);
 				}
+				// all chats relevant this account
 				return this.chats;
 			},
 			'createCollection': function(typeOfCollection){
@@ -69,7 +80,10 @@ exports.definition = {
 	
 	extendCollection: function(Collection) {		
 		_.extend(Collection.prototype, {
-			
+			// 'comparator': function(account){
+				// return account.get('id_str');
+			// },
+			/* custom functions */
 			getCurrentAccount: function(){
 				var currentAccount;
 				var activeFlag = 0;

@@ -329,10 +329,13 @@ cloudProxy.getChats = function(options){
 		'participate_ids': mainAgent.get('id'),
 	    // 'response_json_depth': 2,
 	    'limit': 999,	// max 1000
-	    // 'order': "updated_at",
+	    'order': "updated_at",
 		'where': query
 	}, function (e) {
 	    if (e.success) {
+	    	for(var i=0; i < e.chats.length; i++){
+		    	Ti.API.info(e.chats[i].message);
+	    	}
 	        // for (var i = 0; i < e.chats.length; i++) {
 	            // var chat = e.chats[i];
 	            // alert('Success:\n' +

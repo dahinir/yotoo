@@ -10,12 +10,17 @@ exports.definition = {
 		    "source_id_str": "string",
 		    "target_id_str": "string",
 		    
+		    "chat_group_id": "string", // acs chat group id
+		    
 		    // status //
 		    "hided": "boolean",		// 1:true, 0:false
 		    "unyotooed": "boolean",
 		    "completed": "boolean",
 		    "burned": "boolean"
 		},
+        'defaults': {
+        	'burned': 0	// false
+        },
 		adapter: {
 			// 'migration': ,
 			'idAttribute': "id",	// ACS id
@@ -135,7 +140,6 @@ exports.definition = {
 		_.extend(Collection.prototype, {
 			'initialize': function(e) {
 				this.cloudApi = require('cloudProxy').getCloud();
-				
 			},
 			/**
 			 * designed like backbone.fetch()

@@ -6,6 +6,7 @@ migration.up = function(db) {
 			"platform": "TEXT",	// like twitter, facebook..
 		    "source_id_str": "TEXT",
 		    "target_id_str": "TEXT",
+		    "chat_group_id": "TEXT",
 		    
 		    // status //
 		    "hided": "INTEGER",
