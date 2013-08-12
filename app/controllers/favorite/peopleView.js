@@ -134,124 +134,24 @@ fetchYotooUsers(yotoos);
 var testButton = Ti.UI.createButton();
 $.peopleView.add( testButton);
 testButton.addEventListener('click', function(){
-	// var win = Alloy.createController('webWindow', {
-		// url: "https://api.twitter.com/oauth/authorize"
-	// });
-	// win.getView().open();
-	/*
-	alert(Alloy.Globals.users.at(0).get('screen_name')
-	+ users.at(0).get('screen_name'));
-	
-	Alloy.Globals.users.at(0).save();
-	users.at(0).save();
-	users.at(0).set('screen_name', 'fuck');
-	
-	alert(Alloy.Globals.users.at(0).get('screen_name')
-	+ users.at(0).get('screen_name'));
-	*/
-	/*
-	yotoos.checkTargetYotoo({
-		sourceUser: ownerAccount,
-		targetUser: users.at(0),
-		success: function(yotoo){
-			alert(JSON.stringify(yotoo));
-		},
-		error: function(e){
-			alert(e);
-		}
+	var social = require('alloy/social').create({
+		consumerKey: 'JCOOHvCQE617qdnJChrtA',
+		consumerSecret: '1BxWzFDjhJkrXMiP9aoi9eXhySnISWlYb8vtIwRHpM'
 	});
-	*/
-	/*
-	Cloud.Users.login({
-	    login: 'uu',
-	    password: '1111'
-	}, function (e) {
-	    if (e.success) {
-	        var user = e.users[0];
-	        alert('Success:\n' +
-	            'id: ' + user.id + '\n' +
-	            'sessionId: ' + Cloud.sessionId + '\n' +
-	            'first name: ' + user.first_name + '\n' +
-	            'last name: ' + user.last_name);
-	    } else {
-	        alert('Error:\n' +
-	            ((e.error && e.message) || JSON.stringify(e)));
-	    }
+	social.authorize(function(e){
+		alert(JSON.stringify(e));
 	});
-	*/
-	// if(ownerAccount.currentChatTarget  ){
-		// alert( ownerAccount.currentChatTarget );
-	// }	
-	/*
-	var usersA = Alloy.createCollection('user');
-	var usersB = Alloy.createCollection('user');
-	var uA = Alloy.createModel('user');
-	var uB = Alloy.createModel('user');
-	
-	usersA.on("haha", function(){
-		alert("A");
-	});
-	usersB.on("haha", function(){
-		alert("B");
-	});
-	
-	usersB.trigger("haha");
-	*/
-	// usersA.add( uA );
-	// usersB.add( usersA.models );
-	// alert(usersA.length + ", " + usersB.length);
-	
-	// usersB.reset();
-	// uA.destroy();
-	// alert(usersA.length + ", " + usersB.length);
-	
-	
-	
-	
-	
-	// alert(JSON.stringify(yotoos.at(0).__proto__.config));
-	// require('cloudProxy').getCloud().deleteAllYotoos( ownerAccount );
-	
-	/*
-	yotoos.map(function(yotoo){
-		yotoo.save({'unyotooed': 0});
-		Ti.API.info( yotoo.get('id')	
-			+ " " + yotoo.get('platform') + " " + yotoo.get('source_id_str')
-			+ " " + yotoo.get('target_id_str') + " " + yotoo.get('unyotooed'));
-	});
-	*/
 
-	yotoos.fetchFromServer({ 
-		'mainAgent': ownerAccount,
-		'success': function(){
-			// save fetched yotoos in 'add' event listener
-			Ti.API.info("[peopleView.js]");
-		},
-		'error': function(){
-			Ti.API.info("[peopleView.js]");
-		}
-	});
-/*
-var Cloud = require('ti.cloud');
-Cloud.Users.logout(function (e) {
-    if (e.success) {
-		Cloud.SocialIntegrations.externalAccountLogin({
-			id: ownerAccount.get('id_str'),
-		    type: "twitter",
-		    token: "dfas"
-		}, function (e) {
-			// Ti.API.info( JSON.stringify(e) );
-			Ti.API.info( Cloud.sessionId );
-		    if (e.success) {
-				alert("ss");
-		    } else {	// ACS login error
-		    	alert("f");
-		    }
-		});
-    } else {
-    }
-});
-*/
+	// yotoos.fetchFromServer({ 
+		// 'mainAgent': ownerAccount,
+		// 'success': function(){
+			// // save fetched yotoos in 'add' event listener
+			// Ti.API.info("[peopleView.js]");
+		// },
+		// 'error': function(){
+			// Ti.API.info("[peopleView.js]");
+		// }
+	// });
 });
 
 

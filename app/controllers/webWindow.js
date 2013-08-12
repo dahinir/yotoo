@@ -2,7 +2,7 @@ var args = arguments[0] || {};
 
 // var ownerAccount = args.ownerAccount || Alloy.Globals.accounts.getCurrentAccount();
 // var url = args.url;
-$.titleLabel.text = L('web');
+$.titleLabel.setText( L('web') );
 // exports.addEventListener = function(a, b ){
 	// $.webView.addEventListener(a, b);
 // };
@@ -30,6 +30,13 @@ $.titleLabel.text = L('web');
 // exports.stopLoading = function(){
 	// $.webView.stopLoading();
 // };
+$.webView.addEventListener('load', function(e){
+	var titleText = e.url
+	if(titleText.length > 27){
+		titleText = titleText.substring(0, 25) + "..";
+	}
+	$.titleLabel.setText(titleText);
+});
 $.closeButton.addEventListener('click', function(e){
 	$.webWindow.close();
 });
@@ -37,3 +44,4 @@ $.closeButton.addEventListener('click', function(e){
 exports.getWebView = function(){
 	return $.webView;
 };
+

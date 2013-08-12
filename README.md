@@ -66,9 +66,6 @@ for heavy user, specialized relationship
 * lazy loading을 탭에 적용하자(지금은 프로그램 시작하면 모든 탭을 한꺼번에 로딩함)
 * Alloy.builtins.moment를 tweetRowView의 ago에 사용(http://momentjs.com/)
 * add account하고 또 add account 하면 쿠키때문에 그런지 전에 로긴된 그대로 떠서 자칫 중복 로긴되기 쉽다. :HTTPClient.clearCookies(url);
-* 로긴 취소 했을때 웹뷰 close
-* 로긴 실패하고 다시 로긴 성공했을때..
-* 로긴 한번 실패해서 웹뷰 떠 있는 상태에서 다시 로긴 성공했을때.
 * 0. Node.ACS server (개발자 배타 끝나면)
 * 1. twitter streaming api adapter :node.js socket.io.js nTwitter.js등을 이용해야 하나.. , socket.io는 Ti용 모듈을 누가 만들어 놓긴 했네(https://github.com/nowelium/socket.io-titanium)
 * 2. push notification server
@@ -93,9 +90,7 @@ for heavy user, specialized relationship
 ## work now
 * yotoos 객체는 언제 리프레쉬 하지?
 * 서버의 chat는 관리자만 삭제 할 수 있다...어쩔수 없이 재유투시 이어서 읽도록..
-* 지금은 web으로 트위터 로긴할 때 반드시 처음에 성공해야 한다. 
 * ACL을 이용해 아무나 yotoo 못보게..하는게 소용 없잖아..
-* appStatus 모델을 만들어 저장. account.js의 active 필드 같은걸 이쪽으로 옮겨?
 * addNewYotoo() 할 때 source_id_str, target_id_str 같은것이 있으면 
 	:hided일 경우 알람창으로 유저 확인후 hided를 false (무료)
 	:unyotoo일 경우 알람창으로 유저 확인후 unyotoo를 false (유료)
@@ -116,7 +111,7 @@ for heavy user, specialized relationship
 
 ## work right now!
 * account의 idAttribute를 user와 동일하게 acs_id로 바꾸는게 좋을것 같은데..
-* 100 conversation 일때 삭제   
+* 100 conversation 일때 삭제  
 
 
 탭별로 디렉토리를 나누자

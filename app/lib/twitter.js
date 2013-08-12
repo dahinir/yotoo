@@ -93,12 +93,14 @@ var showAuthorizeUI = function(options){
 	var oauthClient = options.oauthClient;
 	var onSuccess = options.onSuccess;
 	var onError = options.onError;
-	
 
 	var webWindowController = Alloy.createController('webWindow');
-	var webView = webWindowController.getWebView(); 
-	
+	var webView = webWindowController.getWebView();
+
+	var loadCount = 0;
+
 	webView.addEventListener('beforeload', function(e) {
+		Ti.API.info(e.url);
 		if( e.url === 'https://api.twitter.com/oauth/cancelforyotoobabe'){
 			webView.stopLoading();
 			webWindowController.getView().close();
@@ -107,11 +109,17 @@ var showAuthorizeUI = function(options){
 
 	webView.addEventListener('load', function(e) {
 		Ti.API.debug("webView load!");
+    var cookies = webView.evalJS("document.cookie").split(";"); 
+    Ti.API.info( "# of cookies -> " + cookies.length  );
+    for (i = 0; i <= cookies.length - 1; i++) {
+            Ti.API.info( "cookie -> " + cookies[i] );
+    }
+		loadCount++;
 		var pin;
 
 		// e.source.evalJS('Ti.App.fireEvent("webView:cancel");');
 		// Ti.API.info(webView.html);
-		/* ios bug; focus not work */ 
+		// ios bug; focus not work  
 		// e.source.evalJS('if(document.getElementById("username_or_email")){document.getElementById("username_or_email").focus();}');
 		e.source.evalJS('if(document.getElementById("cancel")){document.getElementById("cancel").addEventListener("touchstart", function(){ location.replace("cancelforyotoobabe"); }); }');
 		
@@ -136,7 +144,6 @@ var showAuthorizeUI = function(options){
 		}
 		if( pin ){
 			Ti.API.debug("login succes, pin is " + pin);
-			
 			oauthClient.setVerifier(pin);
 			oauthClient.fetchAccessToken(function(data) {
 				onSuccess(data);
@@ -147,6 +154,13 @@ var showAuthorizeUI = function(options){
 				Ti.API.warn("Failure to fetch access token, try again. ");
 				onError(data);
 			});
+			
+			// clear cookies for next login
+			Ti.Network.createHTTPClient().clearCookies('https://api.twitter.com/oauth');
+		}else if( loadCount > 1){
+			alert(L('you_may_enter_wrong_id/pass'));
+			loadCount = 0;
+			webView.setUrl(url);
 		}
 	});
 

@@ -7,6 +7,9 @@
 // override app.tss
 "#titleLabel":{
 	right: 5
+},
+"#webView": {
+	disableBounce: true	// only iOS
 }
 
 
