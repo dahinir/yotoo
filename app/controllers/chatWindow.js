@@ -3,7 +3,6 @@ var ownerAccount = args.ownerAccount || Alloy.Globals.accounts.getCurrentAccount
 var targetUser = args.targetUser;
 var yotoo = ownerAccount.getYotoos().where({'target_id_str': targetUser.get('id_str')}).pop();
 
-
 var chats = ownerAccount.getChats();
 var conversationCount = 100;
 var softKeyboardHeight = 0;
@@ -17,9 +16,8 @@ var setSoftKeyboardHeight = function(e){
 	softKeyboardHeight = e.keyboardFrame.height;
 	$.chatTextArea.fireEvent('focus');
 	Ti.App.removeEventListener('keyboardFrameChanged', setSoftKeyboardHeight);
-}
+};
 Ti.App.addEventListener('keyboardFrameChanged', setSoftKeyboardHeight);
-
 
 
 var testButton = Ti.UI.createButton();
@@ -28,7 +26,7 @@ testButton.addEventListener('click', function(){
 	alert(Alloy);
 });
 
-var addChatTableRow = function(chat, fixScroll){
+var addChatTableRow = function(chat){
 	/* 현재 채팅 윈도우와 관계있는 chat일 경우에만 추가*/
 	if( yotoo.get('chat_group_id') ){   
 		if( yotoo.get('chat_group_id') !== chat.get('chat_group_id') ){
@@ -47,27 +45,22 @@ var addChatTableRow = function(chat, fixScroll){
 		'targetUser': targetUser
 	}).getView();
 	$.chatTableView.appendRow(newRow);
-	conversationCount = conversationCount - chats.length;
-	if( !fixScroll ){
-		$.chatTableView.scrollToIndex( chats.length - 1 );
-	}
+	$.remainCountToBurn.setText( --conversationCount );
+	$.chatTableView.scrollToIndex( chats.length - 1 );
+	chat.save();
 };
-chats.on('add', function(addedChat){
-	// alert(JSON.stringify(addedChat));
-	addChatTableRow(addedChat);
-	addedChat.save();
+chats.on('add', addChatTableRow);
+
+chats.map(function(chat){
+	addChatTableRow(chat);
 });
 
-if( chats.length > 0){
-	chats.map(function(chat){
-		addChatTableRow(chat, true);
+var fetch = function(){
+	chats.fetchFromServer({
+		'mainAgent': ownerAccount
 	});
-	$.chatTableView.scrollToIndex( chats.length -1 );
-}
-
-chats.fetchFromServer({
-	'mainAgent': ownerAccount
-});
+};
+fetch();
 
 $.closeButton.addEventListener('click', function(e){
 	$.chatWindow.close();
@@ -122,12 +115,14 @@ $.chatTableView.addEventListener('postlayout', function(e){
 	}
 });
 
+Ti.App.addEventListener("app:newChat:" + targetUser.get('id_str'), fetch );
+
 $.chatWindow.addEventListener('open', function(e){
-	ownerAccount.currentChatTarget = targetUser.get('id_str');
 });
 
 $.chatWindow.addEventListener('close', function(){
-	// ownerAccount.currentChatTarget = undefined;
+	Ti.App.removeEventListener("app:newChat" + targetUser.get('id_str'), fetch );
+	chats.off('add', addChatTableRow);
 });
 
 

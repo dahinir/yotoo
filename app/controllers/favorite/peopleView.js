@@ -15,19 +15,16 @@ users.on('add change', function(user){
 
 var tempAddedYotoos = Alloy.createCollection('yotoo');
 yotoos.on('add', function(addedYotoo, collection, options){
-	// alert(JSON.stringify(b));	// collection
-	// alert(JSON.stringify(options));	// {index: collections index}
+	alert(addedYotoo.get('source_id_str'));
+	addedYotoo.save();
 	if( addedYotoo.targetUser ){
 		users.add( addedYotoo.targetUser );
-		// delete addedYotoo.targetUser;
 	}else{
-		// alert( options.index + ", " + (yotoos.length - 1) );
 		tempAddedYotoos.add(addedYotoo);
 		if( options.index === yotoos.length - 1){
 			fetchYotooUsers( tempAddedYotoos );
 			tempAddedYotoos.reset();
 		}
-		addedYotoo.save();
 	}
 	Ti.API.info("[peopleView.js] yotoo add event");
 });
@@ -134,24 +131,19 @@ fetchYotooUsers(yotoos);
 var testButton = Ti.UI.createButton();
 $.peopleView.add( testButton);
 testButton.addEventListener('click', function(){
-	var social = require('alloy/social').create({
-		consumerKey: 'JCOOHvCQE617qdnJChrtA',
-		consumerSecret: '1BxWzFDjhJkrXMiP9aoi9eXhySnISWlYb8vtIwRHpM'
-	});
-	social.authorize(function(e){
-		alert(JSON.stringify(e));
-	});
+	// var chats = ownerAccount.getChats();
+	// chats.trigger('add');
 
-	// yotoos.fetchFromServer({ 
-		// 'mainAgent': ownerAccount,
-		// 'success': function(){
-			// // save fetched yotoos in 'add' event listener
-			// Ti.API.info("[peopleView.js]");
-		// },
-		// 'error': function(){
-			// Ti.API.info("[peopleView.js]");
-		// }
-	// });
+	yotoos.fetchFromServer({ 
+		'mainAgent': ownerAccount,
+		'success': function(){
+			// save fetched yotoos in 'add' event listener
+			Ti.API.info("[peopleView.js]");
+		},
+		'error': function(){
+			Ti.API.info("[peopleView.js]");
+		}
+	});
 });
 
 

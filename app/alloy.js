@@ -12,6 +12,7 @@ ENV_DEV : true if the current compiler target is built for development (running 
 ENV_TEST : true if the current compiler target is built for testing on a device
 ENV_PRODUCTION : true if the current compiler target is built for production (running after a packaged installation)
  */
+
 _.extend(Alloy.Globals,{
      // util : require('util'),
      myVal : 3,
@@ -117,23 +118,18 @@ if( ENV_PRODUCTION ){
 
 // push notification
 if( OS_IOS ){
-	// alert("os");
-	// Ti.API.debug("[index.js] this is IOS");
 	// alert("[index.js] this is IOS");
-	Ti.UI.iPhone.setAppBadge( 12 );
+	// Ti.UI.iPhone.setAppBadge( 11 );
 	Ti.Network.registerForPushNotifications({
-		type: [
+		'types': [
 			Ti.Network.NOTIFICATION_TYPE_ALERT,
 			Ti.Network.NOTIFICATION_TYPE_BADGE,
 			Ti.Network.NOTIFICATION_TYPE_SOUND
 		],
-		callback: function(e){
+		'callback': function(e){
 			/* 
 			 * Connection 탭의 activity history를 보여줄까?
 			 */
-			// alert("notification callback");
-			// alert(JSON.stringify(e));
-			// Ti.API.info(JSON.stringify(e.data));
 			var recipientAccount = accounts.where({'id_str': e.data.t}).pop();
 			var relevantYotoo = recipientAccount.getYotoos().where({
 				'source_id_str': e.data.t,
@@ -175,12 +171,9 @@ if( OS_IOS ){
 				chatWindow.getView().open();
 			// case of running
 			}else {
-				recipientAccount.getChats().fetchFromServer({
-					'mainAgent': recipientAccount
-				});
+				Ti.App.fireEvent("app:newChat:" + e.data.f);
 				// case of chatting with Notified user
 				if( recipientAccount.currentChatTarget === e.data.f ){
-					// do notting
 				// case of chatting with other user
 				}else{
 					alert(JSON.stringify(e.data));
@@ -194,12 +187,10 @@ if( OS_IOS ){
 			// e.data.aps.badge: 1
 			// e.data.aps.sound: default
 		},
-		error: function(e){
-			alert("error");
+		'error': function(e){
 			alert("error " + e.code + ", " + e.error );
 		},
-		success: function(e){
-			alert("success");
+		'success': function(e){
 			alert("code:" + e.code + "deviceToken: " + e.deviceToken );
 		}
 	});

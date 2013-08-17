@@ -158,7 +158,11 @@ exports.definition = {
 						var yotoos = newAccount.getYotoos();
 						yotoos.fetchFromServer({
 							'mainAgent': newAccount,
-							'success': function(){},
+							'success': function(){
+								yotoos.map(function(yotoo){
+									yotoo.save();
+								});
+							},
 							'error': function(){}
 						});
 						
@@ -226,7 +230,7 @@ exports.definition = {
 								*/
 							},
 							'error': function(){
-								Ti.API.info("[account.js] user.fetchFromServer failure")
+								Ti.API.info("[account.js] user.fetchFromServer failure");
 							}
 						});	// user.getUser()
 						
@@ -242,5 +246,5 @@ exports.definition = {
 		return Collection;
 	}
 		
-}
+};
 

@@ -1,8 +1,10 @@
 eclipse.preferences.version=1
-iosLaunchConfigurationAttributes/ATTR_MINIFY=false
+iosLaunchConfigurationAttributes/ATTR_MINIFY=true
 iosLaunchConfigurationAttributes/ATTR_PROJECT_NAME=yotoo
 iosLaunchConfigurationAttributes/appid=com.dasolute.yotoo
 iosLaunchConfigurationAttributes/certificate=Daehyeon Shin (B83FVSE449)
+iosLaunchConfigurationAttributes/distribute_path=/Users/dahini/Downloads
 iosLaunchConfigurationAttributes/keychain=/Users/dahini/Library/Keychains/login.keychain
+iosLaunchConfigurationAttributes/output_format=ipa
 iosLaunchConfigurationAttributes/sdk_version=6.1
-iosLaunchConfigurationAttributes/uuid=9B7FB8DC-04ED-4E2B-B820-EDE1E7D1F846
+iosLaunchConfigurationAttributes/uuid=726681BF-21F0-40D6-B9AE-425B629E6D3E

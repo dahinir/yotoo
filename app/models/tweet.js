@@ -200,5 +200,5 @@ exports.definition = {
 		return Collection;
 	}
 		
-}	// end exports.definition
+};	// end exports.definition
 

@@ -1,3 +1,56 @@
 <Alloy>
-	<View id="userListView" />
+	<View id="userListView" >
+		<ListView id="listView" defaultItemTemplate="plain" >
+
+			<Templates>
+				<ItemTemplate name="plain" >
+					<View id="relationshipIndicator" bindId="relationshipIndicator" />
+					<ImageView id="profileImage" bindId="profileImage" />
+					<ImageView id="verifiedAccountIcon" bindId="verifiedAccountIcon" />
+					<Label id="name" bindId="name" />
+					<Label id="screenName" bindId="screenName" />
+					<Label id="following" bindId="following" />
+					<Label id="followers" bindId="followers" />
+					<Label id="description_" bindId="description_" /> <!-- 'description' is keyword -->
+					<Button id="rightActionButton" bindId="rightActionButton" onClick="onRightButtonClick" />
+				</ItemTemplate>
+				<ItemTemplate name="self" >
+					<View id="relationshipIndicator" bindId="relationshipIndicator" />
+					<ImageView id="profileImage" bindId="profileImage" />
+					<ImageView id="verifiedAccountIcon" bindId="verifiedAccountIcon" />
+					<Label id="name" bindId="name" />
+					<Label id="screenName" bindId="screenName" />
+					<Label id="following" bindId="following" />
+					<Label id="followers" bindId="followers" />
+					<Label id="description_" bindId="description_" /> <!-- 'description' is keyword -->
+				</ItemTemplate>
+				<ItemTemplate name="unyotooed" >
+					<View id="relationshipIndicator" bindId="relationshipIndicator" />
+					<ImageView id="profileImage" bindId="profileImage" />
+					<ImageView id="verifiedAccountIcon" bindId="verifiedAccountIcon" />
+					<Label id="name" bindId="name" />
+					<Label id="screenName" bindId="screenName" />
+					<Label id="following" bindId="following" />
+					<Label id="followers" bindId="followers" />
+					<Label id="description_" bindId="description_" /> <!-- 'description' is keyword -->
+					<Button id="rightActionButton" bindId="rightActionButton" onClick="onRightButtonClick" />
+					<View id="blackoutScreen" bindId="blackoutScreen" />
+				</ItemTemplate>
+				<ItemTemplate id="complatedTemplate" name="completed" >
+					<View id="relationshipIndicator" bindId="relationshipIndicator" />
+					<ImageView id="profileImage" bindId="profileImage" />
+					<ImageView id="verifiedAccountIcon" bindId="verifiedAccountIcon" />
+					<Label id="name" bindId="name" />
+					<Label id="screenName" bindId="screenName" />
+					<Label id="following" bindId="following" />
+					<Label id="followers" bindId="followers" />
+					<Label id="description_" bindId="description_" /> <!-- 'description' is keyword -->
+					<Button id="rightActionButton" bindId="rightActionButton" onClick="onRightButtonClick" />
+				</ItemTemplate>
+			</Templates>
+			
+			<ListSection id="section">
+			</ListSection>
+		</ListView>
+	</View>
 </Alloy>

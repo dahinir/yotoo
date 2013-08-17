@@ -20,7 +20,7 @@ userListView.getView().addEventListener('rightButtonClick', function(e){
 	  'selectedIndex': 1,
 	  'destructive': 0
 	};
-	var optionDialog = Ti.UI.createOptionDialog(dialogOptions)
+	var optionDialog = Ti.UI.createOptionDialog(dialogOptions);
 	optionDialog.show();
 	optionDialog.addEventListener('click', function(e){
 		if( e.index === 0){

@@ -161,9 +161,9 @@ exports.definition = {
 					'mainAgent': mainAgent,
 					'method': 'get',
 					'modelType': 'yotoo',
-					'fields': query,
+					'query': query,
 					'onSuccess': function( resultsJSON ){
-						if( add || reset ){
+						if( reset ){
 							thisCollection.reset();
 						}
 						thisCollection.add( resultsJSON );
@@ -386,6 +386,6 @@ exports.definition = {
 		
 		return Collection;
 	}
-}
+};
 
 

@@ -14,7 +14,7 @@ exports.init = function( options ){
 		Ti.API.warn("[localListView.js] init() witheout ownerAccount");
 	}
 	Ti.API.info("[localListView.js] init");
-}
+};
 
 
 

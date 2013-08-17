@@ -3,16 +3,14 @@ var args = arguments[0] || {};
 var ownerAccount = args.ownerAccount || Alloy.Globals.accounts.getCurrentAccount();
 var yotoos = args.yotoos || ownerAccount.getYotoos();
 var users = args.users;
-// var rightActionButton = args.rightActionButton;
-// var getRightActionButtonProps = args.getRightActionButtonProps;
 
-var _PLAIN = 1; 
-var _SELF = 2;
-var _UNYOTOOED = 3;
-var _COMPLETED = 4;
-var _HIDED = 5;
-var _BURNED = 6;
-
+// var _PLAIN = 1; 
+// var _SELF = 2;
+// var _UNYOTOOED = 3;
+// var _COMPLETED = 4;
+// var _HIDED = 5;
+// var _BURNED = 6;
+/*
 var getTemplate = function(type){
 	var plainTemplates = [{
 		type: 'Ti.UI.View',
@@ -201,40 +199,14 @@ var getTemplate = function(type){
 	};
 };
 function rightButtonAction(e) {
-	// alert("defaultAction\nitemId: " + e.itemId+"\nitemIndex:"+ e.itemIndex);
-	
 	$.userListView.fireEvent('rightButtonClick', {
 		'id_str': e.itemId
 	});
-	/*
-	var user = ownerAccount.createModel('user');
-	user.fetchMetaData({
-		'purpose': 'relationship',
-		'params': {
-			'source_id': ownerAccount.get('id_str'),
-			'target_id': e.itemId// user.get('id_str')
-		},
-		'onSuccess': function( results ){
-			var data = section.getItemAt( e.itemIndex);
-			if( results.relationship.source.followed_by){
-				data.relationshipIndicator = {
-					visible: true,
-					backgroundColor:"#999"
-				};
-			}
-			section.updateItemAt( e.itemIndex, data );
-			// alert(results.relationship.source.followed_by);
-		},
-		'onFailure': function(){
-			Ti.API.debug("[userView] fetchFromServer(for relationship) failure");
-		}				
-	});
-	*/
 }
 function openUserView(e) {
 	alert("openUserView");
-	Ti.API.info(e.source.rect.x + ", " + e.source.rect.y);
-	Ti.API.info("dpi: " + Titanium.Platform.displayCaps.dpi);
+	// Ti.API.info(e.source.rect.x + ", " + e.source.rect.y);
+	// Ti.API.info("dpi: " + Titanium.Platform.displayCaps.dpi);
 }
 
 var listView = Ti.UI.createListView({
@@ -246,18 +218,16 @@ var listView = Ti.UI.createListView({
 	},
 	'defaultItemTemplate' : 'plain'
 });
+$.userListView.add(listView);
 
 // listView.setTop( $.searchBar.getHeight() );
-$.userListView.add(listView);
 // $.userListView.addEventListener('swipe', function(e){
 	// alert(e);
 // });
-
-
 var section = Ti.UI.createListSection();
-var updateRow = function(user){
-	
-};
+*/
+var section = $.section;
+var listView = $.listView;
 var _settingData = function(user) {
 	data = {
 		profileImage : {
@@ -282,6 +252,11 @@ var _settingData = function(user) {
 			itemId : user.get('id_str')
 		}
 	};
+	if (user.get('verified')) {
+		data.verifiedAccountIcon = {
+			visible : true
+		};
+	}
 	
 	/* template select */
 	var relevantYotoo = yotoos.where({'target_id_str': user.get('id_str')}).pop();
@@ -300,11 +275,6 @@ var _settingData = function(user) {
 		};
 		data.properties.height = Ti.UI.SIZE;
 		// not support on iOS
-	}
-	if (user.get('verified')) {
-		data.verifiedAccountIcon = {
-			visible : true
-		};
 	}
 	return data;
 };
@@ -350,6 +320,17 @@ var _getIndexByItemId = function(itemId){
 	}
 	return index;
 };
+
+function onRightButtonClick(e){
+	// alert(e.itemId + e.bubbles);
+	$.userListView.fireEvent('rightButtonClick', {
+		'id_str': e.itemId
+	});
+};
+// $.trigger('rightButtonClick');
+
+// listView.addEventListener('itemclick', function(e){
+// });
 
 
 /* event listeners of models; users, yotoos*/

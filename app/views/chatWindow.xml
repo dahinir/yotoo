@@ -11,8 +11,7 @@
 		<Label id="remainCountToBurn" >100</Label>
 		<!-- <View id="chatScreen"> -->
 		<View id="chatView" scrollingEnabled ="true">
-			<TableView id="chatTableView" bubbleParent="false">
-			</TableView>
+			<TableView id="chatTableView" bubbleParent="false" />
 			<View id="toolBarView" >
 				<TextArea id="chatTextArea" textAlign="left" 
 					keyboardType="Ti.UI.KEYBOARD_DEFAULT" 

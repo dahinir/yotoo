@@ -319,7 +319,7 @@ exports.create = function(settings) {
 			if( options.purpose === 'postTweetWithMedia' ){
 				header = {
 					'Content-Type': 'multipart/form-data'
-				}
+				};
 			}
 			var onSuccess = options.onSuccess;
 			var onFailure = options.onFailure;

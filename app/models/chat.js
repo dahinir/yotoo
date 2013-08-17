@@ -87,7 +87,7 @@ exports.definition = {
 					'method': 'postChat',
 					'message': message,
 					'onSuccess': function(chat){
-						var newChat = Alloy.createModel('chat');
+						var newChat = Alloy.createModel('chat', chat);
 						newChat.set({
 							// 'owner_id_str': mainAgent.get('id_str'),
 							'chat_group_id': chat.chat_group.id,
@@ -111,5 +111,5 @@ exports.definition = {
 		
 		return Collection;
 	}
-}
+};
 

@@ -41,7 +41,7 @@
 	height:'auto'
 },
 "ImageView": {
-	defaultImage : "/images/defaultImageView.png"
+	defaultImage : "images/defaultImageView.png"
 },
 "TableView": {
 	// backgroundImage:'images/back.png'

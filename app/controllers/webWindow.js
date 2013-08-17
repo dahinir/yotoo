@@ -31,7 +31,7 @@ $.titleLabel.setText( L('web') );
 	// $.webView.stopLoading();
 // };
 $.webView.addEventListener('load', function(e){
-	var titleText = e.url
+	var titleText = e.url;
 	if(titleText.length > 27){
 		titleText = titleText.substring(0, 25) + "..";
 	}

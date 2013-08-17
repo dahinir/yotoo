@@ -18,19 +18,11 @@ for heavy user, specialized relationship
 * Controllers :provide the glue between the model and view components in the form of application logic.
 
 
-* Ti.UI.Window add animation
-* Titanium.UI.createActivityIndicator()
-* streaming tweet
-
-* profileWindow :메인메뉴에 나오는 나의 프로필
-* userWindow :다른사람의 프로필이 나오는 윈도우
-
 * network queue :네트웤에 연결되지 않은 상황일때 큐에 넣고 네트웤이 활성화 되면 실행
 
 
 ## note!
 * 짧은 에니메이션이 들어가면 훨씬 빠르게 느껴진다.
-* 배포전 반드시 twitter.js 컨슈며 토큰, acs토큰, 등을 교체하고 외부로 돌리고 gitignore
 
 
 ## worried
@@ -76,7 +68,7 @@ for heavy user, specialized relationship
 * ACL aka access controll list
 * yotto_nodeServer 이름을 yotoo_node_acs로 
 * account.js addAccount 할때 yotoo한 객체 있나 찾아 보고 저장
-* parse.com 푸쉬도 같이 쓸까?
+* parse.com 푸쉬도 같이 쓸까? no
 * Ti.Network.HTTPClient.cache 상황에 맞게 true
 * image cache :https://github.com/FokkeZB/nl.fokkezb.cachedImageView :http://docs.appcelerator.com/titanium/latest/#!/guide/Image_Best_Practices-section-30082525_ImageBestPractices-Cachingremoteimages
 * 네트웤 상태등의 이유로 밀려 있는 할일 저장해 놓고 실행하는 로직 ex) cloudProxy.postYotoo() 에서 checkTargetYotoo()는 실패 했을때 조용히 다시 시도 되어야 한다.
@@ -107,11 +99,15 @@ for heavy user, specialized relationship
 	:pull to refresh 구현 
 * yotoo.checkTargetYotoo() 에서 유투 성공 했을때 보내는 노티피케이션 실패시 큐에 넣던지 해서 성공할때까지 다시 시
 	:노티피케이션을 활성화 하지 않는 사용자도 생각해서 프로그램 시작시 컴플릿된 유투가 있는지 확인 해야 한다.
-* yotoo 완료 사운드!
+* yotoo 완료 사운드! Eazy-E -Niggaz My Height Don't Fight :40s "yotoo"
 
 ## work right now!
 * account의 idAttribute를 user와 동일하게 acs_id로 바꾸는게 좋을것 같은데..
-* 100 conversation 일때 삭제  
+* 100 conversation 일때 삭제
+* 아이콘을 폰트로!  
+* noti성공하면 디바이스끼리 채팅 시험을 해봐야 함  
+* notification subscribe는 account마다 할 필요 없다. :아 아니구나..
+* account 삭제할때 unsubscribe
 
 
 탭별로 디렉토리를 나누자
