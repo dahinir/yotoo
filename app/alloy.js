@@ -29,7 +29,7 @@ if (typeof Object.create !== 'function'){
 		var F = function (){};
 		F.prototype = o;
 		return new F();
-	}
+	};
 }else{
 	Ti.API.warn("already defined Object.create()");
 }

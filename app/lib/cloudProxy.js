@@ -329,7 +329,7 @@ cloudProxy.getChats = function(options){
 		'participate_ids': mainAgent.get('id'),
 	    // 'response_json_depth': 2,
 	    'limit': 999,	// max 1000
-	    'order': "updated_at",
+	    'order': "-updated_at",	// last chat first
 		'where': query
 	}, function (e) {
 	    if (e.success) {

@@ -15,7 +15,8 @@ users.on('add change', function(user){
 
 var tempAddedYotoos = Alloy.createCollection('yotoo');
 yotoos.on('add', function(addedYotoo, collection, options){
-	alert(addedYotoo.get('source_id_str'));
+	// alert(addedYotoo.get('source_id_str'));
+	// alert(options.index + ", "+ collection.length + ", "+ yotoos.length);
 	addedYotoo.save();
 	if( addedYotoo.targetUser ){
 		users.add( addedYotoo.targetUser );
