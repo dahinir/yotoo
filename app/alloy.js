@@ -130,27 +130,35 @@ if( OS_IOS ){
 			/* 
 			 * Connection 탭의 activity history를 보여줄까?
 			 */
+alert("e.data: "+ JSON.stringify(e.data));
 			var recipientAccount = accounts.where({'id_str': e.data.t}).pop();
+			if( !recipientAccount ){
+				//예전에 로긴 했던 유저.. 어카운트 지울때 unsubscribe를 해야 겠구만!
+				return;
+			}
 			var relevantYotoo = recipientAccount.getYotoos().where({
 				'source_id_str': e.data.t,
 				'target_id_str': e.data.f
 			}).pop(); 
-	
+// alert("id_str: " +Alloy.Globals.users.where({'id_str':e.data.f}).pop().get('id_str'));	
 			/* 상황에 맞게 상대에게 유투 노티피케이션을 보낸다. */
-			if( e.data.sound === 'yotoo' ){
+			if( e.data.sound === 'yotoo1' ){
 				// 유투 알람 완료를 acs에서 따로 관리 할까..
+// alert("send noti to " + Alloy.Globals.users.where({'id_str':e.data.f}).pop().get('name'));
 				recipientAccount.getYotoos().sendYotooNotification({
 					'sourceUser': recipientAccount,
-					'targetUser': Alloy.Globals.user.get(e.data.f),
+					'targetUser': Alloy.Globals.users.where({'id_str':e.data.f}).pop(),
 					'sound': 'yotoo2',
 					'success': function(){},
 					'error': function(){}
 				});
 			}
-			if( e.data.sound === 'yotoo' || e.data.sound === 'yotoo2'){
+			if( e.data.sound === 'yotoo1' || e.data.sound === 'yotoo2'){
 				relevantYotoo.complete({
 					'mainAgent': recipientAccount,
-					'success': function(){},
+					'success': function(){
+						// need to save?
+					},
 					'error': function(){}
 				});
 			}
@@ -166,7 +174,7 @@ if( OS_IOS ){
 				}
 				var chatWindow = Alloy.createController('chatWindow', {
 					'ownerAccount': recipientAccount,	// must setted!
-					'targetUser': Alloy.Globals.user.get(e.data.f)
+					'targetUser': Alloy.Globals.users.where({'id_str':e.data.f}).pop()
 				});
 				chatWindow.getView().open();
 			// case of running
@@ -174,9 +182,9 @@ if( OS_IOS ){
 				Ti.App.fireEvent("app:newChat:" + e.data.f);
 				// case of chatting with Notified user
 				if( recipientAccount.currentChatTarget === e.data.f ){
-				// case of chatting with other user
+				// case of chatting with other user or do not chat
 				}else{
-					alert(JSON.stringify(e.data));
+					alert("running:"+JSON.stringify(e.data));
 				}
 			}
 			// e.data.alert: hi hehe

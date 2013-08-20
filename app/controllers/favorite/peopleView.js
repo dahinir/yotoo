@@ -42,7 +42,8 @@ yotoos.on('change:hided', function(yotoo){
 });
 
 var userListView = Alloy.createController('userListView', {
-	'users': users
+	'users': users,
+	'yotoos': yotoos
 });
 userListView.getView().addEventListener('rightButtonClick', function(e){
 	var id_str = e.id_str;
@@ -132,19 +133,31 @@ fetchYotooUsers(yotoos);
 var testButton = Ti.UI.createButton();
 $.peopleView.add( testButton);
 testButton.addEventListener('click', function(){
-	// var chats = ownerAccount.getChats();
-	// chats.trigger('add');
-
-	yotoos.fetchFromServer({ 
-		'mainAgent': ownerAccount,
-		'success': function(){
-			// save fetched yotoos in 'add' event listener
-			Ti.API.info("[peopleView.js]");
-		},
-		'error': function(){
-			Ti.API.info("[peopleView.js]");
-		}
+	yotoos.map(function(yotoo){
+		Ti.API.info("[people.js] yotoo: " + yotoo.get('id')	
+			+ " " + yotoo.get('chat_group_id') + " " + yotoo.get('source_id_str')
+			+ " " + yotoo.get('target_id_str') + " " + yotoo.get('unyotooed')
+			+ " " + yotoo.get('completed'));
 	});
+	var relevantYotoo = yotoos.where({'target_id_str': "283003008"}).pop();
+	alert( relevantYotoo.get('completed') );
+	
+	// var cloudApi = require('cloudProxy').getCloud();
+	// cloudApi.deleteAllYotoos(ownerAccount);
+
+	// yotoos.fetchFromServer({ 
+		// 'mainAgent': ownerAccount,
+		// 'success': function(){
+			// yotoos.map(function(yotoo){
+				// yotoo.save();
+			// });
+			// // save fetched yotoos in 'add' event listener
+			// Ti.API.info("[peopleView.js]");
+		// },
+		// 'error': function(){
+			// Ti.API.info("[peopleView.js]");
+		// }
+	// });
 });
 
 

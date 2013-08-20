@@ -15,7 +15,7 @@ var cloudProxy = new F();
 
 
 // store ACS's current login user as twitter id_str
-var currentLoginUserIdStr;
+var currentLoginUserIdStr;	// twitter id
 var currentLoginUserCache;
 
 /* just for develope */
@@ -130,7 +130,7 @@ cloudProxy.excuteWithLogin = function(options){
 	cloudProxy.externalAccountLoginAdapter({
 		'id': mainAgent.get('id_str'),
 	    'type': type,
-	    'token': options.mainAgent.get('access_token'),
+	    'token': mainAgent.get('access_token'),
 		'onSuccess': function (e) {
 			cloudProxy[method]( options );
 		},
@@ -151,10 +151,10 @@ cloudProxy.getAcsUser = function(options) {
 	query.type = query.type || "twitter";
 	query.id = query.id + "";	// number to string
 	var query = {
-			"external_accounts.external_id" : query.id,
-			"external_accounts.external_type" : query.type
+		"external_accounts.external_id" : query.id,
+		"external_accounts.external_type" : query.type
 	};
-	
+
 	Cloud.Users.query({
 		"where": query 
 	}, function(e) {
@@ -174,8 +174,7 @@ cloudProxy.getAcsUser = function(options) {
 			}
 		}
 	});
-}; 
-
+};
 
 cloudProxy.post = function(options){
 	var modelType = options.modelType || 'yotoo';
@@ -260,6 +259,53 @@ cloudProxy.get = function(options){
 	});
 };
 
+cloudProxy.subscribePushNotification = function(options){
+	var channel = options.channel || 'yotoo';
+	var onSuccess = options.onSuccess;
+	var onError = options.onError;
+	
+	Cloud.PushNotifications.subscribe({
+	    device_token: Ti.Network.getRemoteDeviceUUID(),
+	    channel: channel
+	    // type: OS_IOS ? 'ios' : 'android'
+	}, function (e) {
+	    if (e.success) {
+	        alert('Success');
+	        if( onSuccess ){
+	        	onSuccess(e);
+	        }
+	    } else {
+	        alert('Error:\n' +((e.error && e.message) || JSON.stringify(e)));
+	        if( onError ){
+	        	onError(e);
+	        }
+	    }
+	});	
+};
+cloudProxy.unsubscribePushNotification = function(options){
+	var mainAgent = options.mainAgent;
+	var onSuccess = options.onSuccess;
+	var onError = options.onError;
+	
+	Cloud.PushNotifications.unsubscribe({
+	    // channel: 'friend_request',
+	    // user_id: mainAgent.get('id'),	// acs id
+	    device_token: Ti.Network.getRemoteDeviceUUID()
+	}, function (e) {
+	    if (e.success) {
+	        alert('Success');
+	        if( onSuccess ){
+	        	onSuccess(e);
+	        }
+	    } else {
+	        alert('Error:\n' +((e.error && e.message) || JSON.stringify(e)));
+	        if( onError ){
+	        	onError(e);
+	        }
+	    }
+	});
+};
+
 cloudProxy.sendPushNotification = function(options){
 	var targetUser = options.targetUser;
 	var channel = options.channel || 'yotoo';
@@ -268,7 +314,7 @@ cloudProxy.sendPushNotification = function(options){
 	var onError = options.onError;
 
 	payload = truncate (payload);
-
+	
 	var excute = function(acsId){
 		Cloud.PushNotifications.notify({
 			'channel' : channel,
@@ -304,13 +350,15 @@ cloudProxy.sendPushNotification = function(options){
 		excute( targetUser.get('acs_id') );
 	}else{
 		cloudProxy.getAcsUser({
-			'query': {'id': targetUser.get('id')},
+			'query': {'id': targetUser.get('id_str')},
 			'onSuccess': function( user ){
-				targetUser.set({'acs_id': user.id});
-				// targetUser.save();
+				user.acs_id = user.id;
+				targetUser.set(user);
+				// targetUser.set({'acs_id': user.id});
+				targetUser.save();
 				excute( user.id );	// user.id is ACS ID
 			},
-			'onError': function(){
+			'onError': function(e){
 				if( onError ){
 					onError(e);
 				}
@@ -329,7 +377,7 @@ cloudProxy.getChats = function(options){
 		'participate_ids': mainAgent.get('id'),
 	    // 'response_json_depth': 2,
 	    'limit': 999,	// max 1000
-	    'order': "-updated_at",	// last chat first
+	    'order': "-updated_at",	// last updated chat first
 		'where': query
 	}, function (e) {
 	    if (e.success) {
@@ -405,11 +453,13 @@ cloudProxy.postChat = function(options){
 		cloudProxy.getAcsUser({
 			'query': {'id': targetUser.get('id_str')},
 			'onSuccess': function( user ){
-				targetUser.set({'acs_id': user.id});
-				// targetUser.save();
+				user.acs_id = user.id;
+				targetUser.set(user);
+				// targetUser.set({'acs_id': user.id});
+				targetUser.save();
 				excute( user.id );	// user.id is ACS ID
 			},
-			'onError': function(){
+			'onError': function(e){
 				if( onError ){
 					onError(e);
 				}

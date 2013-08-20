@@ -258,6 +258,8 @@ var _settingData = function(user) {
 		};
 	}
 	
+	// alert(user.get('id_str') +", "+ yotoos.where({'target_id_str': user.get('id_str')}).pop().get('completed') );
+	
 	/* template select */
 	var relevantYotoo = yotoos.where({'target_id_str': user.get('id_str')}).pop();
 	if( user.get('id_str') === ownerAccount.get('id_str')){
@@ -268,6 +270,8 @@ var _settingData = function(user) {
 	}else if( relevantYotoo && relevantYotoo.get('unyotooed') ){
 		data.template = 'unyotooed';
 	}
+	// data.template = 'completed';
+	// Ti.API.info("......" +relevantYotoo.get('source_id_str')+ ", "+relevantYotoo.get('target_id_str')+", "+relevantYotoo.get('unyotooed')+", "+ relevantYotoo.get('completed'));
 	
 	if (OS_ANDROID) {
 		data.description_ = {
@@ -371,8 +375,8 @@ users.on('add', function(addedUser, collection, options){
 // });
 
 
+// Notice! yotoos is shared!
 yotoos.on('change:unyotooed change:completed', function(yotoo){
-	// Notice! yotoos is shared!
 	var changedUser = users.where({'id_str': yotoo.get('target_id_str')}).pop();
 	if( !changedUser ){
 		return;

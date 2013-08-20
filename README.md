@@ -103,11 +103,15 @@ for heavy user, specialized relationship
 
 ## work right now!
 * account의 idAttribute를 user와 동일하게 acs_id로 바꾸는게 좋을것 같은데..
+* yotoo의 idAttribute도 acs_id로.. 
 * 100 conversation 일때 삭제
 * 아이콘을 폰트로!  
 * noti성공하면 디바이스끼리 채팅 시험을 해봐야 함  
 * notification subscribe는 account마다 할 필요 없다. :아 아니구나..
 * account 삭제할때 unsubscribe
+* add이벤트를 한번에 처리할 때에는 fetch의 success에서 한번에 처리하자
+	(add이벤트 등록함수에서는 temp배열에 푸쉬만 하고)
+* peopleView.js 에서 user.comparator() 를 created_at으로 (먼저 yotoo sql 수정이 있어야 겠지)
 
 
 탭별로 디렉토리를 나누자

@@ -123,6 +123,19 @@ exports.definition = {
 			},
 			deleteAccount: function (account){
 				Ti.API.debug("before delete: " + Alloy.Globals.accounts.length);
+				
+				var cloudApi = require('cloudProxy').getCloud();
+				cloudApi.excuteWithLogin({
+					'mainAgent': account,
+					'method': 'unsubscribePushNotification',
+					'onSuccess': function(e){
+				        Ti.API.info('[accounts.js] Success subscribe');
+					},
+					'onError': function(e){
+				        Ti.API.info('[accounts.js] Error acs login: ' + ((e.error && e.message) || JSON.stringify(e)));
+					}
+				});
+				
 				var currentAccountDeleted = account.get('active');
 				
 				Alloy.Globals.accounts.remove(account);
@@ -155,16 +168,6 @@ exports.definition = {
 
 						var user = newAccount.createModel('user');
 						
-						var yotoos = newAccount.getYotoos();
-						yotoos.fetchFromServer({
-							'mainAgent': newAccount,
-							'success': function(){
-								yotoos.map(function(yotoo){
-									yotoo.save();
-								});
-							},
-							'error': function(){}
-						});
 						
 						user.fetchFromServer({
 							'purpose': 'profile',
@@ -178,6 +181,17 @@ exports.definition = {
 									'profile_background_image_url': user.get('profile_background_image_url')
 								});
 								Ti.API.info("[account.js] name: " + newAccount.get('name'));
+								
+								var yotoos = newAccount.getYotoos();
+								yotoos.fetchFromServer({
+									'mainAgent': newAccount,
+									'success': function(){
+										yotoos.map(function(yotoo){
+											yotoo.save();
+										});
+									},
+									'error': function(){}
+								});
 
 								// cloud externalAccount create (twitter) //
 								var cloudApi = require('cloudProxy').getCloud();
@@ -199,19 +213,18 @@ exports.definition = {
 										
 										callback(newAccount);
 								        
-								        // push notification subscribe.. only fo iOS?
-								        // 클라우드 사용자는 다른데 device_token은 같아도 될까..
-										cloudApi.PushNotifications.subscribe({
-										    channel: 'yotoo',
-										    type: 'ios',
-										    device_token: Ti.Network.getRemoteDeviceUUID()
-										}, function (e) {
-										    if (e.success) {
-										        alert('[accounts.js] Success subscribe');
-										    } else {
-										        alert('[accounts.js] Error subscribe:\n' + ((e.error && e.message) || JSON.stringify(e)));
-										    }
-										});				        
+								        // push notification subscribe..
+										cloudApi.excuteWithLogin({
+											'mainAgent': newAccount,
+											'method': 'subscribePushNotification',
+											'onSuccess': function(e){
+										        Ti.API.info('[accounts.js] Success subscribe');
+											},
+											'onError': function(e){
+												// 반드시 성공 시켜야 한다.. 
+										        Ti.API.info('[accounts.js] Error acs login: ' + ((e.error && e.message) || JSON.stringify(e)));
+											}
+										});
 									},
 									'onError': function(){
 								        Ti.API.info('[accounts.js] Error acs login: ' + ((e.error && e.message) || JSON.stringify(e)));

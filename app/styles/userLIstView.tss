@@ -2,8 +2,10 @@
 	height: 80,
 	selectionStyle: Ti.UI.iPhone.ListViewCellSelectionStyle.NONE
 },
-"#completedTemplate": {
-	backgroundColor: "#AFA"
+".completed":{
+	borderWidth : 5,
+	borderRadius : 3,
+	borderColor: "#AFA"
 },
 
 "#relationshipIndicator": {

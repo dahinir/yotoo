@@ -322,7 +322,7 @@ exports.definition = {
 			'sendYotooNotification': function(options){
 				var sourceUser = options.sourceUser;
 				var targetUser = options.targetUser;
-				var sound = options.sound || 'yotoo';
+				var sound = options.sound || 'yotoo1';
 				var success = options.success;
 				var error = options.error;
 				

@@ -50,8 +50,8 @@ exports.definition = {
 			 */
 			fetchFromServer: function(options){
 				var params = {
-					'include_entities' : true,
-					'skip_status' : true
+					'include_entities': true,
+					'skip_status': true
 				}; 
 				_.extend(params, options.params);
 				var success = options.success;
