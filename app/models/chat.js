@@ -38,13 +38,20 @@ exports.definition = {
 			/* custom functions */
 			'fetchFromServer': function(options){
 				var mainAgent = options.mainAgent;
+				var targetUser = options.targetUser;
+				var since = options.since;
 				var success = options.success;
 				var error = options.error;
 				
 				var query = {};
 				var thisCollection = this;
 				
-				if( this.length > 0 ){
+				if( since ){
+					// alert( since );
+					query.updated_at = { 
+						'$gte': since
+					};
+				}else if( this.length > 0 ){
 					query.updated_at = { 
 						'$gte': this.at(this.length - 1).get('updated_at')
 					};
@@ -52,17 +59,22 @@ exports.definition = {
 				
 				this.cloudApi.excuteWithLogin({
 					'mainAgent': mainAgent,
+					'targetUser': targetUser,
 					'method': 'getChats',
 					'query': query,
 					'onSuccess': function(chats){
+						var newChats = [];
 						for(var i = 0; i < chats.length; i++){
-							// chats[i].owner_id_str = mainAgent.get('id_str');
 							chats[i].chat_group_id = chats[i].chat_group.id;
 							chats[i].sender_id_str = chats[i].from.external_accounts[0].external_id;
+							var newChat = Alloy.createModel('chat', chats[i]);
+							newChat.save();
+							newChats.push( newChat );
 						}
-						thisCollection.add(chats);
+						thisCollection.add( newChats );
+						Alloy.Globals.chats.add( newChats );
 						if( success ){
-							success();
+							success( thisCollection );
 						}
 					},
 					'onError': function(e){
@@ -96,7 +108,7 @@ exports.definition = {
 						newChat.save();
 						thisCollection.add( newChat );
 						if( success ){
-							success();
+							success(newChat);
 						}
 					},
 					'onError': function(e){

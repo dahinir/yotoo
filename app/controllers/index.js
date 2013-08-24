@@ -53,7 +53,7 @@ accounts.on('remove', function(account){	// how about 'destroy'
 
 // very first using this app, maybe //
 if( accounts.length === 0 ){
-	alert(L('when_first_run'));
+	// alert(L('when_first_run'));
 	Alloy.createController('welcomeWindow').getView().open();
 }
 

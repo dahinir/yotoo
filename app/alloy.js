@@ -65,7 +65,6 @@ w.open();
 */
 var twitterAdapter = require('twitter');
 accounts.map(function(account){
-	
 	// account.save({'status_active_tab_index': 12})
 	Ti.API.info("[alloy.js] account: @" + account.get('screen_name')
 	+"\t, "+account.get('id_str')+" ," +account.get('id')
@@ -85,16 +84,8 @@ users.map(function(user){
 });
 
 yotoos.map(function( yotoo){
-	// yotoo.set({'unyotooed': 12});
-	// yotoo.save({'platform': "fuck"},"",{
-		// error:function(){
-			// alert("e");
-		// },
-		// success: function(){
-			// alert("s");
-		// }
-	// });
 	Ti.API.info("[alloy.js] yotoo: " + yotoo.get('id')	
+		+ " " + yotoo.get('created_at') + " " + yotoo.get('burned_at')
 		+ " " + yotoo.get('chat_group_id') + " " + yotoo.get('source_id_str')
 		+ " " + yotoo.get('target_id_str') + " " + yotoo.get('unyotooed')
 		+ " " + yotoo.get('completed'));
@@ -130,6 +121,7 @@ if( OS_IOS ){
 			/* 
 			 * Connection 탭의 activity history를 보여줄까?
 			 */
+// 이제 상대방이 수동 burn 했을때 날린 noti를 처리 해야 한다.  
 alert("e.data: "+ JSON.stringify(e.data));
 			var recipientAccount = accounts.where({'id_str': e.data.t}).pop();
 			if( !recipientAccount ){
@@ -140,12 +132,10 @@ alert("e.data: "+ JSON.stringify(e.data));
 				'source_id_str': e.data.t,
 				'target_id_str': e.data.f
 			}).pop(); 
-// alert("id_str: " +Alloy.Globals.users.where({'id_str':e.data.f}).pop().get('id_str'));	
 			/* 상황에 맞게 상대에게 유투 노티피케이션을 보낸다. */
 			if( e.data.sound === 'yotoo1' ){
 				// 유투 알람 완료를 acs에서 따로 관리 할까..
-// alert("send noti to " + Alloy.Globals.users.where({'id_str':e.data.f}).pop().get('name'));
-				recipientAccount.getYotoos().sendYotooNotification({
+				Alloy.Globals.yotoos.sendYotooNotification({
 					'sourceUser': recipientAccount,
 					'targetUser': Alloy.Globals.users.where({'id_str':e.data.f}).pop(),
 					'sound': 'yotoo2',
@@ -184,7 +174,7 @@ alert("e.data: "+ JSON.stringify(e.data));
 				if( recipientAccount.currentChatTarget === e.data.f ){
 				// case of chatting with other user or do not chat
 				}else{
-					alert("running:"+JSON.stringify(e.data));
+					// alert("running:"+JSON.stringify(e.data));
 				}
 			}
 			// e.data.alert: hi hehe

@@ -2,9 +2,13 @@ var args = arguments[0] || {};
 var ownerAccount = args.ownerAccount || Alloy.Globals.accounts.getCurrentAccount();
 var targetUser = args.targetUser;
 var yotoo = ownerAccount.getYotoos().where({'target_id_str': targetUser.get('id_str')}).pop();
+// var chats = ownerAccount.getChats();	// all chats that relevant ownerAccount
+// Alloy.Globals.chats.fetch();
+var chats = Alloy.createCollection('chat', Alloy.Globals.chats.where({
+	'chat_group_id' : yotoo.get('chat_group_id')
+}));
 
-var chats = ownerAccount.getChats();
-var CONVERSATION_LIMIT = 100;
+var YOTOO_CONVERSATION_LIMIT = 100;
 var conversationCount = 0;
 var softKeyboardHeight = 0;
 var nowScrollBottom = true;
@@ -12,104 +16,131 @@ var nowScrollBottom = true;
 $.titleImageView.setImage( ownerAccount.get('profile_image_url_https') );
 $.titleTargetImageView.setImage( targetUser.get('profile_image_url_https') );
 $.titleLabel.setText( L('between') );
-$.remainCountToBurn.setText( conversationCount );
+$.remainCountToBurn.setText( YOTOO_CONVERSATION_LIMIT );
 
 var setSoftKeyboardHeight = function(e){
 	softKeyboardHeight = e.keyboardFrame.height;
-	$.chatTextArea.fireEvent('focus');
+	$.chatTextField.fireEvent('focus');
 	Ti.App.removeEventListener('keyboardFrameChanged', setSoftKeyboardHeight);
 };
 Ti.App.addEventListener('keyboardFrameChanged', setSoftKeyboardHeight);
 
+$.chatTableView.appendRow({
+	title: L('chatting_guidance')
+});
 
 var testButton = Ti.UI.createButton();
 $.chatWindow.add( testButton);
 testButton.addEventListener('click', function(){
-				$.chatTableView.scrollToIndex(conversationCount - 1);
+	// alert(Alloy.Globals.users.length);
+	// var tuser = Alloy.Globals.users.where({'id_str': yotoo.get('targer_id_str')}).pop();
+	// alert(tuser.get('id_str'));
+	// alert(Alloy.Globals.chats.length + ", " + chats.length + ", "+ yotoo.get('burned_at'));
+		// $.chatTableView.scrollToIndex(conversationCount);
 });
 
 var newRows = [];
 var addChatTableRow = function(chat, collection, options){
-	// alert(options.index + ", "+ collection.length + ", "+ chats.length);
-	chat.save();
-	
-	// is relevant chat?
-	var isRelevantChat = true;
-	if( yotoo.get('chat_group_id') ){   
-		if( yotoo.get('chat_group_id') !== chat.get('chat_group_id') ){
-			isRelevantChat = false;
-		}
-	}else if( chat.get('sender_id_str') === targetUser.get('id_str') ){
-		yotoo.set({'chat_group_id': chat.get('chat_group_id')});
+	if( !yotoo.get('chat_group_id') ){
+		yotoo.set('chat_group_id', chat.get('chat_group_id') );
 		yotoo.save();
-	}else {
-		isRelevantChat = false;
 	}
 	
-	if( isRelevantChat ){
-		var newRow = Alloy.createController('chatTableViewRow', {
-			'ownerAccount': ownerAccount,
-			'chat': chat,
-			'targetUser': targetUser
-		}).getView();
-		conversationCount++;
-		newRows.push( newRow );
-	}
-	if( options.index === collection.length - 1){
+	var newRow = Alloy.createController('chatTableViewRow', {
+		'ownerAccount': ownerAccount,
+		'chat': chat,
+		'targetUser': targetUser
+	}).getView();
+	conversationCount++;
+	newRows.push( newRow );
+		
+	if( options.index === chats.length - 1 && newRows.length > 0){
 		$.chatTableView.appendRow(newRows);
-		$.remainCountToBurn.setText( CONVERSATION_LIMIT - conversationCount);
+		$.remainCountToBurn.setText( YOTOO_CONVERSATION_LIMIT - conversationCount);
 		newRows = [];
 		if( nowScrollBottom ){
-			// $.chatTableView.scrollToIndex(conversationCount - 1);
+			$.chatTableView.scrollToIndex(conversationCount);
 		}
-	} 
+	}
+	if( conversationCount === YOTOO_CONVERSATION_LIMIT - 10 ){
+		alert(L('when_impending_chat_limit'));
+	}
+	if( conversationCount >= YOTOO_CONVERSATION_LIMIT ){
+		alert(L('when_chat_limit'));
+		yotoo.burn({'mainAgent': ownerAccount});
+		$.chatWindow.close();
+	}
 };
-chats.on('add', addChatTableRow);
+chats.on('add', addChatTableRow);	// need to release!
 
-for(var i = 0; i < chats.length; i++){
-	addChatTableRow(chats.at(i), chats, {'index': i});
+for(var j = 0; j < chats.length; j++){
+	addChatTableRow(chats.at(j), chats, {'index': j});
 }
 
-var fetch = function(){
+var fetchChats = function(){
+	var since;
+	if( yotoo.get('burned_at') ){
+		since = yotoo.get('burned_at');
+	}
 	chats.fetchFromServer({
-		'mainAgent': ownerAccount
+		'mainAgent': ownerAccount,
+		'targetUser': targetUser,
+		'since': since,
+		'success': function(chats){
+		},
+		'error': function(e){
+			Ti.API.info(JSON.stringify(e));
+		}
 	});
 };
-fetch();
+fetchChats();
 
 $.closeButton.addEventListener('click', function(e){
 	$.chatWindow.close();
 });
+$.burnButton.addEventListener('click', function(e){
+	// 심각하게 다시 한번 불어 본 뒤 번!
+	yotoo.burn({
+		'mainAgent' : ownerAccount,
+		'withNotification': true
+	}); 
+	$.chatWindow.close();
+});
 
 $.sendButton.addEventListener('click', function(e){
-	if( !$.chatTextArea.hasText() ){
+	if( !$.chatTextField.hasText() ){
 		return;
 	}
-	var value = $.chatTextArea.getValue();
+	var value = $.chatTextField.getValue();
 	chats.createNewChat({
 		'mainAgent': ownerAccount,
 		'targetUser': targetUser,
 		'message': value,
-		'success': function(){
-			$.chatTextArea.setValue("");
+		'success': function(chat){
+			$.chatTextField.setValue("");
+			$.chatTextField.setHeight(Ti.UI.SIZE);
 		},
-		'error': function(){}
+		'error': function(e){
+			if(e.meta.total_results === 0){
+				alert(L('deleted_user'));
+			}
+		}
 	});
 });
 
 
-$.chatTextArea.addEventListener('focus', function(e){
+$.chatTextField.addEventListener('focus', function(e){
 	$.chatView.setBottom( softKeyboardHeight );
 });
 
-$.chatTextArea.addEventListener('postlayout', function(){
+$.chatTextField.addEventListener('postlayout', function(){
 	// alert("post");
-	$.chatTextArea.focus();
+	$.chatTextField.focus();
 	// $.chatTableView.scrollToIndex( chats.length -1 );
 });
 
 $.chatTableView.addEventListener('doubletap', function(e){
-	$.chatTextArea.blur();
+	$.chatTextField.blur();
 	$.chatView.setBottom( 0 );
 });
 
@@ -126,18 +157,22 @@ $.chatTableView.addEventListener('scroll', function(e){
 
 $.chatTableView.addEventListener('postlayout', function(e){
 	if( nowScrollBottom ){
-		$.chatTableView.scrollToIndex(conversationCount - 1);
+		$.chatTableView.scrollToIndex(conversationCount );
 	}
 });
 
-Ti.App.addEventListener("app:newChat:" + targetUser.get('id_str'), fetch );
+// need to release!
+Ti.App.addEventListener("app:newChat:" + targetUser.get('id_str'), fetchChats );
 
 $.chatWindow.addEventListener('open', function(e){
 });
 
 $.chatWindow.addEventListener('close', function(){
-	Ti.App.removeEventListener("app:newChat" + targetUser.get('id_str'), fetch );
+	Ti.App.removeEventListener("app:newChat" + targetUser.get('id_str'), fetchChats );
 	chats.off('add', addChatTableRow);
+	chats.reset();
+	$.destroy();
+	// yotoo.off('change:chat_group_id', resetChatTable);
 });
 
 

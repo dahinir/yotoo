@@ -43,25 +43,24 @@ exports.definition = {
 				}
 				return this.yotoos;
 			},
-			'getChats': function(){
-				if( this.chats ){
-				}else {
-					var relevantChats = [];
-					this.getYotoos().map(function(yotoo){
-						if( yotoo.get('chat_group_id') ){
-							if(relevantChats.length > 0){
-								relevantChats.concat( Alloy.Globals.chats.where({'chat_group_id': yotoo.get('chat_group_id')}) );
-							}else{
-								relevantChats = Alloy.Globals.chats.where({'chat_group_id': yotoo.get('chat_group_id')});
-							}
-						}
-					});
-					// var relevantChats = Alloy.Globals.chats.where({'owner_id_str': this.get('id_str')});
-					this.chats = Alloy.createCollection('chat', relevantChats);
-				}
-				// all chats relevant this account
-				return this.chats;
-			},
+			// 'getChats': function(){
+				// if( this.chats ){
+				// }else {
+					// var relevantChats = [];
+					// this.getYotoos().map(function(yotoo){
+						// if( yotoo.get('chat_group_id') ){
+							// if(relevantChats.length > 0){
+								// relevantChats.concat( Alloy.Globals.chats.where({'chat_group_id': yotoo.get('chat_group_id')}) );
+							// }else{
+								// relevantChats = Alloy.Globals.chats.where({'chat_group_id': yotoo.get('chat_group_id')});
+							// }
+						// }
+					// });
+					// this.chats = Alloy.createCollection('chat', relevantChats);
+				// }
+				// // all chats relevant this account
+				// return this.chats;
+			// },
 			'createCollection': function(typeOfCollection){
 				var collection = Alloy.createCollection(typeOfCollection);
 				collection.twitterApi = this.twitterApi;
@@ -135,6 +134,8 @@ exports.definition = {
 				        Ti.API.info('[accounts.js] Error acs login: ' + ((e.error && e.message) || JSON.stringify(e)));
 					}
 				});
+				
+				// don't delete acs user!!
 				
 				var currentAccountDeleted = account.get('active');
 				

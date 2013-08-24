@@ -62,7 +62,7 @@
 	// bottom: 216, // 216 is softkeyboard size
 	borderRadius: 20
 },
-"#chatTextArea": {
+"#chatTextField": {
 	font: {fontSize: 16},
 	// top: 0,
 	left: 0,

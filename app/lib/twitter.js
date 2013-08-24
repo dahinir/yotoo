@@ -108,12 +108,12 @@ var showAuthorizeUI = function(options){
 	});
 
 	webView.addEventListener('load', function(e) {
-		Ti.API.debug("webView load!");
-    var cookies = webView.evalJS("document.cookie").split(";"); 
-    Ti.API.info( "# of cookies -> " + cookies.length  );
-    for (i = 0; i <= cookies.length - 1; i++) {
-            Ti.API.info( "cookie -> " + cookies[i] );
-    }
+		// Ti.API.debug("webView load!");
+	    // var cookies = webView.evalJS("document.cookie").split(";"); 
+	    // Ti.API.info( "# of cookies -> " + cookies.length  );
+	    // for (i = 0; i <= cookies.length - 1; i++) {
+	            // Ti.API.info( "cookie -> " + cookies[i] );
+	    // }
 		loadCount++;
 		var pin;
 

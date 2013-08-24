@@ -6,7 +6,7 @@ var yotoos = ownerAccount.getYotoos();
 
 /* sort this users by order of yotoo id */
 users.comparator = function(user) {
-	return yotoos.where({'target_id_str': user.get('id_str') }).pop().get('id');
+	return yotoos.where({'target_id_str': user.get('id_str') }).pop().get('created_at');
 };
 users.on('add change', function(user){
 	// this users is yotooed users that means important
@@ -133,14 +133,31 @@ fetchYotooUsers(yotoos);
 var testButton = Ti.UI.createButton();
 $.peopleView.add( testButton);
 testButton.addEventListener('click', function(){
-	yotoos.map(function(yotoo){
-		Ti.API.info("[people.js] yotoo: " + yotoo.get('id')	
-			+ " " + yotoo.get('chat_group_id') + " " + yotoo.get('source_id_str')
-			+ " " + yotoo.get('target_id_str') + " " + yotoo.get('unyotooed')
-			+ " " + yotoo.get('completed'));
-	});
-	var relevantYotoo = yotoos.where({'target_id_str': "283003008"}).pop();
-	alert( relevantYotoo.get('completed') );
+	// tUser = Alloy.createModel('user',{
+		// id_str: '603155477',
+		// acs_id: '5218870525e74b0b2402a4c4'
+	// });
+	// Alloy.Globals.yotoos.sendYotooNotification({
+		// 'sourceUser': ownerAccount,
+		// 'targetUser': tUser,
+		// 'sound': 'yotoo2',
+		// 'success': function(e){
+			// alert("success");
+		// },
+		// 'error': function(e){
+			// alert("error\n"+ JSON.stringify(e));
+		// }
+	// });
+	require('ti.cloud').PushNotifications.query();
+	// yyyy-mm-ddThh:mm:ss+zzzz
+	// yotoos.map(function(yotoo){
+		// Ti.API.info("[people.js] yotoo: " + yotoo.get('id')	
+			// + " " + yotoo.get('chat_group_id') + " " + yotoo.get('source_id_str')
+			// + " " + yotoo.get('target_id_str') + " " + yotoo.get('unyotooed')
+			// + " " + yotoo.get('completed'));
+	// });
+	// var relevantYotoo = yotoos.where({'target_id_str': "283003008"}).pop();
+	// alert( relevantYotoo.get('completed') );
 	
 	// var cloudApi = require('cloudProxy').getCloud();
 	// cloudApi.deleteAllYotoos(ownerAccount);

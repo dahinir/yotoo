@@ -146,8 +146,10 @@ exports.definition = {
 							if( user ){
 								user.set(resultJSON[i]);
 							}else{
-								// alert( JSON.stringify(resultJSON[i].id_str) );
 								thisCollection.add(resultJSON[i]);
+							}
+							if( Alloy.Globals.users.length > 1024 ){
+								Alloy.Globals.users.reset();
 							}
 							Alloy.Globals.users.add(resultJSON[i]);
 						}

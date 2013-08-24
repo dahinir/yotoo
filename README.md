@@ -80,6 +80,7 @@ for heavy user, specialized relationship
 
 
 ## work now
+* Ti.App.iOS.registerBackgroundService()
 * yotoos 객체는 언제 리프레쉬 하지?
 * 서버의 chat는 관리자만 삭제 할 수 있다...어쩔수 없이 재유투시 이어서 읽도록..
 * ACL을 이용해 아무나 yotoo 못보게..하는게 소용 없잖아..
@@ -100,18 +101,25 @@ for heavy user, specialized relationship
 * yotoo.checkTargetYotoo() 에서 유투 성공 했을때 보내는 노티피케이션 실패시 큐에 넣던지 해서 성공할때까지 다시 시
 	:노티피케이션을 활성화 하지 않는 사용자도 생각해서 프로그램 시작시 컴플릿된 유투가 있는지 확인 해야 한다.
 * yotoo 완료 사운드! Eazy-E -Niggaz My Height Don't Fight :40s "yotoo"
+* twitter공홈에서 yotoo앱 사용 정지 한 이후 다시 로긴 해 보자
+* 반드시 성공 해야 하는 함수를 queue 
 
 ## work right now!
 * account의 idAttribute를 user와 동일하게 acs_id로 바꾸는게 좋을것 같은데..
 * yotoo의 idAttribute도 acs_id로.. 
-* 100 conversation 일때 삭제
+* chat의 idAttribute도?
 * 아이콘을 폰트로!  
-* noti성공하면 디바이스끼리 채팅 시험을 해봐야 함  
-* notification subscribe는 account마다 할 필요 없다. :아 아니구나..
-* account 삭제할때 unsubscribe
-* add이벤트를 한번에 처리할 때에는 fetch의 success에서 한번에 처리하자
-	(add이벤트 등록함수에서는 temp배열에 푸쉬만 하고)
-* peopleView.js 에서 user.comparator() 를 created_at으로 (먼저 yotoo sql 수정이 있어야 겠지)
+* yotoo.burn() 하면 노티 날려서 상대방도 burn 되게.
+	:번 된 이후 채팅 실험 
+	:번 된 이후 yotoo 정책 명확히. 
+		:unyotoo 상태로 만들까?
+	: 100 conversation 일때
+* 현재 unyotooed된 유투도 유투로 동작한다.. 
+* wow! ACS PushNotification의 .query()를 사용하면 노티 등록 안한 유저에게도 노티 보낼수 있다.
+	:그럼 프로그램 시작 마다 노티를 쿼리해 오면 해결!! 
+	:일단 ti.cloud의 PushNotification.query()의 구현을 기다려 보자.
+	:https://github.com/appcelerator-modules/ti.cloud/pull/42
+	:http://developer.appcelerator.com/question/156338/i-need-query-for-acs-pushnotifications
 
 
 탭별로 디렉토리를 나누자

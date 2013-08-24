@@ -313,7 +313,7 @@ cloudProxy.sendPushNotification = function(options){
 	var onSuccess = options.onSuccess;
 	var onError = options.onError;
 
-	payload = truncate (payload);
+	payload = truncate(payload);
 	
 	var excute = function(acsId){
 		Cloud.PushNotifications.notify({
@@ -354,7 +354,6 @@ cloudProxy.sendPushNotification = function(options){
 			'onSuccess': function( user ){
 				user.acs_id = user.id;
 				targetUser.set(user);
-				// targetUser.set({'acs_id': user.id});
 				targetUser.save();
 				excute( user.id );	// user.id is ACS ID
 			},
@@ -369,38 +368,53 @@ cloudProxy.sendPushNotification = function(options){
 
 cloudProxy.getChats = function(options){
 	var mainAgent = options.mainAgent;
+	var targetUser = options.targetUser;
 	var query = options.query;
 	var onSuccess = options.onSuccess;
 	var onError = options.onError;
 	
-	Cloud.Chats.query({
-		'participate_ids': mainAgent.get('id'),
-	    // 'response_json_depth': 2,
-	    'limit': 999,	// max 1000
-	    'order': "-updated_at",	// last updated chat first
-		'where': query
-	}, function (e) {
-	    if (e.success) {
-	    	for(var i=0; i < e.chats.length; i++){
-		    	Ti.API.info(e.chats[i].message);
-	    	}
-	        // for (var i = 0; i < e.chats.length; i++) {
-	            // var chat = e.chats[i];
-	            // alert('Success:\n' +
-	                // 'From: ' + chat.from.first_name + ' ' + chat.from.last_name + '\n' +
-	                // 'Updated: ' + chat.updated_at + '\n' +
-	                // 'Message: ' + chat.message);
-	        // }
-	        if( onSuccess ){
-	        	onSuccess(e.chats);
-	        }
-	    } else {
-	        Ti.API.info('Error:\n' + ((e.error && e.message) || JSON.stringify(e)));
-			if( onError ){
-				onError(e);
+	var excute = function(){
+		Cloud.Chats.query({
+			'participate_ids': mainAgent.get('id'),	// ACS id
+		    // 'response_json_depth': 2,
+		    'limit': 999,	// max 1000
+		    'order': "-updated_at",	// last updated chat first
+			'where': query
+		}, function (e) {
+		    if (e.success) {
+		    	for(var i=0; i < e.chats.length; i++){
+			    	Ti.API.info(e.chats[i].message);
+		    	}
+		        if( onSuccess ){
+		        	onSuccess(e.chats);
+		        }
+		    } else {
+		        Ti.API.info('Error:\n' + ((e.error && e.message) || JSON.stringify(e)));
+				if( onError ){
+					onError(e);
+				}
+		    }
+		});
+	};
+	
+	if( targetUser.get('acs_id') ){
+		excute();
+	}else{
+		cloudProxy.getAcsUser({
+			'query': {'id': targetUser.get('id_str')},
+			'onSuccess': function( user ){
+				user.acs_id = user.id;
+				targetUser.set(user);
+				targetUser.save();
+				excute();
+			},
+			'onError': function(e){
+				if( onError ){
+					onError(e);
+				}
 			}
-	    }
-	});
+		});
+	}
 };
 cloudProxy.postChat = function(options){
 	var mainAgent = options.mainAgent;
@@ -429,12 +443,6 @@ cloudProxy.postChat = function(options){
 		    'message': message
 		}, function (e) {
 		    if (e.success) {
-		        // for (var i = 0; i < e.chats.length; i++) {
-		            // var chat = e.chats[i];
-		            // alert('Success:\n' +
-		                // 'Updated: ' + chat.updated_at + '\n' +
-		                // 'Message: ' + chat.message);
-		        // }
 		        if( onSuccess ){
 		        	onSuccess(e.chats[0]);
 		        }

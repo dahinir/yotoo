@@ -10,13 +10,15 @@ exports.definition = {
 		    "source_id_str": "string",
 		    "target_id_str": "string",
 		    
-		    "chat_group_id": "string", // acs chat group id
+		    "chat_group_id": "string",	// acs chat group id
+		    "created_at": "datetime",
+		    "burned_at": "datetime",	// for last burned_at
 		    
 		    // status //
 		    "hided": "boolean",		// 1:true, 0:false
 		    "unyotooed": "boolean",
 		    "completed": "boolean",
-		    "burned": "boolean"
+		    "burned": "boolean",
 		},
         'defaults': {
         	'burned': 0	// false
@@ -31,15 +33,11 @@ exports.definition = {
 	extendModel: function(Model) {		
 		_.extend(Model.prototype, {
 			'initialize': function(e, e2){
-				// alert("haha");
-				// alert("init" + JSON.stringify(e));
 				// alert("init2" + JSON.stringify(e2));
 				this.cloudApi = require('cloudProxy').getCloud();
 			},
 			'complete': function( options ){
 				var mainAgent = options.mainAgent;
-				var success = options.success;
-				var error = options.error;
 				
 				var thisModel = this;
 				var fields = {
@@ -56,12 +54,12 @@ exports.definition = {
 						
 						// to persistence :must save after success of server post
 						thisModel.save();
-						if( success ){
-							success();
+						if( options.success ){
+							options.success();
 						}
 					},
 					'onError': function(e){
-						Ti.API.info("[yotoo.unYotoo] error ");
+						Ti.API.info("[yotoo.complete] error ");
 						if( error ){
 							error(e);
 						}
@@ -70,8 +68,6 @@ exports.definition = {
 			},
 			'unyotoo': function( options ){
 				var mainAgent = options.mainAgent;
-				var success = options.success;
-				var error = options.error;
 				
 				var thisModel = this;
 				var fields = {
@@ -88,22 +84,20 @@ exports.definition = {
 						
 						// to persistence :must save after success of server post
 						thisModel.save();
-						if( success ){
-							success();
+						if( options.success ){
+							options.success();
 						}
 					},
 					'onError': function(e){
 						Ti.API.info("[yotoo.unYotoo] error ");
-						if( error ){
-							error(e);
+						if( options.error ){
+							options.error(e);
 						}
 					}
 				});
 			},
 			'hide': function( options ){
 				var mainAgent = options.mainAgent;
-				var success = options.success;
-				var error = options.error;
 
 				var thisModel = this;
 				var fields = {
@@ -120,14 +114,87 @@ exports.definition = {
 						
 						// to persistence :must save after success of server post
 						thisModel.save();
-						if( success ){
-							success();
+						if( options.success ){
+							options.success();
 						}
 					},
 					'onError': function(e){
-						Ti.API.info("[yotoo.unYotoo] error ");
-						if( error ){
-							error(e);
+						Ti.API.info("[yotoo.hide] error ");
+						if( options.error ){
+							options.error(e);
+						}
+					}
+				});
+			},
+			'burn': function( options ){
+				var mainAgent = options.mainAgent;
+				var withNotification = options.withNotification;
+				
+				var thisModel = this;
+				var fields = {
+				    // 'hided': 0,
+				    'burned_at': new Date().toISOString().replace(/\.\w\w\w\w$/g,'+0000'),
+				    'unyotooed': 1,
+				    'completed': 0,
+					'burned': 1	// true
+				};
+				this.cloudApi.excuteWithLogin({
+					'mainAgent': mainAgent,
+					'method': 'put',
+					'modelType': 'yotoo',
+					'id': this.get('id'),
+					'fields': fields,
+					'onSuccess': function( result ){
+						// remove all relevant chats
+						var cLength = Alloy.Globals.chats.length;	// length will change
+						for(var i = 0; i < cLength; i++){
+							var chat = Alloy.Globals.chats.pop();
+							if( chat.get('chat_group_id') === thisModel.get('chat_group_id')){
+								chat.destroy();
+							}
+						}
+						Alloy.Globals.chats.fetch();
+						
+						thisModel.set(result);
+						thisModel.unset('chat_group_id');
+						thisModel.save();
+
+						// sendNotification only if "burned by user"
+						if( withNotification ){
+							var targetUser = Alloy.Globals.users.where({'id_str': thisModel.get('target_id_str')}).pop();
+							// alert(targetUser.get('id_str'));
+							var payload = {
+								'sound': "burn",
+								'alert': "@"+mainAgent.get('screen_name')+" "+ L('burned_chats'),
+								'f': mainAgent.get('id_str'),
+								't': thisModel.get('target_id_str')
+							};
+							thisModel.cloudApi.excuteWithLogin({
+								'mainAgent': mainAgent,
+								'targetUser': targetUser,
+								'method': 'sendPushNotification',
+								'channel': 'yotoo',
+								'payload': payload,
+								'onSuccess': function(e){
+									Ti.API.info("[yotoo.burn sendNotification] success");
+								},
+								'onError': function(e){
+									Ti.API.info("[yotoo.burn sendNotification] error");
+									if( error ){
+										error(e);
+									}
+								}
+							});	
+						}
+						 
+						if( options.success ){
+							options.success();
+						}
+					},
+					'onError': function(e){
+						Ti.API.info("[yotoo.burn] error");
+						if( options.error ){
+							options.error(e);
 						}
 					}
 				});
@@ -168,14 +235,13 @@ exports.definition = {
 						}
 						thisCollection.add( resultsJSON );
 						if( success ){
-							// success(collection, response, options);
 							success(thisCollection, resultsJSON, options);
 						}
 					},
 					'onError': function(e){
 						Ti.API.info("[yotoo.fetchFromServer] error ");
 						if( error ){
-							error();
+							error(e);
 						}
 					}
 				});
@@ -187,10 +253,10 @@ exports.definition = {
 				var error = options.error;
 				var thisCollection = this;
 				var fields = {
-						'hided': 0,	// false
-						'completed': 0,
-						'unyotooed': 0,
-						'burned': 0
+					'hided': 0,	// false
+					'completed': 0,
+					'unyotooed': 0,
+					'burned': 0
 				};
 
 				var existYotoo = this.where({'target_id_str': targetUser.get('id_str')}).pop();
@@ -323,6 +389,7 @@ exports.definition = {
 				var sourceUser = options.sourceUser;
 				var targetUser = options.targetUser;
 				var sound = options.sound || 'yotoo1';
+				var alert = options.alert || "@"+sourceUser.get('screen_name') + " " + L('yotoo_you_too');
 				var success = options.success;
 				var error = options.error;
 				
@@ -330,7 +397,7 @@ exports.definition = {
 				
 				var payload = {
 					'sound': sound,
-					'alert':"@"+sourceUser.get('screen_name') + " " + L('yotoo_you_too'),
+					'alert': alert,
 					'f':sourceUser.get('id_str'),
 					't':targetUser.get('id_str')
 				};
@@ -343,13 +410,16 @@ exports.definition = {
 					'payload': payload,
 					'onSuccess': function(e){
 						Ti.API.info("[yotoo.sendYotooNotification] success");
+						if( success ){
+							success();
+						}
 
+						/* update relevant yotoo's completed :콜백으로 이전 
 						var relevantYotoo = thisCollection.where({
 							'source_id_str': sourceUser.get('id_str'),
 							'target_id_str': targetUser.get('id_str')
 						}).pop();
 						
-						/* update relevant yotoo's completed :콜백으로 이전 
 						thisCollection.cloudApi.excuteWithLogin({
 							'mainAgent': sourceUser,
 							'method': 'put',

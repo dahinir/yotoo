@@ -7,6 +7,7 @@
 				<Label id="titleLabel" />
 				<ImageView id="titleTargetImageView" />
 			</View>
+			<Button id="burnButton" class="rightNavButton" />
 		</View>
 		<Label id="remainCountToBurn" >100</Label>
 		<!-- <View id="chatScreen"> -->
@@ -14,9 +15,11 @@
 			<TableView id="chatTableView" bubbleParent="false" >
 			</TableView>
 			<View id="toolBarView" >
-				<TextArea id="chatTextArea" textAlign="left" 
+				<TextArea id="chatTextField" textAlign="left" 
 					keyboardType="Ti.UI.KEYBOARD_DEFAULT" 
-					returnKeyType="Ti.UI.RETURNKEY_DEFAULT" suppressReturn="false" />
+					returnKeyType="Ti.UI.RETURNKEY_DEFAULT" 
+					suppressReturn="false" 
+					maxLength="1024" />
 				<Button id="sendButton" />
 			</View>
 		</View>
