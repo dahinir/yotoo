@@ -1,0 +1,12 @@
+<Alloy>
+	<Window id="webWindow" >
+		<View id="navBarView" >
+			<Button id="closeButton" class="leftNavButton" />
+			<View id="titleView">
+				<Label id="titleLabel" />
+			</View>
+		</View>
+		<WebView id="webView" />
+	</Window>
+</Alloy>
+

@@ -13,15 +13,15 @@ exports.definition = {
 			"access_token_secret":"string",
 			
 			// for ACS
-			"id_str_acs": "string",
+			"id": "string",
 			// "session_id_acs": "string",
 			
-			// for yotoo
-			"active":"boolean",
-			"status_active_tab_index":"int"
+			// for this app
+			"active": "boolean",
+			"status_active_tab_index": "int"
 		},
 		adapter: {
-			// idAttribute: "id_str", // 64bit.. but TEXT
+			idAttribute: "id",	// ACS id
 			type: "sql",
 			collection_name: "account"
 		}
@@ -29,20 +29,44 @@ exports.definition = {
 
 	extendModel: function(Model) {		
 		_.extend(Model.prototype, {
-			// extended functions go here
-			testFunction: function (attrs){
-				Ti.API.info("testFunc: "+ this.get('name'));	// it works!
-				for (var key in attrs) {
-                    var value = attrs[key];
-                    Ti.API.info("testFunction: "+ value);
-                }
+			'initialize': function(e, e2){
+				// alert("init" + JSON.stringify(e));
+				// alert("init2" + JSON.stringify(e2));
 			},
-			createCollection: function(typeOfCollection){
+			/* custom functions */
+			'getYotoos': function(){
+				if( this.yotoos ){
+					// alert("exist yotoos: " + this.yotoos.length);
+				}else{
+					var relevantYotoos = Alloy.Globals.yotoos.where({'source_id_str': this.get('id_str')});
+					this.yotoos = Alloy.createCollection('yotoo', relevantYotoos);
+				}
+				return this.yotoos;
+			},
+			// 'getChats': function(){
+				// if( this.chats ){
+				// }else {
+					// var relevantChats = [];
+					// this.getYotoos().map(function(yotoo){
+						// if( yotoo.get('chat_group_id') ){
+							// if(relevantChats.length > 0){
+								// relevantChats.concat( Alloy.Globals.chats.where({'chat_group_id': yotoo.get('chat_group_id')}) );
+							// }else{
+								// relevantChats = Alloy.Globals.chats.where({'chat_group_id': yotoo.get('chat_group_id')});
+							// }
+						// }
+					// });
+					// this.chats = Alloy.createCollection('chat', relevantChats);
+				// }
+				// // all chats relevant this account
+				// return this.chats;
+			// },
+			'createCollection': function(typeOfCollection){
 				var collection = Alloy.createCollection(typeOfCollection);
 				collection.twitterApi = this.twitterApi;
 				return collection;
 			},
-			createModel: function(typeOfModel){
+			'createModel': function(typeOfModel){
 				var model = Alloy.createModel(typeOfModel);
 				model.twitterApi = this.twitterApi;
 				return model;
@@ -55,7 +79,10 @@ exports.definition = {
 	
 	extendCollection: function(Collection) {		
 		_.extend(Collection.prototype, {
-			// extended functions go here
+			// 'comparator': function(account){
+				// return account.get('id_str');
+			// },
+			/* custom functions */
 			getCurrentAccount: function(){
 				var currentAccount;
 				var activeFlag = 0;
@@ -76,11 +103,11 @@ exports.definition = {
 				var isInCollection = false;
 				Alloy.Globals.accounts.map(function(account){
 					if(account.get('active')){
-						account.set('active', false);
+						account.set('active', 0);	// false
 						account.save();
 					}
 					if(account === currentAccount){
-						Ti.API.info(currentAccount.get('name') +" is in Collection");
+						Ti.API.info("[account.js] " + currentAccount.get('name') +" is in Collection");
 						isInCollection = true;
 					}
 				});
@@ -88,13 +115,28 @@ exports.definition = {
 					Ti.API.info(currentAccount.get('name')+" will added in Collection");
 					Alloy.Globals.accounts.add(currentAccount);
 				}
-				currentAccount.set('active', true);
+				currentAccount.set('active', 1);	// ture
 				currentAccount.save();
 				
 				Alloy.Globals.currentAccount = currentAccount;
 			},
 			deleteAccount: function (account){
 				Ti.API.debug("before delete: " + Alloy.Globals.accounts.length);
+				
+				var cloudApi = require('cloudProxy').getCloud();
+				cloudApi.excuteWithLogin({
+					'mainAgent': account,
+					'method': 'unsubscribePushNotification',
+					'onSuccess': function(e){
+				        Ti.API.info('[accounts.js] Success subscribe');
+					},
+					'onError': function(e){
+				        Ti.API.info('[accounts.js] Error acs login: ' + ((e.error && e.message) || JSON.stringify(e)));
+					}
+				});
+				
+				// don't delete acs user!!
+				
 				var currentAccountDeleted = account.get('active');
 				
 				Alloy.Globals.accounts.remove(account);
@@ -109,32 +151,29 @@ exports.definition = {
 			addNewAccount: function (callback){
 				var newAccount = Alloy.createModel('account');
 				var twitterAdapter = require('twitter');
-				////// var twitterAPI = new TwitterAdapter.Twitter(TwitterAdapter.tokens);
 				var twitterApi = twitterAdapter.create();
 				
 				// log in via webView
 				twitterApi.authorize({
 					'onSuccess': function(){
-						// Ti.API.debug("authorize success");
-						// after log in.
 						newAccount.set({
 							'access_token': twitterApi.getAccessTokenKey(),
-							'access_token_secret': twitterApi.getAccessTokenSecret()
+							'access_token_secret': twitterApi.getAccessTokenSecret(),
+							'status_active_tab': 0
 						});
-						
-						// newAccount.set('active', true);
-						newAccount.set('status_active_tab', 0);
+						// authorized twitter api
 						newAccount.twitterApi = twitterApi;
-						Ti.API.debug("[account.js] accessTokenKey: " + newAccount.get('access_token'));
-						Ti.API.debug("[account.js] accessTokenSecret: " + newAccount.get('access_token_secret'));
-						/////var user = Alloy.createModel('User');
-						/////user.ownerAccount = newAccount;
+
+						// Ti.API.debug("[account.js] accessTokenKey: " + newAccount.get('access_token'));
+						// Ti.API.debug("[account.js] accessTokenSecret: " + newAccount.get('access_token_secret'));
+
 						var user = newAccount.createModel('user');
+						
 						
 						user.fetchFromServer({
 							'purpose': 'profile',
 							'params': {},
-							'onSuccess': function(){
+							'success': function(){
 								newAccount.set({
 									'id_str': user.get('id_str'),
 									'name': user.get('name'),
@@ -144,49 +183,68 @@ exports.definition = {
 								});
 								Ti.API.info("[account.js] name: " + newAccount.get('name'));
 								
+								var yotoos = newAccount.getYotoos();
+								yotoos.fetchFromServer({
+									'mainAgent': newAccount,
+									'success': function(){
+										yotoos.map(function(yotoo){
+											yotoo.save();
+										});
+									},
+									'error': function(){}
+								});
+
 								// cloud externalAccount create (twitter) //
-								var Cloud = require('cloudProxy').getCloud();
-								Cloud.externalAccountLoginAdapter({
-									id: user.get('id_str'),
-									type: 'twitter',
-									token: newAccount.get('access_token')
-								}, function (e) {
-								    if (e.success) {
+								var cloudApi = require('cloudProxy').getCloud();
+								cloudApi.externalAccountLoginAdapter({
+									'id': user.get('id_str'),
+									'type': 'twitter',
+									'token': newAccount.get('access_token'),
+									'onSuccess': function(e){
 								        var user = e.users[0];
-								        Ti.API.info('[account.js] Cloud login success! sessionId:'+Cloud.sessionId+ ' id: ' + user.id + ' first name: ' + user.first_name +' last name: ' + user.last_name);
-								        newAccount.set('id_str_acs', user.id);
+								        Ti.API.info('[account.js] Cloud login success! sessionId:'+cloudApi.sessionId+ ' id: ' + user.id + ' first name: ' + user.first_name +' last name: ' + user.last_name);
+
+								        newAccount.set('id', user.id);
+										// must save() with id attr.
 								        newAccount.save();
-								        // alert('[account.js] current '+ currentAccount.get('session_id_acs') );
 								        
-								        // push notification subscribe.. only fo iOS?
-										Cloud.PushNotifications.subscribe({
-										    channel: 'yotoo',
-										    type: 'ios',
-										    device_token: Ti.Network.getRemoteDeviceUUID()
-										}, function (e) {
-										    if (e.success) {
-										        alert('Success subscribe');
-										    } else {
-										        alert('Error subscribe:\n' + ((e.error && e.message) || JSON.stringify(e)));
-										    }
-										});								        
-								    } else {
-								        Ti.API.info('[accounts.js] Error: ' + ((e.error && e.message) || JSON.stringify(e)));
-								    }
+										// accounts managed globally
+										Alloy.Globals.accounts.add( newAccount);
+										Alloy.Globals.accounts.changeCurrentAccount( newAccount );
+										
+										callback(newAccount);
+								        
+								        // push notification subscribe..
+										cloudApi.excuteWithLogin({
+											'mainAgent': newAccount,
+											'method': 'subscribePushNotification',
+											'onSuccess': function(e){
+										        Ti.API.info('[accounts.js] Success subscribe');
+											},
+											'onError': function(e){
+												// 반드시 성공 시켜야 한다.. 
+										        Ti.API.info('[accounts.js] Error acs login: ' + ((e.error && e.message) || JSON.stringify(e)));
+											}
+										});
+									},
+									'onError': function(){
+								        Ti.API.info('[accounts.js] Error acs login: ' + ((e.error && e.message) || JSON.stringify(e)));
+									}
 								});
 								
-								// save new account to persistence store
-								newAccount.save(); // must call after callback
-								Ti.API.info("[account.js] new account saved");
-									
-								// accounts managed globally
-								Alloy.Globals.accounts.add( newAccount);
-								Alloy.Globals.accounts.changeCurrentAccount( newAccount );
 								
-								callback(newAccount);
+								/* 이 로직은 user 모델에  있어야 겠지? refreshFriends() 같은 메소드에 
+								// retrieve friends for auto complete //
+								if( user.get('followers_count') < 300 ){
+									Ti.API.info("[account.js] follower is under 300");
+								}
+								if( user.get('friends_count') < 300 ){
+									Ti.API.info("[account.js] following is under 300");
+								}
+								*/
 							},
-							'onFailure': function(){
-								Ti.API.info("[account.js] user.fetchFromServer failure")
+							'error': function(){
+								Ti.API.info("[account.js] user.fetchFromServer failure");
 							}
 						});	// user.getUser()
 						

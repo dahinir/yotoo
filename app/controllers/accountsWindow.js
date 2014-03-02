@@ -1,5 +1,5 @@
 var args = arguments[0] || {};
-var ownerAccount = args.ownerAccount;
+var ownerAccount = args.ownerAccount || Alloy.Globals.accounts.getCurrentAccount();
 var accounts = Alloy.Globals.accounts;
 
 exports.init = function(args) {
@@ -24,8 +24,8 @@ $.addAccountButton.addEventListener('click', function(e){
 
 
 accounts.map(function(account){
-	var row = Alloy.createController('accountRow', {
-		"account" : account
+	var row = Alloy.createController('accountTableRow', {
+		"ownerAccount" : account
 	}).getView();
 
 	row.addEventListener('click', function(e){

@@ -52,14 +52,17 @@ var urls = {
 	
 	'timeline': "https://api.twitter.com/1.1/statuses/home_timeline.json",	// limit :15
 	'mentions': "https://api.twitter.com/1.1/statuses/mentions_timeline.json",	// limit :15
-	'discover': "https://api.twitter.com/1.1/search/tweets.json", // 180/user 450/app
-	'profile': "https://api.twitter.com/1.1/account/verify_credentials.json",	// limit :15.  Use this method to test if supplied user credentials are valid.
+	'searchTweets': "https://api.twitter.com/1.1/search/tweets.json", // 180/user 450/app
+	'searchUsers': "https://api.twitter.com/1.1/users/search.json",	// 180/user
+	'lookupUsers': "https://api.twitter.com/1.1/users/lookup.json",	// 180/user 60/app
+	'profile': "https://api.twitter.com/1.1/account/verify_credentials.json",	// 15/user  Use this method to test if supplied user credentials are valid.
 	
-	'userView': "https://api.twitter.com/1.1/users/show.json",	// limit :180
+	'userView': "https://api.twitter.com/1.1/users/show.json",	// 180/user 180/app
 	'profileBanner': "https://api.twitter.com/1.1/users/profile_banner.json",	// limit :180
-	'relationship': "https://api.twitter.com/1.1/friendships/show.json",	// limit :180.  wow! it was 15! wow!
+	'relationship': "https://api.twitter.com/1.1/friendships/show.json",	// 180/user 15/app.  it was 15! wow!
 	
 	'userTimeline': "https://api.twitter.com/1.1/statuses/user_timeline.json",	// limit :180
+	
 	
 	'ownershipLists': "https://api.twitter.com/1.1/lists/ownerships.json",	// 15/user, 15/app
 	'subscriptionLists': "https://api.twitter.com/1.1/lists/subscriptions.json"	// 15/user, 15/app
@@ -90,36 +93,37 @@ var showAuthorizeUI = function(options){
 	var oauthClient = options.oauthClient;
 	var onSuccess = options.onSuccess;
 	var onError = options.onError;
-	
-	Ti.API.debug("[twitter2] showAuthorizeUI() " + url);
-	var win = Ti.UI.createWindow({
-		// top: 0,
-		// fullscreen: true,
-		modal: true
+
+	var webWindowController = Alloy.createController('webWindow');
+	var webView = webWindowController.getWebView();
+
+	var loadCount = 0;
+
+	webView.addEventListener('beforeload', function(e) {
+		Ti.API.info(e.url);
+		if( e.url === 'https://api.twitter.com/oauth/cancelforyotoobabe'){
+			webView.stopLoading();
+			webWindowController.getView().close();
+		}
 	});
-	var webView = Ti.UI.createWebView({
-		// scalesPageToFit: true,
-		navBarHidden: true,
-		touchEnabled: true,
-		// top:43,
-		// backgroundColor: '#FFF'
-		url: url
-	});
-	win.add(webView);
-	
+
 	webView.addEventListener('load', function(e) {
-		Ti.API.debug("webView load!");
+		// Ti.API.debug("webView load!");
+	    // var cookies = webView.evalJS("document.cookie").split(";"); 
+	    // Ti.API.info( "# of cookies -> " + cookies.length  );
+	    // for (i = 0; i <= cookies.length - 1; i++) {
+	            // Ti.API.info( "cookie -> " + cookies[i] );
+	    // }
+		loadCount++;
 		var pin;
+
+		// e.source.evalJS('Ti.App.fireEvent("webView:cancel");');
+		// Ti.API.info(webView.html);
+		// ios bug; focus not work  
+		// e.source.evalJS('if(document.getElementById("username_or_email")){document.getElementById("username_or_email").focus();}');
+		e.source.evalJS('if(document.getElementById("cancel")){document.getElementById("cancel").addEventListener("touchstart", function(){ location.replace("cancelforyotoobabe"); }); }');
 		
-		if( cfg.callbackUrl === undefined ){
-			Ti.API.debug("callbackUrl is undefined");
-			var response = e.source.evalJS('(p = document.getElementById("oauth_pin")) && p.innerHTML;');
-			if( response ){ 
-				pin = response.split("<code>")[1].split("</code>")[0];
-			}else{ 
-				Ti.API.debug("not yet..");
-			}
-		}else{
+		if( cfg.callbackUrl ){
 			Ti.API.debug("callbackUrl is defined ");
 			if( e.url.match(cfg.callbackUrl) ){
 				Ti.API.debug("login success.");
@@ -129,24 +133,39 @@ var showAuthorizeUI = function(options){
 					}
 				});
 			}
+		}else{
+			Ti.API.debug("callbackUrl is undefined");
+			var response = e.source.evalJS('(p = document.getElementById("oauth_pin")) && p.innerHTML;');
+			if( response ){ 
+				pin = response.split("<code>")[1].split("</code>")[0];
+			}else{ 
+				Ti.API.debug("not yet..");
+			}
 		}
 		if( pin ){
 			Ti.API.debug("login succes, pin is " + pin);
-			
 			oauthClient.setVerifier(pin);
 			oauthClient.fetchAccessToken(function(data) {
 				onSuccess(data);
 				// if (Ti.Platform.osname === "android") {// we have to wait until now to close the modal window on Android: http://developer.appcelerator.com/question/91261/android-probelm-with-httpclient
-					win.close();
+					webWindowController.getView().close();
 				// }
 			}, function(data) {
 				Ti.API.warn("Failure to fetch access token, try again. ");
 				onError(data);
 			});
+			
+			// clear cookies for next login
+			Ti.Network.createHTTPClient().clearCookies('https://api.twitter.com/oauth');
+		}else if( loadCount > 1){
+			alert(L('you_may_enter_wrong_id/pass'));
+			loadCount = 0;
+			webView.setUrl(url);
 		}
 	});
-		
-	win.open();
+
+	webView.setUrl(url);
+	webWindowController.getView().open();
 };
 
 /**

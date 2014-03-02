@@ -1,0 +1,52 @@
+/*
+ *  BorderRadius is absolutely a performance killer! (around 2011s) 
+ */
+
+"#chatRow": {
+	height: 'auto'
+},
+"#profileImage": {
+	top : 7,
+	left : 6,
+	bottom: 10,
+	height : 48,
+	width : 48,
+	// borderRadius : 5,
+	borderWidth : 1,
+	borderColor : "#333"
+},
+"#screenName": {
+	top: 6,
+	left: 61,
+	height: 18,
+	color:'#000',
+	font: {
+	//	fontFamily:fontFamily,
+		fontSize: 16,
+		fontWeight:'bold'
+	}
+},
+"#createdAt": {
+	top: 6,
+	right: 6,
+	width : 20,	// 'auto'
+	textAlign: 'right',
+	color:'#888',
+	font: {
+		fontSize : 9,
+		fontWeight:'bold'
+	}
+},
+"#message": {
+	top: 24,
+	bottom: 10,
+	left: 61,
+	right: 6,
+	height: Ti.UI.SIZE,
+	// borderWidth: 1
+	textAlign: 'left',
+	font: {
+		fontSize: 15
+	}
+}
+

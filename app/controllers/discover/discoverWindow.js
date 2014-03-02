@@ -1,27 +1,17 @@
 var args = arguments[0] || {};
-var ownerAccount = args.ownerAccount;
+
+var ownerAccount = args.ownerAccount || Alloy.Globals.accounts.getCurrentAccount();
 
 
+/*
+$.navBarView.init({
+	// "ownerAccount": ownerAccount,
+	"defaultTitle": L('discover')
+});
+*/
 
-exports.init = function( options ) {
-	if( options.ownerAccount ){
-		ownerAccount = options.ownerAccount;
-		
-		$.navBarView.init({
-			"ownerAccount": ownerAccount,
-			"defaultTitle": L('dicover')
-		});
-		
-		$.localView.init({
-			"ownerAccount" : ownerAccount
-		});
-		
-	}else{
-		Ti.API.warn("[discoverWindow.js] must set ownerAccount");
-	}
-};
+// $.navBarView.setTitle( L('dicover') );
 
-
-
-
+$.titleLabel.text = L('discover');
+$.titleImageView.setImage( ownerAccount.get('profile_image_url_https') );
 

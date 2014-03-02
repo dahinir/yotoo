@@ -1,0 +1,13 @@
+"#globalView": {
+	// layout: "vertical"
+},
+"#searchBar": {
+	top: 0
+},
+"#dummyScreen": {
+	backgroundColor: "#000",
+	borderWidth: 3,
+	opacity: 0.3,
+	top: 43,
+	height: Ti.UI.FILL
+}

@@ -10,6 +10,7 @@
 	<string name="timeline">Timeline</string>
 	<string name="connect">Connect</string>
 	<string name="discover">Discover</string>
+	<string name="favorite">Favorite</string>
 	<string name="profile">Profile</string>
 
 	<string name="mentions">Mentions</string>
@@ -47,10 +48,18 @@
 	
 	<!-- discover tab -->
 	<string name="search_twitter">Search Twitter</string>
+	<string name="search_twitter_users">Search Twitter Users</string>
+	
+	<!-- notification -->
+	<string name="burned_chats">Burned Chats</string>
 	
 	<!-- guidance -->
 	<string name="when_delete_last_account">You don't have loggined account. you must login</string>
 	<string name="when_first_run">Nice to meet yoo. I'm yotoo!</string>
+	<string name="when_impending_chat_limit">Impending chat limit!</string>
+	<string name="when_chat_limit">This chats will burn</string>
+	
+	<string name="chatting_guidance">You and me only 100 limit</string>
 	
 	<string name="phrase" formatted="false">this is for TEST. You say %2$s and I say %1$s!</string>
 	<string name="phrase2">this is for TEST2. You say %2$s and I say %1$s!</string>

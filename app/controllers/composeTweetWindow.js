@@ -123,4 +123,4 @@ var createUploadImageView = function(image){
 		$.toolbarView.remove( uploadImageView );
 	});
 	return uploadImageView;
-}
+};

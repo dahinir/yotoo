@@ -1,7 +1,13 @@
 eclipse.preferences.version=1
-provisioning_profiles/development/9B7FB8DC-04ED-4E2B-B820-EDE1E7D1F846/appid=com.dasolute.yotoo
-provisioning_profiles/development/9B7FB8DC-04ED-4E2B-B820-EDE1E7D1F846/name=20130601
-provisioning_profiles/development/9B7FB8DC-04ED-4E2B-B820-EDE1E7D1F846/uuid=9B7FB8DC-04ED-4E2B-B820-EDE1E7D1F846
+provisioning_profiles/adhoc/37124C4C-3730-4DB5-8E33-366E37C7A380/appid=com.dasolute.yotoo
+provisioning_profiles/adhoc/37124C4C-3730-4DB5-8E33-366E37C7A380/name=yotooAdHocProvisionProfile
+provisioning_profiles/adhoc/37124C4C-3730-4DB5-8E33-366E37C7A380/uuid=37124C4C-3730-4DB5-8E33-366E37C7A380
+provisioning_profiles/adhoc/39619BB0-08D6-4A83-B31C-6776F1C3F116/appid=com.dasolute.yotoo
+provisioning_profiles/adhoc/39619BB0-08D6-4A83-B31C-6776F1C3F116/name=yotooDistProvisionProfile
+provisioning_profiles/adhoc/39619BB0-08D6-4A83-B31C-6776F1C3F116/uuid=39619BB0-08D6-4A83-B31C-6776F1C3F116
+provisioning_profiles/development/726681BF-21F0-40D6-B9AE-425B629E6D3E/appid=com.dasolute.yotoo
+provisioning_profiles/development/726681BF-21F0-40D6-B9AE-425B629E6D3E/name=yotooDevProvisionProfile
+provisioning_profiles/development/726681BF-21F0-40D6-B9AE-425B629E6D3E/uuid=726681BF-21F0-40D6-B9AE-425B629E6D3E
 provisioning_profiles/distribution/9B7FB8DC-04ED-4E2B-B820-EDE1E7D1F846/appid=com.dasolute.yotoo
 provisioning_profiles/distribution/9B7FB8DC-04ED-4E2B-B820-EDE1E7D1F846/name=20130601
 provisioning_profiles/distribution/9B7FB8DC-04ED-4E2B-B820-EDE1E7D1F846/uuid=9B7FB8DC-04ED-4E2B-B820-EDE1E7D1F846

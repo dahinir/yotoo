@@ -1,0 +1,78 @@
+"#chatWindow": {
+	// layout: "vertical",
+	modal: true
+	// height: 200,
+	// width: 200
+	// fullscreen: false
+	// bubbleParent : true,
+	// translucent : true,
+	// backgroundColor: "transparent"
+},
+// override app.tss
+"#titleLabel": {
+	right: 5
+},
+"#titleTargetImageView":{	
+	// visible: false,
+	height : 36.5, // 73/2 is 36.5
+	width : 36.5,
+	top: 5,
+	right: 5,
+	defaultImage: 'images/defaultImageView.png',
+	borderWidth : 0.5,
+	borderRadius : 9,
+	borderColor : '#030303'
+},
+"#remainCountToBurn": {
+	top: 40,
+	width: 60,
+	height: 27,
+	borderRadius: 10,
+	backgroundColor: "#090",
+	textAlign: Ti.UI.TEXT_ALIGNMENT_CENTER,
+	color: "#FFF", 
+	font: {
+		fontFamily:'Arial',
+		fontSize: 16
+	},
+	zIndex: 9
+},
+"#chatView": {
+	// layout: "vertical",
+	top: 50,
+	height: "auto",
+	borderColor: "#00F",
+	borderRadius: 20
+},
+"#chatTableView": {
+	top: 0,
+	width: "100%",
+	// height: 'auto',
+	bottom: 45,	// toolBarView's height
+	separatorColor: "#F00"
+},
+"#toolBarView": {
+	// layout: "horizontal",
+	backgroundColor: "#500",
+	// top: 0, 
+	bottom: 0,
+	// height: 45,
+	height: Ti.UI.SIZE,
+	width: "100%",
+	// bottom: 216, // 216 is softkeyboard size
+	borderRadius: 20
+},
+"#chatTextField": {
+	font: {fontSize: 16},
+	// top: 0,
+	left: 0,
+	height: Ti.UI.SIZE,
+	width: "80%",
+	borderRadius: 20,
+	backgroundColor: "#DDD"
+},
+"#sendButton": {
+	right: 0,
+	width: 50,
+	height: 32
+}

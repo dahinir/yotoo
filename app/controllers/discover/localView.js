@@ -148,7 +148,7 @@ $.searchBar.addEventListener('return', function(e){
 	$.searchBar.blur();
 	var tweets = ownerAccount.createCollection('tweet');
 	tweets.fetchFromServer({
-		'purpose': 'discover',
+		'purpose': 'searchTweets',
 		'params': {
 			'q': e.value,
 			// 'geocode': "37.49804,127.027236,1mi"
@@ -169,7 +169,7 @@ $.searchBar.addEventListener('return', function(e){
 			// $.tweetsTable.setVisible( true );
 		},
 		'onFailure': function(){
-			Ti.API.debug("[tweetView.js] fail setTweets()");
+			Ti.API.debug("[localView.js] fail setTweets()");
 		}
 	});
 });

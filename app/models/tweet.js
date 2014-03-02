@@ -146,7 +146,7 @@ exports.definition = {
 					'onSuccess': function( resultJSON ){
 						thisCollection.reset();
 						// Ti.API.info("json:"+resultJSON.length+ ", collection"+thisCollection.length	);
-						if( options.purpose === 'discover' ){
+						if( options.purpose === 'searchTweets' ){
 							resultJSON = resultJSON.statuses;
 							Ti.API.info(JSON.stringify(resultJSON));
 						}else if( options.purpose === 'ownershipLists'){

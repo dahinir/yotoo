@@ -12,7 +12,7 @@ ENV_DEV : true if the current compiler target is built for development (running 
 ENV_TEST : true if the current compiler target is built for testing on a device
 ENV_PRODUCTION : true if the current compiler target is built for production (running after a packaged installation)
  */
-// Alloy.globals = Alloy.globals || {};
+
 _.extend(Alloy.Globals,{
      // util : require('util'),
      myVal : 3,
@@ -34,6 +34,69 @@ if (typeof Object.create !== 'function'){
 	Ti.API.warn("already defined Object.create()");
 }
 
+
+// load loged account from persistent storage //
+// This will create a singleton if it has not been previously created, or retrieves the singleton if it already exists.
+var accounts = Alloy.Collections.instance('account');
+var users = Alloy.Collections.instance('user');
+var yotoos = Alloy.Collections.instance('yotoo');
+var chats = Alloy.Collections.instance('chat');
+
+accounts.fetch();
+users.fetch();
+yotoos.fetch();
+chats.fetch();
+
+Ti.API.info("[alloy.js] " + accounts.length + " loged in accounts loaded");
+Ti.API.info("[alloy.js] " + users.length + " users loaded");
+Ti.API.info("[alloy.js] " + yotoos.length + " yotoos");
+Ti.API.info("[alloy.js] " + chats.length + " chats");
+
+Alloy.Globals.accounts = accounts;
+Alloy.Globals.users = users;
+Alloy.Globals.yotoos = yotoos;
+Alloy.Globals.chats = chats;
+
+/*
+var w = Titanium.UI.createWindow({
+  url:'cloudProxy.js'
+});
+w.open();
+*/
+var twitterAdapter = require('twitter');
+accounts.map(function(account){
+	// account.save({'status_active_tab_index': 12})
+	Ti.API.info("[alloy.js] account: @" + account.get('screen_name')
+	+"\t, "+account.get('id_str')+" ," +account.get('id')
+	+", "+ account.get('active') +", "+account.get('status_active_tab_index'));
+
+	account.twitterApi = twitterAdapter.create({
+		accessTokenKey: account.get('access_token'),
+		accessTokenSecret: account.get('access_token_secret')
+	});
+
+}); // accounts.map()
+
+users.map(function(user){
+	// account.save({'status_active_tab_index': 12})
+	Ti.API.info("[alloy.js] user: @" + user.get('screen_name')
+	+", "+user.get('id_str')+", " +user.get('acs_id'));
+});
+
+yotoos.map(function( yotoo){
+	Ti.API.info("[alloy.js] yotoo: " + yotoo.get('id')	
+		+ " " + yotoo.get('created_at') + " " + yotoo.get('burned_at')
+		+ " " + yotoo.get('chat_group_id') + " " + yotoo.get('source_id_str')
+		+ " " + yotoo.get('target_id_str') + " " + yotoo.get('unyotooed')
+		+ " " + yotoo.get('completed'));
+});
+
+chats.map(function( chat ){
+	Ti.API.info("[alloy.js] chats: " + chat.get('id')
+		+ " " + chat.get('chat_group_id') + " " + chat.get('message'));
+});
+
+
 if( ENV_DEV ){
 	// alert("ENV_DEV");
 }
@@ -46,31 +109,74 @@ if( ENV_PRODUCTION ){
 
 // push notification
 if( OS_IOS ){
-	// alert("os");
-	// Ti.API.debug("[index.js] this is IOS");
 	// alert("[index.js] this is IOS");
+	// Ti.UI.iPhone.setAppBadge( 11 );
 	Ti.Network.registerForPushNotifications({
-		types: [
+		'types': [
 			Ti.Network.NOTIFICATION_TYPE_ALERT,
 			Ti.Network.NOTIFICATION_TYPE_BADGE,
 			Ti.Network.NOTIFICATION_TYPE_SOUND
 		],
-		callback: function(e){
+		'callback': function(e){
 			/* 
-			 * 앱 실행중 푸시를 받으면 실행될 코드
-			 * 실행중이 아닐때는 노티피케이션을 탭해서 앱이 실행되면 실행된다.
-			 * 고로 앱 실행 상태를 체크해서 동작하도록 해야 할 듯.
-			 * 
 			 * Connection 탭의 activity history를 보여줄까?
 			 */
-			alert("callback");
-			alert("push " + e.data + ", " + e.inBackground );
-			var pushData = e.data;
-			for(key in pushData){
-				alert("key: " + key + "\ndata:" + pushData[key]);
+// 이제 상대방이 수동 burn 했을때 날린 noti를 처리 해야 한다.  
+alert("e.data: "+ JSON.stringify(e.data));
+			var recipientAccount = accounts.where({'id_str': e.data.t}).pop();
+			if( !recipientAccount ){
+				//예전에 로긴 했던 유저.. 어카운트 지울때 unsubscribe를 해야 겠구만!
+				return;
 			}
-			// e.data.aps : object
+			var relevantYotoo = recipientAccount.getYotoos().where({
+				'source_id_str': e.data.t,
+				'target_id_str': e.data.f
+			}).pop(); 
+			/* 상황에 맞게 상대에게 유투 노티피케이션을 보낸다. */
+			if( e.data.sound === 'yotoo1' ){
+				// 유투 알람 완료를 acs에서 따로 관리 할까..
+				Alloy.Globals.yotoos.sendYotooNotification({
+					'sourceUser': recipientAccount,
+					'targetUser': Alloy.Globals.users.where({'id_str':e.data.f}).pop(),
+					'sound': 'yotoo2',
+					'success': function(){},
+					'error': function(){}
+				});
+			}
+			if( e.data.sound === 'yotoo1' || e.data.sound === 'yotoo2'){
+				relevantYotoo.complete({
+					'mainAgent': recipientAccount,
+					'success': function(){
+						// need to save?
+					},
+					'error': function(){}
+				});
+			}
 			
+			// case of background
+			if( e.inBackground ) {
+				// e.data.t
+				if( !recipientAccount ){
+					// 당신이 사용 정지한 receiverAccount와 e.data.f가 서로 유투 했으니
+					// 로긴만 하면 시크릿 채팅을 할 수 있어용..
+					alert(L('you must loggin'));
+					return;
+				}
+				var chatWindow = Alloy.createController('chatWindow', {
+					'ownerAccount': recipientAccount,	// must setted!
+					'targetUser': Alloy.Globals.users.where({'id_str':e.data.f}).pop()
+				});
+				chatWindow.getView().open();
+			// case of running
+			}else {
+				Ti.App.fireEvent("app:newChat:" + e.data.f);
+				// case of chatting with Notified user
+				if( recipientAccount.currentChatTarget === e.data.f ){
+				// case of chatting with other user or do not chat
+				}else{
+					// alert("running:"+JSON.stringify(e.data));
+				}
+			}
 			// e.data.alert: hi hehe
 			// e.data.badge: 7
 			// e.data.sound: 
@@ -79,17 +185,17 @@ if( OS_IOS ){
 			// e.data.aps.badge: 1
 			// e.data.aps.sound: default
 		},
-		error: function(e){
-			alert("error");
+		'error': function(e){
 			alert("error " + e.code + ", " + e.error );
 		},
-		success: function(e){
-			alert("success");
+		'success': function(e){
 			alert("code:" + e.code + "deviceToken: " + e.deviceToken );
 		}
 	});
 }
 
+
+// Alloy.builtins.moment 로 대체하자 
 /**
  * Returns a description of this past date in relative terms.
  * Takes an optional parameter (default: 0) setting the threshold in ms which

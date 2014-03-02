@@ -1,0 +1,12 @@
+<Alloy>
+	<TableViewRow id="chatRow" className="generalTweetRow" >
+		<Label id="id" visible="false" />
+		<Label platform="android">Label (android)</Label>
+
+		<ImageView id="profileImage" defaultImage="/images/defaultImageView.png" />
+		<Label id="screenName" />
+		<Label id="createdAt" />
+		<Label id="message" />
+		
+	</TableViewRow>
+</Alloy>
