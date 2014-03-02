@@ -2,10 +2,10 @@ Ti.API.info("[cloudProxy.js] init cloudProxy.js!!");
 var Cloud = require('ti.cloud');
 
 if( !ENV_PRODUCTION ){
-	Ti.API.info("[cloudProxy.js] current compiler target is not built for production. ")
+	Ti.API.info("[cloudProxy.js] current compiler target is not built for production. ");
 	Cloud.debug = true;	// optional; if you add this line, set it to false for production
 }else {
-	Ti.API.info("[cloudProxy.js] current compiler target is built for production. ")
+	Ti.API.info("[cloudProxy.js] current compiler target is built for production. ");
 	Cloud.debug = false;
 }
 

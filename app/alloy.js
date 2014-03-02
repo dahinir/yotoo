@@ -29,7 +29,7 @@ if (typeof Object.create !== 'function'){
 		var F = function (){};
 		F.prototype = o;
 		return new F();
-	}
+	};
 }else{
 	Ti.API.warn("already defined Object.create()");
 }
@@ -50,7 +50,7 @@ if( OS_IOS ){
 	// Ti.API.debug("[index.js] this is IOS");
 	// alert("[index.js] this is IOS");
 	Ti.Network.registerForPushNotifications({
-		type: [
+		types: [
 			Ti.Network.NOTIFICATION_TYPE_ALERT,
 			Ti.Network.NOTIFICATION_TYPE_BADGE,
 			Ti.Network.NOTIFICATION_TYPE_SOUND

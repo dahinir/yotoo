@@ -90,7 +90,7 @@ var createTab = function(initArgs) {
 		active = true;
 		button.applyProperties(activeTabButtonProperties);
 		if ( view ) {
-			Ti.API.debug("tab\'s view is created already. call .show()")
+			Ti.API.debug("tab\'s view is created already. call .show()");
 			view.show();
 		} else if (createView) {
 			Ti.API.debug("create Tab\' view by call .createView()");
