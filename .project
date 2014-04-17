@@ -3,6 +3,8 @@
 	<name>yotoo</name>
 	<comment></comment>
 	<projects>
+		<project>and</project>
+		<project>hand</project>
 	</projects>
 	<buildSpec>
 		<buildCommand>

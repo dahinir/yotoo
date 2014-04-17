@@ -223,7 +223,7 @@ exports.definition = {
 											},
 											'onError': function(e){
 												// 반드시 성공 시켜야 한다.. 
-										        Ti.API.info('[accounts.js] Error acs login: ' + ((e.error && e.message) || JSON.stringify(e)));
+										        Ti.API.info('[accounts.js] Error subscribe: ' + ((e.error && e.message) || JSON.stringify(e)));
 											}
 										});
 									},

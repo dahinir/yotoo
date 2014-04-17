@@ -12,7 +12,6 @@ ENV_DEV : true if the current compiler target is built for development (running 
 ENV_TEST : true if the current compiler target is built for testing on a device
 ENV_PRODUCTION : true if the current compiler target is built for production (running after a packaged installation)
  */
-
 _.extend(Alloy.Globals,{
      // util : require('util'),
      myVal : 3,
@@ -31,9 +30,8 @@ if (typeof Object.create !== 'function'){
 		return new F();
 	};
 }else{
-	Ti.API.warn("already defined Object.create()");
+	Ti.API.warn("already defined Object.create() ");
 }
-
 
 // load loged account from persistent storage //
 // This will create a singleton if it has not been previously created, or retrieves the singleton if it already exists.
@@ -64,6 +62,7 @@ var w = Titanium.UI.createWindow({
 w.open();
 */
 var twitterAdapter = require('twitter');
+
 accounts.map(function(account){
 	// account.save({'status_active_tab_index': 12})
 	Ti.API.info("[alloy.js] account: @" + account.get('screen_name')

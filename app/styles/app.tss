@@ -8,19 +8,28 @@
 
 "Window": {
 	navBarHidden: true,
-	backgroundColor: "#fff"
+	backgroundColor: "white"
 	// backgroundImage:'images/back.png',
 	// softInputMode:(Ti.UI.Android) ? Ti.UI.Android.SOFT_INPUT_ADJUST_RESIZE : ''
-},
+}
+"Window[platform=ios]": {
+	// statusBarStyle: Ti.UI.iPhone.StatusBar.LIGHT_CONTENT,
+	// statusBarStyle: Ti.UI.iPhone.StatusBar.GRAY,
+	// includeOpaqueBars: true,
+	// translucent: false,
+
+	extendEdges : [Ti.UI.EXTEND_EDGE_TOP, Ti.UI.EXTEND_EDGE_BOTTOM],
+	autoAdjustScrollViewInsets : true
+}
 "Window[platform=android]": {
     softInputMode: Ti.UI.Android.SOFT_INPUT_ADJUST_RESIZE 
-},
+}
 ".appWindow": {
 	layout: "vertical"
-},
+}
 ".tapWindow":{
 	layout: "vertical"
-},
+}
 "Button": {
 	// backgroundImage:'images/button_bg.png',
 	// height:expr(10+20),
@@ -31,7 +40,7 @@
 		// fontWeight:'bold'
 	// }
 	height: 30
-},
+}
 "Label": {
 	color: '#000000',
 	font: {
@@ -39,14 +48,14 @@
 		fontSize:12
 	},
 	height:'auto'
-},
+}
 "ImageView": {
 	defaultImage : "images/defaultImageView.png"
-},
+}
 "TableView": {
 	// backgroundImage:'images/back.png'
 	// separatorStyle:Ti.UI.iPhone.TableViewSeparatorStyle.NONE
-},
+}
 "TableViewRow": {
 	// backgroundImage:'images/tweet_bg.png',
 	// selectedBackgroundColor: darkBlue, //I know, this is dumb, but it's currently inconsistent x-platform
@@ -54,14 +63,14 @@
 	height:110
 	//height:'auto',	// added by dahinir
 	// className:'tvRow'
-},
+}
 "TextField": {
 	height:55,
 	borderStyle:Ti.UI.INPUT_BORDERSTYLE_ROUNDED,
 	color:'#000000'
 },
 "TextArea": {
-},
+}
 "ActivityIndicator": {
 	color: 'green',
 	font: {fontFamily:'Helvetica Neue', fontSize:26, fontWeight:'bold'},
@@ -71,17 +80,17 @@
 	left: 10,
 	height: Ti.UI.SIZE,
 	width: Ti.UI.SIZE
-},
+}
 "SearchBar": {
 	barColor: '#666',
 	height: 43
-},
+}
 
 // navigation bar :will be remove
 "#navBarView":{
 	top: 0,
 	width: "100%",
-	height: 46,
+	height: 64,
 	// borderRadius: "3dp",
 	backgroundColor: "#333",
     backgroundGradient: {
@@ -94,14 +103,14 @@
         		{ color: '#000', offset: 1.0 } ]
     },
     zIndex: 10
-},
+}
 "#titleView":{
 	width: Ti.UI.SIZE,
 	// borderWidth : 1,
 	// borderRadius : 3,
 	// borderColor : 'red',
 	layout: 'horizontal'
-},
+}
 "#titleImageView":{
 	// visible: false,
 	height : 36.5, // 73/2 is 36.5
@@ -112,7 +121,7 @@
 	borderWidth : 0.5,
 	borderRadius : 9,
 	borderColor : '#030303'
-},
+}
 "#titleLabel": {
 	top: 11,
 	right: 25,
@@ -122,15 +131,15 @@
 		fontSize: 19,
 		fontWeight: 'bold'
 	}
-},
+}
 ".leftNavButton": {
 	top: 8,
 	left: 8
-},
+}
 ".rightNavButton": {
 	top: 8,
 	right: 8
-},
+}
 // navigation bar end
 
 
@@ -142,7 +151,7 @@
 		fontWeight:'bold'
 	},
 	height:'auto'
-},
+}
 ".smallText": {
 	color:'#888888',
 	font: {

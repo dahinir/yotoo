@@ -1,7 +1,8 @@
 <Alloy>
 	<Window id="welcomeWindow">
 		<View layout="vertical">
-			<Label>WELCOME! some guidance of using yotoo should here.</Label>
+			<Label>..</Label>
+			<Label>WELCOME, some guidance of using yotoo should here.</Label>
 			<Button id="signInButton">sign in</Button>
 			<Button id="signUpButton">sign up</Button>
 		</View>

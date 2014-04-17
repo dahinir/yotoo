@@ -247,12 +247,12 @@ exports.create = function(settings) {
 						onSuccess();
 					},
 					'onError': function(data){
-						Ti.API.debug("authorize error. with this data:"+data);
+						Ti.API.debug("[twitter.js] authorize error. with this data:"+data);
 						onFailure();
 					}
 				});
 			},function(data){ // on failure
-				Ti.API.error("Failure to fetch access token: "+ data);
+				Ti.API.error("[twitter.js] Failure to fetch access token: "+ JSON.stringify(data));
 				onFailure();
 			});
 		},
