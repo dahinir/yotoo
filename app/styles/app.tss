@@ -18,8 +18,8 @@
 	// includeOpaqueBars: true,
 	// translucent: false,
 
-	extendEdges : [Ti.UI.EXTEND_EDGE_TOP, Ti.UI.EXTEND_EDGE_BOTTOM],
-	autoAdjustScrollViewInsets : true
+	// extendEdges : [Ti.UI.EXTEND_EDGE_TOP, Ti.UI.EXTEND_EDGE_BOTTOM],
+	// autoAdjustScrollViewInsets : true
 }
 "Window[platform=android]": {
     softInputMode: Ti.UI.Android.SOFT_INPUT_ADJUST_RESIZE 
@@ -90,9 +90,10 @@
 "#navBarView":{
 	top: 0,
 	width: "100%",
-	height: 64,
+	height: 64,	// ios7's navBar height
 	// borderRadius: "3dp",
-	backgroundColor: "#333",
+	// backgroundColor: "#333",
+	/*
     backgroundGradient: {
         type: 'linear',
         startPoint: { x: 0, y: '0%' },
@@ -102,6 +103,7 @@
         		{ color: '#222', offset: 0.95 }, 
         		{ color: '#000', offset: 1.0 } ]
     },
+    */
     zIndex: 10
 }
 "#titleView":{
@@ -115,7 +117,7 @@
 	// visible: false,
 	height : 36.5, // 73/2 is 36.5
 	width : 36.5,
-	top: 5,
+	top: 25,
 	right: 5,
 	defaultImage: 'images/defaultImageView.png',
 	borderWidth : 0.5,
@@ -123,9 +125,9 @@
 	borderColor : '#030303'
 }
 "#titleLabel": {
-	top: 11,
+	top: 31,
 	right: 25,
-	color: '#FFF',
+	color: Alloy.Globals.COLORS.darkGray,
 	font: {
 		fontFamily:'Arial',
 		fontSize: 19,
@@ -133,11 +135,11 @@
 	}
 }
 ".leftNavButton": {
-	top: 8,
+	top: 28,
 	left: 8
 }
 ".rightNavButton": {
-	top: 8,
+	top: 28,
 	right: 8
 }
 // navigation bar end

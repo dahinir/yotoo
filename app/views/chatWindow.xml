@@ -1,13 +1,13 @@
 <Alloy>
 	<Window id="chatWindow" >
 		<View id="navBarView" >
-			<Button id="closeButton" class="leftNavButton" />
+			<Button id="closeButton" class="leftNavButton" >close</Button>
 			<View id="titleView">
 				<ImageView id="titleImageView" />
 				<Label id="titleLabel" />
 				<ImageView id="titleTargetImageView" />
 			</View>
-			<Button id="burnButton" class="rightNavButton" />
+			<Button id="burnButton" class="rightNavButton" >burn</Button>
 		</View>
 		<Label id="remainCountToBurn" >100</Label>
 		<!-- <View id="chatScreen"> -->

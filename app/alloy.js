@@ -12,6 +12,7 @@ ENV_DEV : true if the current compiler target is built for development (running 
 ENV_TEST : true if the current compiler target is built for testing on a device
 ENV_PRODUCTION : true if the current compiler target is built for production (running after a packaged installation)
  */
+"use strict";
 _.extend(Alloy.Globals,{
      // util : require('util'),
      myVal : 3,
@@ -32,6 +33,9 @@ if (typeof Object.create !== 'function'){
 }else{
 	Ti.API.warn("already defined Object.create() ");
 }
+
+var AG = Alloy.Globals;
+AG.COLORS = require('colors');
 
 // load loged account from persistent storage //
 // This will create a singleton if it has not been previously created, or retrieves the singleton if it already exists.
@@ -61,7 +65,6 @@ var w = Titanium.UI.createWindow({
 });
 w.open();
 */
-var twitterAdapter = require('twitter');
 
 accounts.map(function(account){
 	// account.save({'status_active_tab_index': 12})
@@ -69,7 +72,7 @@ accounts.map(function(account){
 	+"\t, "+account.get('id_str')+" ," +account.get('id')
 	+", "+ account.get('active') +", "+account.get('status_active_tab_index'));
 
-	account.twitterApi = twitterAdapter.create({
+	account.twitterApi = require('twitter').create({
 		accessTokenKey: account.get('access_token'),
 		accessTokenSecret: account.get('access_token_secret')
 	});
