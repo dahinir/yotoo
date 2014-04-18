@@ -25,52 +25,37 @@ if(ENV_PRODUCTION){
 	require('ti.newrelic').start("AA0743bd03f287cebbfa2eeabf0b18a241acede885");
 }
 
-_.extend(Alloy.Globals,{
-     // util : require('util'),
-     myVal : 3,
-     myFunction : function(){
-         //do somethingSpringpad
-     },
-     // todoCollection : Alloy.createCollection(‘Todo’),  currentModel : null
-});
-
-
-// Object.create()
 if (typeof Object.create !== 'function'){
-	Ti.API.debug("define Object.create()");
+	Ti.API.info("[alloy.js] define Object.create()");
 	Object.create = function (o) {
 		var F = function (){};
 		F.prototype = o;
 		return new F();
 	};
 }else{
-	Ti.API.warn("already defined Object.create() ");
+	Ti.API.info("[alloy.js] already defined Object.create() ");
 }
 
+// global variable
 var AG = Alloy.Globals;
-AG.COLORS = require('colors');
 
-// load loged account from persistent storage //
-// This will create a singleton if it has not been previously created, or retrieves the singleton if it already exists.
-var accounts = Alloy.Collections.instance('account');
-var users = Alloy.Collections.instance('user');
-var yotoos = Alloy.Collections.instance('yotoo');
-var chats = Alloy.Collections.instance('chat');
+_.extend(AG ,{
+	COLORS: require('colors'),
+	accounts: Alloy.Collections.instance('account'),
+	users: Alloy.Collections.instance('user'),
+	yotoos: Alloy.Collections.instance('yotoo'),
+	chats: Alloy.Collections.instance('chat')
+});
 
-accounts.fetch();
-users.fetch();
-yotoos.fetch();
-chats.fetch();
+AG.accounts.fetch();
+AG.users.fetch();
+AG.yotoos.fetch();
+AG.chats.fetch();
 
-Ti.API.info("[alloy.js] " + accounts.length + " loged in accounts loaded");
-Ti.API.info("[alloy.js] " + users.length + " users loaded");
-Ti.API.info("[alloy.js] " + yotoos.length + " yotoos");
-Ti.API.info("[alloy.js] " + chats.length + " chats");
-
-Alloy.Globals.accounts = accounts;
-Alloy.Globals.users = users;
-Alloy.Globals.yotoos = yotoos;
-Alloy.Globals.chats = chats;
+Ti.API.info("[alloy.js] " + AG.accounts.length + " loged in accounts loaded");
+Ti.API.info("[alloy.js] " + AG.users.length + " users loaded");
+Ti.API.info("[alloy.js] " + AG.yotoos.length + " yotoos");
+Ti.API.info("[alloy.js] " + AG.chats.length + " chats");
 
 /*
 var w = Titanium.UI.createWindow({
@@ -79,7 +64,7 @@ var w = Titanium.UI.createWindow({
 w.open();
 */
 
-accounts.map(function(account){
+AG.accounts.map(function(account){
 	// account.save({'status_active_tab_index': 12})
 	Ti.API.info("[alloy.js] account: @" + account.get('screen_name')
 	+"\t, "+account.get('id_str')+" ," +account.get('id')
@@ -92,13 +77,13 @@ accounts.map(function(account){
 
 }); // accounts.map()
 
-users.map(function(user){
+AG.users.map(function(user){
 	// account.save({'status_active_tab_index': 12})
 	Ti.API.info("[alloy.js] user: @" + user.get('screen_name')
 	+", "+user.get('id_str')+", " +user.get('acs_id'));
 });
 
-yotoos.map(function( yotoo){
+AG.yotoos.map(function( yotoo){
 	Ti.API.info("[alloy.js] yotoo: " + yotoo.get('id')	
 		+ " " + yotoo.get('created_at') + " " + yotoo.get('burned_at')
 		+ " " + yotoo.get('chat_group_id') + " " + yotoo.get('source_id_str')
@@ -106,7 +91,7 @@ yotoos.map(function( yotoo){
 		+ " " + yotoo.get('completed'));
 });
 
-chats.map(function( chat ){
+AG.chats.map(function( chat ){
 	Ti.API.info("[alloy.js] chats: " + chat.get('id')
 		+ " " + chat.get('chat_group_id') + " " + chat.get('message'));
 });
@@ -126,8 +111,8 @@ if( OS_IOS ){
 			 * Connection 탭의 activity history를 보여줄까?
 			 */
 // 이제 상대방이 수동 burn 했을때 날린 noti를 처리 해야 한다.  
-alert("e.data: "+ JSON.stringify(e.data));
-			var recipientAccount = accounts.where({'id_str': e.data.t}).pop();
+Ti.API.info("e.data: "+ JSON.stringify(e.data));
+			var recipientAccount = AG.accounts.where({'id_str': e.data.t}).pop();
 			if( !recipientAccount ){
 				//예전에 로긴 했던 유저.. 어카운트 지울때 unsubscribe를 해야 겠구만!
 				return;
@@ -190,11 +175,11 @@ alert("e.data: "+ JSON.stringify(e.data));
 			// e.data.aps.sound: default
 		},
 		'error': function(e){
-			alert("err");
+			// alert("err");
 			Ti.API.info("error " + e.code + ", " + e.error );
 		},
 		'success': function(e){
-			alert("su");
+			// alert("su");
 			Ti.API.info("code:" + e.code + "deviceToken: " + e.deviceToken );
 		}
 	});
