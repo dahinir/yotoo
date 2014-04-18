@@ -272,16 +272,16 @@ cloudProxy.subscribePushNotification = function(options){
 	
 	Cloud.PushNotifications.subscribe({
 	    device_token: Ti.Network.getRemoteDeviceUUID(),
-	    channel: channel
-	    // type: OS_IOS ? 'ios' : 'android'
+	    channel: channel,
+	    type: OS_IOS ? 'ios' : 'android'
 	}, function (e) {
 	    if (e.success) {
-	        alert('Success');
+	        Ti.API.info('[cloudProxy.js] Success subscribe push notification');
 	        if( onSuccess ){
 	        	onSuccess(e);
 	        }
 	    } else {
-	        alert('Error:\n' +((e.error && e.message) || JSON.stringify(e)));
+	        Ti.API.info('[cloudProxy.js] Error subscribe push notification' +((e.error && e.message) || JSON.stringify(e)) );
 	        if( onError ){
 	        	onError(e);
 	        }

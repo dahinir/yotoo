@@ -13,6 +13,18 @@ ENV_TEST : true if the current compiler target is built for testing on a device
 ENV_PRODUCTION : true if the current compiler target is built for production (running after a packaged installation)
  */
 "use strict";
+if(ENV_DEV){
+	Ti.API.info("ENV_DEV");
+	// alert("ENV_DEV");
+}
+if(ENV_TEST){
+	Ti.API.info("ENV_TEST");
+	// alert("ENV_TEST");
+}
+if(ENV_PRODUCTION){
+	require('ti.newrelic').start("AA0743bd03f287cebbfa2eeabf0b18a241acede885");
+}
+
 _.extend(Alloy.Globals,{
      // util : require('util'),
      myVal : 3,
@@ -21,6 +33,7 @@ _.extend(Alloy.Globals,{
      },
      // todoCollection : Alloy.createCollection(‘Todo’),  currentModel : null
 });
+
 
 // Object.create()
 if (typeof Object.create !== 'function'){
@@ -99,19 +112,8 @@ chats.map(function( chat ){
 });
 
 
-if( ENV_DEV ){
-	// alert("ENV_DEV");
-}
-if( ENV_TEST ){
-	// alert("ENV_TEST");
-}
-if( ENV_PRODUCTION ){
-	// alert("ENV_PRODUCTION");
-}
-
 // push notification
 if( OS_IOS ){
-	// alert("[index.js] this is IOS");
 	// Ti.UI.iPhone.setAppBadge( 11 );
 	Ti.Network.registerForPushNotifications({
 		'types': [
@@ -188,10 +190,12 @@ alert("e.data: "+ JSON.stringify(e.data));
 			// e.data.aps.sound: default
 		},
 		'error': function(e){
-			alert("error " + e.code + ", " + e.error );
+			alert("err");
+			Ti.API.info("error " + e.code + ", " + e.error );
 		},
 		'success': function(e){
-			alert("code:" + e.code + "deviceToken: " + e.deviceToken );
+			alert("su");
+			Ti.API.info("code:" + e.code + "deviceToken: " + e.deviceToken );
 		}
 	});
 }

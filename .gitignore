@@ -4,6 +4,7 @@ build
 tmp
 .map
 Resources
+.settings
 tiapp.xml
 tokens.js
 
