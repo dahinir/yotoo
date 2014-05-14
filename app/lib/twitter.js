@@ -158,7 +158,7 @@ var showAuthorizeUI = function(options){
 			// clear cookies for next login
 			Ti.Network.createHTTPClient().clearCookies('https://api.twitter.com/oauth');
 		}else if( loadCount > 1){
-			alert(L('you_may_enter_wrong_id/pass'));
+			Ti.API.info('[twitter.js] you_may_enter_wrong_id/pass');
 			loadCount = 0;
 			webView.setUrl(url);
 		}
@@ -252,7 +252,7 @@ exports.create = function(settings) {
 					}
 				});
 			},function(data){ // on failure
-				Ti.API.error("[twitter.js] Failure to fetch access token: "+ JSON.stringify(data));
+				Ti.API.error("[twitter.js] Failure to fetch request token: "+ JSON.stringify(data));
 				onFailure();
 			});
 		},
@@ -286,7 +286,7 @@ exports.create = function(settings) {
 				'url': url,
 				'success': function(data){
 					Ti.API.debug("[twitter.js] fetch success.");
-					var result = JSON.parse(data.text);
+					var result = JSON.parse(data.text || '');
 					onSuccess(result); 
 				},
 				'failure': function(data){

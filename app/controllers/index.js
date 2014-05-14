@@ -1,8 +1,6 @@
 /*
  * index.js
  * 
- * : will be used for globally
- * -rapodor 
  */
 var accounts = Alloy.Globals.accounts;
 var yotoos = Alloy.Globals.yotoos;
@@ -68,10 +66,87 @@ accounts.map(function(account){
 }); // accounts.map()
 
 if(accounts.length !== 0 && activeCount === 0){
-	Ti.API.info("[index.js] last session was something wrong.");
+	Ti.API.info("[index.js] last session was something wrong.   ");
 	accounts.changeCurrentAccount(accounts.at(0));
 }
 
 
-
+// telegrams from server!
+var showTelegrams = function(telegrams){
+	telegrams.each(function(telegram){
+		if( !telegram.get('viewed') ){
+			alert(JSON.parse(telegram.get('data') || '').message);
+			// telegram.destroy({localOnly: true});
+			// telegram.save({'viewed': 1}, {localOnly: true});
+		}
+		Ti.API.info("hahahahahah:    "+telegram.get('id'));
+	});
+	// alert(telegrams.length);
+	// alert(telegram.get('data').message);
+};
+var telegrams = Alloy.createCollection('telegram');
+telegrams.on('fetch', function(e, e2){
+	// alert('f');
+	if( e && !e.serverData){
+		// alert("this from local");
+	}else{
+		// fetch success on server
+		showTelegrams(telegrams);
+	}
+});
+telegrams.fetch({
+	// localOnly: true,
+	// disableSaveDataLocallyOnServerError: false,
+	urlparams:{
+		condition: JSON.stringify(AG.platform)
+	},
+	success: function(tels, res){
+		// alert(tels.length);
+		telegrams.each(function(tel){
+			Ti.API.info("local:  "+tel.get('id'));
+			// alert(tel.attributes);
+			// telegram.destroy({localOnly: true});
+			// return;
+			// tel.save({'viewed': 1}, {localOnly: true});
+			// if( !tel.get('viewed') ){
+				// alert("new telegram!  ");
+			// }
+			// alert(tel.attributes);
+		});
+	},
+	error: function(e){
+		// Ti.API.info(telegrams.size());
+		// i don't know why duplicated models in collection when fetch error
+		// while( telegrams.size() > telegrams.length ){
+			// Ti.API.info(telegrams.size() + ",   " + telegrams.length);
+		// }
+		// telegrams.each(function(tel){
+			// Ti.API.info("asdhf:"+ tel.get('id'));
+		// });
+		// fetch error on server, so show telegram of local
+		showTelegrams(telegrams);
+	}
+});
+/*
+tel.fetch({
+	// localOnly: true,
+	urlparams: {
+		condition: JSON.stringify(AG.platform)
+	},
+	// add : true,
+	success: function(tels, response){
+		tels.each(function(tel){
+			if( !!tel.get('viewed') ){
+				alert("true");
+			}else{
+				alert("false");
+			}
+		});
+		// alert(tel.at(0).get('viewed'));
+		// alert(JSON.stringify(collection));
+		// alert(JSON.stringify(response));
+		// alert(tel.at(0).attributes);
+	}
+});
+*/
 

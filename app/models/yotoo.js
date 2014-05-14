@@ -20,9 +20,9 @@ exports.definition = {
 		    "completed": "boolean",
 		    "burned": "boolean",
 		},
-        'defaults': {
-        	'burned': 0	// false
-        },
+        // 'defaults': {
+        	// 'burned': 0	// false
+        // },
 		adapter: {
 			// 'migration': ,
 			'idAttribute': "id",	// ACS id
@@ -30,13 +30,17 @@ exports.definition = {
 			'collection_name': "yotoo"
 		}
 	},		
-	extendModel: function(Model) {		
+	extendModel: function(Model) {
 		_.extend(Model.prototype, {
+	        'defaults': {
+	        	'burned': 0	// false
+	        },
 			'initialize': function(e, e2){
 				// alert("init2" + JSON.stringify(e2));
 				this.cloudApi = require('cloudProxy').getCloud();
 			},
 			'complete': function( options ){
+
 				var mainAgent = options.mainAgent;
 				
 				var thisModel = this;
