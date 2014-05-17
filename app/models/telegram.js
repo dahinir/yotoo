@@ -23,7 +23,7 @@ exports.definition = {
 		initFetchWithLocalData: true,
 	    addModifedToUrl: true,
 	    deleteAllOnFetch: false,
-		debug: 1, 
+		// debug: 1, 
 		// "useStrictValidation": 1, // validates each item if all columns are present
 	    // optimise the amount of data transfer from remote server to app
 	    // "lastModifiedColumn": "modified",
