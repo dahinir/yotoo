@@ -1,8 +1,6 @@
 /*
  * index.js
  * 
- * : will be used for globally
- * -rapodor 
  */
 var accounts = Alloy.Globals.accounts;
 var yotoos = Alloy.Globals.yotoos;
@@ -68,10 +66,83 @@ accounts.map(function(account){
 }); // accounts.map()
 
 if(accounts.length !== 0 && activeCount === 0){
-	Ti.API.info("[index.js] last session was something wrong.");
+	Ti.API.info("[index.js] last session was something wrong.   ");
 	accounts.changeCurrentAccount(accounts.at(0));
 }
 
 
 
+// telegrams from server!
+var showTelegrams = function(telegrams){
+	telegrams.each(function(telegram){
+		if( !telegram.get('viewed') ){
+			var data = JSON.parse(telegram.get('data') || "");
+			
+			var ad = Ti.UI.createAlertDialog({
+				title: data.title,
+				message: data.message,
+				buttonNames: data.buttonNames || [L('remindLater','Remind Later'), L('go','Go')],
+				cancel: data.cancel || 0
+			});
+			ad.addEventListener('click', function(e){
+				if(e.index !== ad.getCancel() ){
+					if(Ti.Platform.canOpenURL(data.url ||"")){
+						Ti.Platform.openURL(data.url);
+					}
+					telegram.save({'viewed': 1}, {localOnly: true});
+				}
+			});
+			ad.show();
+		}
+	});
+	telegrams = null;
+	showTelegrams = null;
+};
+var telegrams = Alloy.createCollection('telegram');
+// fetch will fire only success on server
+telegrams.on('fetch', function(e, e2){
+	if( e && !e.serverData){
+		// alert("this from local");
+	}else{
+		showTelegrams(telegrams);
+	}
+});
+setTimeout(function(){
+	telegrams.fetch({
+		// localOnly: true,
+		urlparams:{
+			criteria: JSON.stringify(AG.platform)
+		},
+		success: function(tels, res){
+			telegrams.each(function(tel){
+				Ti.API.info("local: "+tel.get('id'));
+			});
+		},
+		error: function(e){
+			showTelegrams(telegrams);
+		}
+	});
+}, 10000);
+/*
+tel.fetch({
+	// localOnly: true,
+	urlparams: {
+		condition: JSON.stringify(AG.platform)
+	},
+	// add : true,
+	success: function(tels, response){
+		tels.each(function(tel){
+			if( !!tel.get('viewed') ){
+				alert("true");
+			}else{
+				alert("false");
+			}
+		});
+		// alert(tel.at(0).get('viewed'));
+		// alert(JSON.stringify(collection));
+		// alert(JSON.stringify(response));
+		// alert(tel.at(0).attributes);
+	}
+});
+*/
 

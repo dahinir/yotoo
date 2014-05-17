@@ -22,7 +22,7 @@ if(ENV_TEST){
 	// alert("ENV_TEST");
 }
 if(ENV_PRODUCTION){
-	require('ti.newrelic').start("AA0743bd03f287cebbfa2eeabf0b18a241acede885");
+	require('ti.newrelic').start( Ti.App.Properties.getString('newrelic-development') );
 }
 
 if (typeof Object.create !== 'function'){
@@ -41,6 +41,16 @@ var AG = Alloy.Globals;
 
 _.extend(AG ,{
 	COLORS: require('colors'),
+	platform: {
+		platformHeight: Ti.Platform.displayCaps.platformHeight,
+		osname: Ti.Platform.osname,
+		model: Ti.Platform.model,
+		osVersion: Ti.Platform.version,
+		appId: Ti.App.id,
+		appVersion: Ti.App.version,
+		locale: Ti.Platform.locale
+	},
+	
 	accounts: Alloy.Collections.instance('account'),
 	users: Alloy.Collections.instance('user'),
 	yotoos: Alloy.Collections.instance('yotoo'),
@@ -56,6 +66,8 @@ Ti.API.info("[alloy.js] " + AG.accounts.length + " loged in accounts loaded");
 Ti.API.info("[alloy.js] " + AG.users.length + " users loaded");
 Ti.API.info("[alloy.js] " + AG.yotoos.length + " yotoos");
 Ti.API.info("[alloy.js] " + AG.chats.length + " chats");
+
+
 
 /*
 var w = Titanium.UI.createWindow({
@@ -96,6 +108,14 @@ AG.chats.map(function( chat ){
 		+ " " + chat.get('chat_group_id') + " " + chat.get('message'));
 });
 
+
+// AG.updateChecker = function(cb){
+	// latest,
+// };
+// setTimeout(_.debounce(function() {
+	// Alloy.createWidget('appMetaFromACS').fetch();
+// }), 1000);
+// Ti.App.addEventListener('resume', appMetaDebounce);
 
 // push notification
 if( OS_IOS ){
