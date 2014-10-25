@@ -2,8 +2,8 @@
  * index.js
  * 
  */
-var accounts = Alloy.Globals.accounts;
-var yotoos = Alloy.Globals.yotoos;
+var accounts = AG.accounts;
+var yotoos = AG.yotoos;
 
 /* Backbone events */
 // on changed current account, reponse UI, create mainTabGroup is only in this.
@@ -123,26 +123,4 @@ setTimeout(function(){
 		}
 	});
 }, 10000);
-/*
-tel.fetch({
-	// localOnly: true,
-	urlparams: {
-		condition: JSON.stringify(AG.platform)
-	},
-	// add : true,
-	success: function(tels, response){
-		tels.each(function(tel){
-			if( !!tel.get('viewed') ){
-				alert("true");
-			}else{
-				alert("false");
-			}
-		});
-		// alert(tel.at(0).get('viewed'));
-		// alert(JSON.stringify(collection));
-		// alert(JSON.stringify(response));
-		// alert(tel.at(0).attributes);
-	}
-});
-*/
 

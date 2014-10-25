@@ -1,7 +1,7 @@
 /**
  * SQL Rest Adapter for Titanium Alloy
  * @author Mads Møller
- * @version 0.2.1
+ * @version 0.2.5
  * Copyright Napp ApS
  * www.napp.dk
  */
@@ -148,7 +148,7 @@ function apiCall(_options, _callback) {
 			if(_options.eTagEnabled && success){
 				setETag(_options.url, xhr.getResponseHeader('ETag'));
 			}
-
+			
 			// we dont want to parse the JSON on a empty response
 			if(this.status != 304 && this.status != 204){
 	            // parse JSON
@@ -249,7 +249,7 @@ function Sync(method, model, opts) {
     model.idAttribute = model.config.adapter.idAttribute || "id";
 
 	// Debug mode
-    var DEBUG = model.config.debug;
+    var DEBUG = opts.debug || model.config.debug;
 
     // last modified
     var lastModifiedColumn = model.config.adapter.lastModifiedColumn;
@@ -324,14 +324,15 @@ function Sync(method, model, opts) {
 	// Check if Last Modified is active
     if (lastModifiedColumn && _.isUndefined(params.disableLastModified)) {
         //send last modified model datestamp to the remote server
-        var lastModifiedValue = "";
+        var lastModifiedValue = null; 
         try {
             lastModifiedValue = sqlLastModifiedItem();
         } catch (e) {
             logger(DEBUG, "LASTMOD SQL FAILED: ");
 
         }
-        params.headers['Last-Modified'] = lastModifiedValue;
+	if (lastModifiedValue)
+            params.headers['Last-Modified'] = lastModifiedValue;
     }
     
     // Extend the provided url params with those from the model config
@@ -455,12 +456,10 @@ function Sync(method, model, opts) {
                     model.trigger("fetch");
                 } else {
                     //error or offline - read local data
-                    // this condition added by dahinir
-                    if ( params.initFetchWithLocalData || initFetchWithLocalData ) {
+                    if (!params.localOnly && (params.initFetchWithLocalData || initFetchWithLocalData)) {
                     }else{
-                   		resp = readSQL();
+                    	resp = readSQL();
                     }
-                    
                     if (_.isUndefined(_response.offline)) {
                         //error
                         _.isFunction(params.error) && params.error(returnErrorResponse ? _response : resp);
