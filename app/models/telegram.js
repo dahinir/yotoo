@@ -18,7 +18,11 @@ exports.definition = {
 		defaults: {
 			'viewed': 0	// false
 		},
-		URL: "http://localhost:3030/api/telegrams/mine",
+		
+		URL:( ENV_PRODUCTION ? 
+			Ti.App.Properties.getString("and-baseurl-production") 
+			: Ti.App.Properties.getString("and-baseurl-local"))
+			+ "/api/telegrams/mine",
 		disableSaveDataLocallyOnServerError: true,
 		initFetchWithLocalData: true,
 	    addModifedToUrl: true,
