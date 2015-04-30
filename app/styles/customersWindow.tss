@@ -1,4 +1,4 @@
-"#accountsWindow": {
+"#customersWindow": {
 	modal: false,
 	height: Ti.UI.SIZE,
 	width: Ti.UI.SIZE,
@@ -13,7 +13,7 @@
 	backgroundColor:"black"
 },
 
-"#accountsView": {
+"#customersView": {
 	height: 300,
 	width: 270,
 	borderColor: "black",
@@ -23,7 +23,7 @@
 	backgroundColor: "#666"
 },
 
-"#accountsTable": {
+"#customersTable": {
 	top: 10,
 	height: 220,
 	width: 250,
@@ -32,7 +32,7 @@
 	borderRadius: 7
 },
 
-"#addAccountButton": {
+"#addCustomerButton": {
 	bottom: 5,
 	right: 5
 }

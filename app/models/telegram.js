@@ -22,7 +22,7 @@ exports.definition = {
 		URL:( ENV_PRODUCTION ? 
 			Ti.App.Properties.getString("and-baseurl-production") 
 			: Ti.App.Properties.getString("and-baseurl-local"))
-			+ "/api/telegrams/mine",
+			+ "/api/Telegrams/mine",
 		disableSaveDataLocallyOnServerError: true,
 		initFetchWithLocalData: true,
 	    addModifedToUrl: true,

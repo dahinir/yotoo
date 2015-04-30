@@ -57,6 +57,8 @@ var urls = {
 	'lookupUsers': "https://api.twitter.com/1.1/users/lookup.json",	// 180/user 60/app
 	'profile': "https://api.twitter.com/1.1/account/verify_credentials.json",	// 15/user  Use this method to test if supplied user credentials are valid.
 	
+	'getDirectMessages': 'https://api.twitter.com/1.1/direct_messages.json',
+	
 	'userView': "https://api.twitter.com/1.1/users/show.json",	// 180/user 180/app
 	'profileBanner': "https://api.twitter.com/1.1/users/profile_banner.json",	// limit :180
 	'relationship': "https://api.twitter.com/1.1/friendships/show.json",	// 180/user 15/app.  it was 15! wow!
@@ -122,9 +124,9 @@ var showAuthorizeUI = function(options){
 		// ios bug; focus not work  
 		// e.source.evalJS('if(document.getElementById("username_or_email")){document.getElementById("username_or_email").focus();}');
 		e.source.evalJS('if(document.getElementById("cancel")){document.getElementById("cancel").addEventListener("touchstart", function(){ location.replace("cancelforyotoobabe"); }); }');
-		
+
 		if( cfg.callbackUrl ){
-			Ti.API.debug("callbackUrl is defined ");
+			Ti.API.debug("callbackUrl is defined! ");
 			if( e.url.match(cfg.callbackUrl) ){
 				Ti.API.debug("login success.");
 				(e.url).replace(/[?&]+([^=&]+)=([^&]*)/gi, function(m, key, value) {
@@ -142,6 +144,7 @@ var showAuthorizeUI = function(options){
 				Ti.API.debug("not yet..");
 			}
 		}
+		
 		if( pin ){
 			Ti.API.debug("login succes, pin is " + pin);
 			oauthClient.setVerifier(pin);
@@ -204,8 +207,10 @@ exports.create = function(settings) {
 	var accessTokenKey = settings.accessTokenKey;
 	var accessTokenSecret = settings.accessTokenSecret;
 
-	// shared variables //	
-	cfg.callbackUrl = settings.callbackUrl;
+	// shared variables //
+	if( settings.callbackUrl ){
+		cfg.callbackUrl = settings.callbackUrl;
+	}	
 	if( settings.consumerKey && settings.consumerSecret ){
 		cfg.consumerKey = settings.consumerKey;
 		cfg.consumerSecret = settings.consumerSecret;
@@ -262,6 +267,9 @@ exports.create = function(settings) {
 		getAccessTokenSecret: function(){
 			return accessTokenSecret;
 		},
+		// request: function(options){
+			// oauthClient.request(options);
+		// },
 		/**
 		 * @method fetch
 		 * @param {Object} options

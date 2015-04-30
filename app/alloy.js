@@ -38,10 +38,21 @@ if (typeof Object.create !== 'function'){
 
 // global variable
 var AG = Alloy.Globals;
-
+(function(){
+	var platformVersionInt = parseInt(Ti.Platform.version, 10);
+	var platformHeight = Ti.Platform.displayCaps.platformHeight;
+	AG.is = {
+		iOS7 : (OS_IOS && platformVersionInt == 7),
+		iOS8 : (OS_IOS && platformVersionInt >= 8),
+		talliPhone : (OS_IOS && platformHeight == 568),
+		iPhone6 : (OS_IOS && platformHeight == 667),
+		iPhone6Plus : (OS_IOS && platformHeight == 736)
+	};
+})();
 _.extend(AG ,{
 	COLORS: require('colors'),
 	platform: {
+		// will be move to AG.settings
 		platformHeight: Ti.Platform.displayCaps.platformHeight,
 		osname: Ti.Platform.osname,
 		model: Ti.Platform.model,
@@ -51,18 +62,41 @@ _.extend(AG ,{
 		locale: Ti.Platform.locale
 	},
 	
-	accounts: Alloy.Collections.instance('account'),
-	users: Alloy.Collections.instance('user'),
+	//settings가 먼저 이뤄저야함
+	//singleton Models (static id)
+	setting: Alloy.Models.instance('setting'),
+	customers: Alloy.Collections.instance('customer'),
+	// accounts: Alloy.Collections.instance('account'),
+
+	// 유저, 유투, 챗은 글로벌 하게 사용할 필요 없다. 삭제요망.
+	// 각 커스토머마다 생성되어야 한다.
+	users: Alloy.Collections.instance('user',{temp:"haha"}),	// only important user
+	// users: Alloy.createCollection('user', {temp:"hehe"}),	// only important user
 	yotoos: Alloy.Collections.instance('yotoo'),
 	chats: Alloy.Collections.instance('chat')
 });
 
-AG.accounts.fetch();
+
+AG.setting.fetch({
+	success: function(){
+		if( !AG.setting.has("platformHeight") ){
+			AG.setting.save("platformHeight", Ti.Platform.displayCaps.platformHeight);
+		}	
+		if( !AG.setting.has('keyboardframeHeight') ){
+			AG.setting.save('keyboardframeHeight',AG.is.iPhone6Plus?226:216); //iphone5 default keyboard height
+		}
+	}
+});
+
+AG.customers.fetch({
+    localOnly:true
+});
+// AG.accounts.fetch();
 AG.users.fetch();
-AG.yotoos.fetch();
+// AG.yotoos.fetch();
 AG.chats.fetch();
 
-Ti.API.info("[alloy.js] " + AG.accounts.length + " loged in accounts loaded");
+Ti.API.info("[alloy.js] " + AG.customers.length + " loged in customers loaded");
 Ti.API.info("[alloy.js] " + AG.users.length + " users loaded");
 Ti.API.info("[alloy.js] " + AG.yotoos.length + " yotoos");
 Ti.API.info("[alloy.js] " + AG.chats.length + " chats");
@@ -76,21 +110,16 @@ var w = Titanium.UI.createWindow({
 w.open();
 */
 
-AG.accounts.map(function(account){
-	// account.save({'status_active_tab_index': 12})
-	Ti.API.info("[alloy.js] account: @" + account.get('screen_name')
-	+"\t, "+account.get('id_str')+" ," +account.get('id')
-	+", "+ account.get('active') +", "+account.get('status_active_tab_index'));
+AG.customers.map(function(customer){
+	// customer.save({'status_active_tab_index': 12})
+	Ti.API.info("[alloy.js] customer: @" + customer.get('screen_name')
+	+"\t, "+customer.get('id_str')+" ," +customer.get('id')
+	+", "+ customer.get('active') +", "+customer.get('status_active_tab_index'));
 
-	account.twitterApi = require('twitter').create({
-		accessTokenKey: account.get('access_token'),
-		accessTokenSecret: account.get('access_token_secret')
-	});
-
-}); // accounts.map()
+}); // customers.map()
 
 AG.users.map(function(user){
-	// account.save({'status_active_tab_index': 12})
+	// customer.save({'status_active_tab_index': 12})
 	Ti.API.info("[alloy.js] user: @" + user.get('screen_name')
 	+", "+user.get('id_str')+", " +user.get('acs_id'));
 });
@@ -109,14 +138,6 @@ AG.chats.map(function( chat ){
 });
 
 
-// AG.updateChecker = function(cb){
-	// latest,
-// };
-// setTimeout(_.debounce(function() {
-	// Alloy.createWidget('appMetaFromACS').fetch();
-// }), 1000);
-// Ti.App.addEventListener('resume', appMetaDebounce);
-
 // push notification
 if( OS_IOS ){
 	// Ti.UI.iPhone.setAppBadge( 11 );
@@ -131,13 +152,13 @@ if( OS_IOS ){
 			 * Connection 탭의 activity history를 보여줄까?
 			 */
 // 이제 상대방이 수동 burn 했을때 날린 noti를 처리 해야 한다.  
-Ti.API.info("e.data: "+ JSON.stringify(e.data));
-			var recipientAccount = AG.accounts.where({'id_str': e.data.t}).pop();
-			if( !recipientAccount ){
+Ti.API.info("e.data:  "+ JSON.stringify(e.data));
+			var recipientCustomer = AG.customers.where({'id_str': e.data.t}).pop();
+			if( !recipientCustomer ){
 				//예전에 로긴 했던 유저.. 어카운트 지울때 unsubscribe를 해야 겠구만!
 				return;
 			}
-			var relevantYotoo = recipientAccount.getYotoos().where({
+			var relevantYotoo = recipientCustomer.getYotoos().where({
 				'source_id_str': e.data.t,
 				'target_id_str': e.data.f
 			}).pop(); 
@@ -145,7 +166,7 @@ Ti.API.info("e.data: "+ JSON.stringify(e.data));
 			if( e.data.sound === 'yotoo1' ){
 				// 유투 알람 완료를 acs에서 따로 관리 할까..
 				Alloy.Globals.yotoos.sendYotooNotification({
-					'sourceUser': recipientAccount,
+					'sourceUser': recipientCustomer,
 					'targetUser': Alloy.Globals.users.where({'id_str':e.data.f}).pop(),
 					'sound': 'yotoo2',
 					'success': function(){},
@@ -154,7 +175,7 @@ Ti.API.info("e.data: "+ JSON.stringify(e.data));
 			}
 			if( e.data.sound === 'yotoo1' || e.data.sound === 'yotoo2'){
 				relevantYotoo.complete({
-					'mainAgent': recipientAccount,
+					'mainAgent': recipientCustomer,
 					'success': function(){
 						// need to save?
 					},
@@ -165,14 +186,14 @@ Ti.API.info("e.data: "+ JSON.stringify(e.data));
 			// case of background
 			if( e.inBackground ) {
 				// e.data.t
-				if( !recipientAccount ){
-					// 당신이 사용 정지한 receiverAccount와 e.data.f가 서로 유투 했으니
+				if( !recipientCustomer ){
+					// 당신이 사용 정지한 receiverCustomer와 e.data.f가 서로 유투 했으니
 					// 로긴만 하면 시크릿 채팅을 할 수 있어용..
 					alert(L('you must loggin'));
 					return;
 				}
 				var chatWindow = Alloy.createController('chatWindow', {
-					'ownerAccount': recipientAccount,	// must setted!
+					'ownerCustomer': recipientCustomer,	// must setted!
 					'targetUser': Alloy.Globals.users.where({'id_str':e.data.f}).pop()
 				});
 				chatWindow.getView().open();
@@ -180,7 +201,7 @@ Ti.API.info("e.data: "+ JSON.stringify(e.data));
 			}else {
 				Ti.App.fireEvent("app:newChat:" + e.data.f);
 				// case of chatting with Notified user
-				if( recipientAccount.currentChatTarget === e.data.f ){
+				if( recipientCustomer.currentChatTarget === e.data.f ){
 				// case of chatting with other user or do not chat
 				}else{
 					// alert("running:"+JSON.stringify(e.data));

@@ -1,9 +1,0 @@
-<Alloy>
-	<Window id="accountsWindow">
-		<View id="backgroundView" />
-		<View id="accountsView" >
-			<TableView id="accountsTable" />
-			<Button id="addAccountButton">add</Button>
-		</View>
-	</Window>
-</Alloy>

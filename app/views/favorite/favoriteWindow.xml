@@ -1,7 +1,7 @@
 <Alloy>
 	<Window id="favoriteWindow" class="tapWindow" >
 		<View id="navBarView" >
-			<Require id="listAccountsButton" src="listAccountsButton" class="leftNavButton" />
+			<Require id="listCustomersButton" src="listCustomersButton" class="leftNavButton" />
 			<View id="titleView">
 				<ImageView id="titleImageView" />
 				<Label id="titleLabel" />

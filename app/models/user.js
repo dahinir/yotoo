@@ -1,3 +1,6 @@
+// user는 인터페이스만 맞추고 twitterUser, instaUser 등으로 따로 구현 한다.
+
+
 exports.definition = {
 	config: {
 		"columns": {
@@ -17,12 +20,17 @@ exports.definition = {
 		"adapter": {
 			"idAttribute": "id_str",	// twitter id
 			"type": "sql",
+			// "type": "sqlrest",
 			"collection_name": "user"
-		}
+		},
+		URL:"/api/Customers"
 	},		
 
 	extendModel: function(Model) {		
 		_.extend(Model.prototype, {
+			// initialize: function(){
+			// },
+			/*
 			getUser: function(purpose, params, callback) {
 				var twitterAPI = this.ownerAccount.twitterAPI;
 				var destinationParams = {
@@ -39,6 +47,7 @@ exports.definition = {
 				twitterAPI.getFromServer(purpose, params, callback);
 				return "babe";
 			},
+			*/
 			/**
 			 * @method fetchFromServer
 			 * designed like backbone.fetch()
@@ -48,7 +57,7 @@ exports.definition = {
 			 * @param {Function} [options.success] Callback function executed after a successful fetch tweets.
 			 * @param {Function} [options.error] Callback function executed after a failed fetch.
 			 */
-			fetchFromServer: function(options){
+			fetchFromServer_: function(options){
 				var params = {
 					'include_entities': true,
 					'skip_status': true
@@ -58,8 +67,8 @@ exports.definition = {
 				var error = options.error;
 				
 				var thisModel = this;
-				var twitterApi = this.twitterApi;
-				twitterApi.fetch({
+				var externalApi = this.externalApi;
+				externalApi.fetch({
 					'purpose': options.purpose,
 					'params': params,
 					'onSuccess': function( resultJSON ){
@@ -77,14 +86,14 @@ exports.definition = {
 				});
 			},
 			
-			fetchMetaData: function(options){
+			fetchMetaData_: function(options){
 				var params = {};
 				_.extend(params, options.params);
 				var success = options.success;
 				var error = options.error;
 				
-				var twitterApi = this.twitterApi;
-				twitterApi.fetch({
+				var externalApi = this.externalApi;
+				externalApi.fetch({
 					'purpose': options.purpose,
 					'params': params,
 					'onSuccess': function( resultJSON ){
@@ -103,6 +112,25 @@ exports.definition = {
 	
 	extendCollection: function(Collection) {		
 		_.extend(Collection.prototype, {
+			initialize: function(e, e2){
+				// if(this.get(''))
+				// alert(e);
+				// alert(e2);
+				// this.externalApi = require('twitter').create({
+					// accessTokenKey: AG.customers.at(0).get('external_access_token'),
+					// accessTokenSecret: AG.customers.at(0).get('external_access_token_secret')
+				// }); 
+				// if( e && e.ownerCustomer ){
+					// this.externalApi = e.ownerCustomer.externalApi;
+				// }
+			},
+			getOwnerCustomer: function(){
+				if( this.ownerCustomer ){
+					return this.ownerCustomer;
+				}else{
+					Ti.API.error("[user.js] getOwnerCustomer() :there is no owner customer");
+				}
+			},
 			/**
 			 * @method fetchFromServer
 			 * designed like backbone.fetch()
@@ -112,7 +140,7 @@ exports.definition = {
 			 * @param {Function} [options.success] Callback function executed after a successful fetch tweets.
 			 * @param {Function} [options.error] Callback function executed after a failed fetch.
 			 */
-			'fetchFromServer': function(options){
+			fetchFromServer: function(options){
 				var params = {'include_entities' : true};
 				_.extend(params, options.params);
 				var purpose = options.purpose;
@@ -121,32 +149,36 @@ exports.definition = {
 				var success = options.success;
 				var error = options.error;
 				
-				var thisCollection = this;
+				var self = this;
 				
 				// cached user
 				if( options.purpose === 'lookupUsers'){
+					// 로컬에서 직접 패치하는 걸로.. 
+					// query: "select * from user where id_str in ('123','124','11')" 
+					//this.fetch({query: 'select * from ... where id = ' + 123 });
+					
 					var userIds = params.user_id.split(',');
 					for(var i = 0; i < userIds.length; i++){
-						if( Alloy.Globals.users.get(userIds[i]) ){
+						if( AG.users.get(userIds[i]) ){
 							// .clone(); model has only one Collection ref that belongs to
-							thisCollection.add( Alloy.Globals.users.get(userIds[i]).clone() );
+							self.add( AG.users.get(userIds[i]).clone() );
 						}
 					}
 				}
-				this.twitterApi.fetch({
+				getOwnerCustomer().externalApi.fetch({
 					'purpose': purpose,
 					'params': params,
 					'onSuccess': function( resultJSON ){
 						if( add || reset ){
-							thisCollection.reset();
+							self.reset();
 						}
 						
 						for(var i=0; i < resultJSON.length; i++){
-							var user = thisCollection.get(resultJSON[i].id_str);
+							var user = self.get(resultJSON[i].id_str);
 							if( user ){
 								user.set(resultJSON[i]);
 							}else{
-								thisCollection.add(resultJSON[i]);
+								self.add(resultJSON[i]);
 							}
 							if( Alloy.Globals.users.length > 1024 ){
 								Alloy.Globals.users.reset();
@@ -155,7 +187,7 @@ exports.definition = {
 						}
 						
 						if( success ){
-							success(thisCollection, resultJSON, options);
+							success(self, resultJSON, options);
 						}
 					},
 					'onFailure': function( resultJSON ){

@@ -1,19 +1,21 @@
 var args = arguments[0] || {};
-var ownerAccount = args.ownerAccount || Alloy.Globals.accounts.getCurrentAccount();
+var ownerCustomer = args.ownerCustomer || AG.customers.getCurrentCustomer();
+
 
 exports.init = function( options ) {
-	if( options.ownerAccount){
-		ownerAccount = options.ownerAccount;
+	if( options.ownerCustomer){
+		ownerCustomer = options.ownerCustomer;
 	}
 };
 
 
 
-$.listAccountsButton.addEventListener('click', function(e) {
+$.listCustomersButton.addEventListener('click', function(e) {
+	Ti.API.debug("[listCustomersButton.js] "+ownerCustomer.get('id'));
 	Ti.App.fireEvent('app:buttonClick');
 	
-	var accountsWindow = Alloy.createController('accountsWindow', {
-		"ownerAccount" : ownerAccount
+	var customersWindow = Alloy.createController('customersWindow', {
+		"ownerCustomer" : ownerCustomer
 	}).getView();
 	
 	// pop animation		
@@ -30,11 +32,11 @@ $.listAccountsButton.addEventListener('click', function(e) {
 	openingAnimation.addEventListener('complete', function() {
 		var t2 = Titanium.UI.create2DMatrix();
 		t2 = t2.scale(1.0);
-		accountsWindow.animate({transform:t2, duration:200});
+		customersWindow.animate({transform:t2, duration:200});
 	});
 	// end of animation
 		
-	accountsWindow.setTransform(t0);
-	accountsWindow.open(openingAnimation);
+	customersWindow.setTransform(t0);
+	customersWindow.open(openingAnimation);
 });
 

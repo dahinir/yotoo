@@ -1,14 +1,16 @@
 var args = arguments[0] || {};
+var ownerCustomer = args.ownerCustomer || AG.customers.getCurrentCustomer();
 
-var ownerAccount = args.ownerAccount || Alloy.Globals.accounts.getCurrentAccount();
-// Ti.API.info("[globalView.js] currentAccount\'s screen_name: " + ownerAccount.get('screen_name'));
-var users = ownerAccount.createCollection('user');
-var yotoos = ownerAccount.getYotoos();
-
+Ti.API.debug(ownerCustomer);
+// var users = ownerCustomer.createCollection('user');
+// var users = Alloy.createCollection('user', {ownerCustomer: ownerCustomer});
+var yotoos = ownerCustomer.getYotoos();
+/*
 var autoComplete = function(){
 };
 
-var userListView = Alloy.createController('userListView',{
+var userListView = Alloy.createController('userListView', {
+	'ownerCustomer': ownerCustomer,
 	'users': users
 });
 userListView.getView().addEventListener('rightButtonClick', function(e){
@@ -27,7 +29,7 @@ userListView.getView().addEventListener('rightButtonClick', function(e){
 			alert(L('unyotoo_effect'));
 			var yt = yotoos.where({'target_id_str':  id_str}).pop();
 			yt.unyotoo({
-				'mainAgent': ownerAccount,
+				'mainAgent': ownerCustomer,
 				'success': function(){
 				},
 				'error': function(){
@@ -41,7 +43,7 @@ userListView.getView().addEventListener('rightButtonClick', function(e){
 			}).pop();
 			
 			yotoos.addNewYotoo({
-				'sourceUser' : ownerAccount,
+				'sourceUser' : ownerCustomer,
 				'targetUser' : targetUser,
 				'success' : function() {
 				},
@@ -84,7 +86,7 @@ $.dummyScreen.addEventListener('touchstart', function(){
 Ti.App.addEventListener('app:buttonClick', function(){
 	$.searchBar.blur();
 });
-
+*/
 /* SearchBar */
 $.searchBar.setHintText( L('search_twitter_users') );
 $.searchBar.addEventListener('return', function(e){

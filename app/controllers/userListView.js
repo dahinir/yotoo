@@ -1,7 +1,7 @@
 var args = arguments[0] || {};
+var ownerCustomer = args.ownerCustomer || AG.customers.getCurrentCustomer();
 
-var ownerAccount = args.ownerAccount || Alloy.Globals.accounts.getCurrentAccount();
-var yotoos = args.yotoos || ownerAccount.getYotoos();
+var yotoos = args.yotoos || ownerCustomer.getYotoos();
 var users = args.users;
 
 // var _PLAIN = 1; 
@@ -262,7 +262,7 @@ var _settingData = function(user) {
 	
 	/* template select */
 	var relevantYotoo = yotoos.where({'target_id_str': user.get('id_str')}).pop();
-	if( user.get('id_str') === ownerAccount.get('id_str')){
+	if( user.get('id_str') === ownerCustomer.get('id_str')){
 		data.template = 'self';
 	}else if( relevantYotoo && relevantYotoo.get('completed') ){
 		data.template = 'completed';

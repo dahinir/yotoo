@@ -148,6 +148,10 @@ exports.definition = {
 				
 				Ti.API.debug("after delete: " + Alloy.Globals.accounts.length);
 			},
+			addNewAccount2: function (){
+				var newAccount = Alloy.createModel('account');
+				
+			},
 			addNewAccount: function (callback){
 				var newAccount = Alloy.createModel('account');
 				var twitterAdapter = require('twitter');

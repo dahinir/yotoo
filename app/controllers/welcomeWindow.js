@@ -1,12 +1,13 @@
 $.signInButton.addEventListener('click', function(e){
-	Alloy.Globals.accounts.addNewAccount(function(addedAccount){
-		if(addedAccount.get('active')){
-			Ti.API.info("close welcomeWindow");
+	AG.customers.addNewCustomer(function(addedCustomer){
+		// alert("wel");
+		if(addedCustomer.get('id') == AG.setting.get('currentCustomerId')){
+			Ti.API.info("[welcomWindow.js] close welcomeWindow");
 			$.welcomeWindow.close();
 			// create mainTabGroup is only in accounts.on('change:active', funtion(e)){}
 			// .addNewAccount() will call .changeCurrentAccount()
 		} else {
-			Ti.API.warn("added account is not active");
+			Ti.API.warn("[welcomeWindow.js] added customer is not active");
 		}
 	});
 });

@@ -1,5 +1,5 @@
 <Alloy>
-	<TableViewRow id="accountRow">
+	<TableViewRow id="customerRow">
 		<ImageView id="profileImage" />
 		<Label id="screenName" class="boldHeaderText" />
 		<Label id="name" class="boldHeaderText" />

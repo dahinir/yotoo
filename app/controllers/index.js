@@ -1,74 +1,84 @@
 /*
  * index.js
+ * deals with TabGroup and Telegrams
  * 
  */
-var accounts = AG.accounts;
+var customers = AG.customers;
 var yotoos = AG.yotoos;
+var setting = AG.setting;
+
+var openWelcomeWindow = function(){
+	Alloy.createController('welcomeWindow').getView().open();
+};
+var openMainTabGroup = function(customer){
+	if(!customer){
+		Ti.API.info("[index.js] .openMainTabGroup() customer is undefined");
+		return;
+	}
+	if(customer.mainTabGroup){
+		Ti.API.info("[index.js] mainTabGroup is defined, call maintabGroup.open()");
+		// account.mainTabGroup.show();
+		customer.mainTabGroup.open();
+	}else{
+		Ti.API.info("[index.js] mainTabGroup is undefined, so will be created");
+		var mainTabGroup = Alloy.createController('mainTabGroup', {
+			"ownerCustomer" : customer
+		}); 
+		customer.mainTabGroup = mainTabGroup.getView();
+		customer.mainTabGroup.open();
+	}
+};
+var closeMainTabGroup = function(customer){
+	if(!customer){
+		Ti.API.info("[index.js] .closeMainTabGroup() customer is undefined");
+		return;
+	}
+	if(customer.mainTabGroup){
+		Ti.API.info("[index.js] previous maintabGroup.close()");
+		// customer.mainTabGroup.hide();
+		customer.mainTabGroup.close();
+	}
+};
 
 /* Backbone events */
-// on changed current account, reponse UI, create mainTabGroup is only in this.
-accounts.on('change:active', function(account){
-	Ti.API.info("[index.js] BackboneEvent(changed):" + account.get('name') +"\'s active to "+ account.get('active'));
+// on changed current customers, reponse UI, create mainTabGroup is only in this.
+setting.on('change:currentCustomerId', function(setting ){
+	Ti.API.info("[index.js] was:  " + setting.previous('currentCustomerId'));
+	// currentCustomer
+	openMainTabGroup(customers.get(setting.get('currentCustomerId')));
 	
-	// actived account
-	if( account.get('active') ){	// for new current account
-		if( account.mainTabGroup ){
-			Ti.API.info("[index.js] mainTabGroup is defined, call maintabGroup.open()");
-			// account.mainTabGroup.show();
-			account.mainTabGroup.open();
-		}else {
-			Ti.API.info("[index.js] mainTabGroup is undefined, so will be created");
-
-			var mainTabGroup = Alloy.createController('mainTabGroup', {
-				"ownerAccount" : account
-			}); 
-			account.mainTabGroup = mainTabGroup.getView();
-			account.mainTabGroup.open();
-		}
-	// deactived account
-	}else{	
-		if( account.mainTabGroup ){
-			Ti.API.info("[index.js] "+ account.get('name') + " is deactived, maintabGroup.close()");
-			// account.mainTabGroup.hide();
-			account.mainTabGroup.close();
-		}
-	}
+	// previousCustomer
+	closeMainTabGroup(customers.get(setting.previous('currentCustomerId')));
 });
-accounts.on('add', function(addedAccount){
-	// create mainTabGroup is only in accounts.on('change:active', funtion(e)){}
-	Ti.API.info("BackboneEvent(added):" + addedAccount.get('name') );
+customers.on('add', function(customer){
+	// create mainTabGroup is only in customers.on('change:active', funtion(e)){}
+	Ti.API.info("[index.js] BackboneEvent(customer added):" + customer.get('id') );
 });
-accounts.on('remove', function(account){	// how about 'destroy'
-	Ti.API.info("BackboneEvent(removed):" + account.get('name') );
-	if( account.mainTabGroup !== undefined){
-		account.mainTabGroup.close();
-	}
-	if( Alloy.Globals.accounts.length === 0 ){
-		alert(L('when_delete_last_account'));
-		Alloy.createController('welcomeWindow').getView().open();
+customers.on('remove', function(customer){	// how about 'destroy'
+	Ti.API.info("[index.js] BackboneEvent(removed):" + customer.get('id') );
+	closeMainTabGroup(customer);
+	
+	if( customers.length == 0 ){
+		setting.set('currentCustomerId', "THERE_IS_NO_CUSTOMER");
+		setting.save();
+		openWelcomeWindow();
+	}else if( customer.get('id') == setting.get('currentCustomerId')){
+		setting.set('currentCustomerId', customers.at(0).get('id'));
+		setting.save();
 	}
 });
 
-// very first using this app, maybe //
-if( accounts.length === 0 ){
+if( customers.length > 0){
+// if( setting.get("currentCustomerId") ){
+	// alert("이게 두번 호출되면 안됨 index.js" + setting.get("currentCustomerId"));
+	// Ti.API.info("이게 두번 호출되면 안됨 index.js");
+	openMainTabGroup( AG.customers.getCurrentCustomer() );
+}else{
+	// very first using this app, maybe //
 	// alert(L('when_first_run'));
-	Alloy.createController('welcomeWindow').getView().open();
+	openWelcomeWindow();
 }
 
-var activeCount = 0;
-accounts.map(function(account){
-	// open active account's mainTabGroup UI
-	if(account.get('active') ){
-		activeCount++;
-		Ti.API.info("[index.js] good!");
-		accounts.changeCurrentAccount(account);
-	}
-}); // accounts.map()
-
-if(accounts.length !== 0 && activeCount === 0){
-	Ti.API.info("[index.js] last session was something wrong.   ");
-	accounts.changeCurrentAccount(accounts.at(0));
-}
 
 
 

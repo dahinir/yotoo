@@ -1,46 +1,75 @@
-// shared
-// var cloudApi = {a: 1};
-// var asdf = function(){ alert("asdf");return "dd";}();
+var baseUrl = ( ENV_PRODUCTION ? 
+			Ti.App.Properties.getString("and-baseurl-production") 
+			: Ti.App.Properties.getString("and-baseurl-local"));
+			
+// test for local
+baseUrl = Ti.App.Properties.getString("and-baseurl-local");
 
 exports.definition = {
 	config: {
 		columns: {
-			"id": "string",	// acs id; make this by ACS	
-			"platform": "string",	// like twitter, facebook..
-		    "source_id_str": "string",
-		    "target_id_str": "string",
+			// for And server
+			"id": "string",
+			
+			"provider": "string",	// like twitter, facebook..
+		    "senderId": "string",
+		    "receiverId": "string",
 		    
-		    "chat_group_id": "string",	// acs chat group id
-		    "created_at": "datetime",
-		    "burned_at": "datetime",	// for last burned_at
+		    // "chat_group_id": "string",	// acs chat group id
+		    "created": "datetime",
+		    // "burned_at": "datetime",	// for last burned_at
 		    
 		    // status //
 		    "hided": "boolean",		// 1:true, 0:false
 		    "unyotooed": "boolean",
 		    "completed": "boolean",
-		    "burned": "boolean",
+		    "burned": "boolean"
 		},
         // 'defaults': {
         	// 'burned': 0	// false
         // },
 		adapter: {
 			// 'migration': ,
-			'idAttribute': "id",	// ACS id
-			'type': "sql",
+			'idAttribute': "id",	// default is alloy_id
+			'type': "sqlrest",
 			'collection_name': "yotoo"
-		}
-	},		
+		},
+		debug: 1, 
+		URL: baseUrl + "/api/Yotoos",
+		initFetchWithLocalData: true,
+	    deleteAllOnFetch: false,
+		
+		// optimise the amount of data transfer from remote server to app
+	    addModifedToUrl: true,
+	    lastModifiedColumn: "modified"
+	},
 	extendModel: function(Model) {
 		_.extend(Model.prototype, {
-	        'defaults': {
+	        defaults: {
 	        	'burned': 0	// false
 	        },
-			'initialize': function(e, e2){
+			initialize: function(e, e2){
 				// alert("init2" + JSON.stringify(e2));
-				this.cloudApi = require('cloudProxy').getCloud();
+				// this.cloudApi = require('cloudProxy').getCloud();
+			},
+			getOwnerCustomer: function(){
+				if( this.ownerCustomer ){
+					return this.ownerCustomer;
+				}else if( this.collection ){
+					return this.collection.ownerCustomer;
+				}else{
+					Ti.API.error("[yotoo.js] getOwnerCustomer() :there is no owner customer");
+				}
+			},
+			sync: function(method, model, opts){
+				opts = opts || {};
+				opts.headers = _.extend( opts.headers || {},
+					this.getOwnerCustomer.getHeaders()
+				);
+				// return Backbone.sync(method, model, opts);
+				return require("alloy/sync/"+this.config.adapter.type).sync.call(this, method, model, opts);				
 			},
 			'complete': function( options ){
-
 				var mainAgent = options.mainAgent;
 				
 				var thisModel = this;
@@ -165,13 +194,13 @@ exports.definition = {
 
 						// sendNotification only if "burned by user"
 						if( withNotification ){
-							var targetUser = Alloy.Globals.users.where({'id_str': thisModel.get('target_id_str')}).pop();
+							var targetUser = Alloy.Globals.users.where({'id_str': thisModel.get('target_id')}).pop();
 							// alert(targetUser.get('id_str'));
 							var payload = {
 								'sound': "burn",
 								'alert': "@"+mainAgent.get('screen_name')+" "+ L('burned_chats'),
 								'f': mainAgent.get('id_str'),
-								't': thisModel.get('target_id_str')
+								't': thisModel.get('target_id')
 							};
 							thisModel.cloudApi.excuteWithLogin({
 								'mainAgent': mainAgent,
@@ -225,7 +254,7 @@ exports.definition = {
 				
 				var thisCollection = this;
 				var query ={
-					'source_id_str': mainAgent.get('id_str')
+					'source_id': mainAgent.get('id_str')
 				};
 				
 				this.cloudApi.excuteWithLogin({
@@ -263,7 +292,7 @@ exports.definition = {
 					'burned': 0
 				};
 
-				var existYotoo = this.where({'target_id_str': targetUser.get('id_str')}).pop();
+				var existYotoo = this.where({'target_id': targetUser.get('id_str')}).pop();
 				/* case of reyotoo */
 				if ( existYotoo ){
 					// alert("exist");
@@ -299,8 +328,8 @@ exports.definition = {
 				/* case of new yotoo */
 				}else{
 					_.extend(fields, {
-						'source_id_str': sourceUser.get('id_str'),
-						'target_id_str': targetUser.get('id_str'),
+						'source_id': sourceUser.get('id_str'),
+						'target_id': targetUser.get('id_str'),
 						'platform': 'twitter'	// default
 					});
 					this.cloudApi.excuteWithLogin({
@@ -347,8 +376,8 @@ exports.definition = {
 				var thisCollection = this;
 				
 				var query ={
-					'source_id_str': targetUser.get('id_str'),
-					'target_id_str': sourceUser.get('id_str')
+					'source_id': targetUser.get('id_str'),
+					'target_id': sourceUser.get('id_str')
 				};
 				this.cloudApi.excuteWithLogin({
 					'mainAgent': sourceUser,
@@ -357,8 +386,8 @@ exports.definition = {
 					'query': query,
 					'onSuccess': function( resultsJSON ){
 						var checkingYotoo = thisCollection.where({
-							'source_id_str' : sourceUser.get('id_str'),
-							'target_id_str' : targetUser.get('id_str')
+							'source_id' : sourceUser.get('id_str'),
+							'target_id' : targetUser.get('id_str')
 						}).pop(); 
 						
 						if( resultsJSON.length === 0 ){
@@ -420,8 +449,8 @@ exports.definition = {
 
 						/* update relevant yotoo's completed :콜백으로 이전 
 						var relevantYotoo = thisCollection.where({
-							'source_id_str': sourceUser.get('id_str'),
-							'target_id_str': targetUser.get('id_str')
+							'source_id': sourceUser.get('id_str'),
+							'target_id': targetUser.get('id_str')
 						}).pop();
 						
 						thisCollection.cloudApi.excuteWithLogin({

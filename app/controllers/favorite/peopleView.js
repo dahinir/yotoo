@@ -1,10 +1,12 @@
+
 var args = arguments[0] || {};
-
-var ownerAccount = args.ownerAccount || Alloy.Globals.accounts.getCurrentAccount();
-var users = ownerAccount.createCollection('user');
-var yotoos = ownerAccount.getYotoos();
-
+var ownerCustomer = args.ownerCustomer || AG.customers.getCurrentCustomer();
+/*
+var users = ownerCustomer.createCollection('user');
+var yotoos = ownerCustomer.getYotoos();
+*/
 /* sort this users by order of yotoo id */
+/*
 users.comparator = function(user) {
 	return yotoos.where({'target_id_str': user.get('id_str') }).pop().get('created_at');
 };
@@ -63,7 +65,7 @@ userListView.getView().addEventListener('rightButtonClick', function(e){
 
 		if( e.index === 0){
 			yt.unyotoo({
-				'mainAgent': ownerAccount,
+				'mainAgent': ownerCustomer,
 				'success': function(){
 				},
 				'error': function(){
@@ -72,7 +74,7 @@ userListView.getView().addEventListener('rightButtonClick', function(e){
 			// yotoos.where({'target_id_str':  e.itemId}).pop().destroy();
 		}else if( e.index === 1){
 			yotoos.addNewYotoo({
-				'sourceUser': ownerAccount,
+				'sourceUser': ownerCustomer,
 				'targetUser': targetUser,
 				'success': function(){
 				},
@@ -81,7 +83,7 @@ userListView.getView().addEventListener('rightButtonClick', function(e){
 			});
 		}else if( e.index === 2 ){
 			yt.hide({
-				'mainAgent': ownerAccount
+				'mainAgent': ownerCustomer
 			});
 		}else if( e.index === 3){
 			var chatWindow = Alloy.createController('chatWindow', {
@@ -178,7 +180,7 @@ testButton.addEventListener('click', function(){
 });
 
 
-
+*/
 
 
 
