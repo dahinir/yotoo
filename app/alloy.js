@@ -70,7 +70,7 @@ _.extend(AG ,{
 
 	// 유저, 유투, 챗은 글로벌 하게 사용할 필요 없다. 삭제요망.
 	// 각 커스토머마다 생성되어야 한다.
-	users: Alloy.Collections.instance('user',{temp:"haha"}),	// only important user
+	users: Alloy.Collections.instance('user'),	// only important user
 	// users: Alloy.createCollection('user', {temp:"hehe"}),	// only important user
 	yotoos: Alloy.Collections.instance('yotoo'),
 	chats: Alloy.Collections.instance('chat')

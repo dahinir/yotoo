@@ -54,7 +54,7 @@ exports.definition = {
 	    
 	    // "eTagEnabled" : true,
         // "deleteAllOnFetch": true,	// delete all models on fetch
-		parentNode:"results"
+		parentNode: "results"
 		// .parentNode called only from Remote, not local db
 		// parentNode: function (data) {
 		    // var entries = [];
@@ -181,19 +181,19 @@ exports.definition = {
 					var accessToken = (e.source.evalJS('if(document.getElementById("yt:accessToken")){document.getElementById("yt:accessToken").getAttribute("content");}'));
 					// login sucess!!
 					if( accessToken ){
-						Ti.API.info("[customer.js] there is access token~");
+						Ti.API.info("[customer.js] there is access token!");
 						// AG.tt =  e.source.evalJS('user;');
 						// alert( yotooAccessToken);
-						var newCustomer = Alloy.createModel('customer',{
-							// "tt":"t+_haha"
-							// localOnly: true,
-							"id" : e.source.evalJS('document.getElementById("yt:id").getAttribute("content");'),
+						var customerId = e.source.evalJS('document.getElementById("yt:id").getAttribute("content");'),
+							newCustomer = AG.customers.get(customerId) || Alloy.createModel('customer', {"id": customerId});
+					 
+						newCustomer.set({
 							"accessToken": accessToken,
 							"provider": "twitter",
 							"provider_accessToken": e.source.evalJS('document.getElementById("tw:accessToken").getAttribute("content");'),
 							"provider_accessTokenSecret": e.source.evalJS('document.getElementById("tw:accessTokenSecret").getAttribute("content");'),
 							"status_activeTabIndex": 0
-						});
+						});			
 						Ti.API.debug(newCustomer);
 						// must save() with id attr, DON'T USE model.set('id'), model.id is metaAttribute
 						newCustomer.save(undefined,{
