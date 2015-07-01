@@ -23,7 +23,7 @@ if( OS_IOS ){
 		});
 		
 		// 이걸 해줘야
-		//customer 를 destroy하고 앱을 종료시키지 않고 다시 추가하면 서버로 POST를 날려서 에러를 예방
+		//customer 를 destroy하고 (앱을 종료시키지 않은채) 다시 추가하면 서버로 POST를 날려서 에러를 예방
 		AG.customers.fetch({
 			localOnly:true
 		});

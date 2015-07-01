@@ -1,6 +1,7 @@
 # yotoo! - hey dude..
 [![from zazima project](http://feltman.cafe24.com/images/z.bmp)](http://zazima.com/)  
 
+
 Advanced "Hello, Fuck The World!" application using the Alloy MVC framework.
 for heavy user, specialized relationship 
 

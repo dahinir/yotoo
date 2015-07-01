@@ -13,7 +13,7 @@ migration.up = function(db) {
 		"adapter": {
 			"idAttribute": "id_str",
 			"type": "sql",
-			"collection_name": "user"
+			"collection_name": "twitterUser"
 		}
 	});
 };

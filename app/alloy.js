@@ -1,10 +1,10 @@
 /*
  * alloy.js
- * 
+ *
  * this is not a Controller
- * for define some global javascript APIs 
+ * for define some global javascript APIs
  * -rapodor
- * 
+ *
 OS_IOS : true if the current compiler target is iOS
 OS_ANDROID : true if the current compiler target is Android
 OS_MOBILEWEB : true if the current compiler target is Mobile Web
@@ -61,7 +61,7 @@ _.extend(AG ,{
 		appVersion: Ti.App.version,
 		locale: Ti.Platform.locale
 	},
-	
+
 	//settings가 먼저 이뤄저야함
 	//singleton Models (static id)
 	setting: Alloy.Models.instance('setting'),
@@ -70,7 +70,7 @@ _.extend(AG ,{
 
 	// 유저, 유투, 챗은 글로벌 하게 사용할 필요 없다. 삭제요망.
 	// 각 커스토머마다 생성되어야 한다.
-	users: Alloy.Collections.instance('user'),	// only important user
+	users: Alloy.Collections.instance('twitterUser'),	// only important user
 	// users: Alloy.createCollection('user', {temp:"hehe"}),	// only important user
 	yotoos: Alloy.Collections.instance('yotoo'),
 	chats: Alloy.Collections.instance('chat')
@@ -81,7 +81,7 @@ AG.setting.fetch({
 	success: function(){
 		if( !AG.setting.has("platformHeight") ){
 			AG.setting.save("platformHeight", Ti.Platform.displayCaps.platformHeight);
-		}	
+		}
 		if( !AG.setting.has('keyboardframeHeight') ){
 			AG.setting.save('keyboardframeHeight',AG.is.iPhone6Plus?226:216); //iphone5 default keyboard height
 		}
@@ -125,7 +125,7 @@ AG.users.map(function(user){
 });
 
 AG.yotoos.map(function( yotoo){
-	Ti.API.info("[alloy.js] yotoo: " + yotoo.get('id')	
+	Ti.API.info("[alloy.js] yotoo: " + yotoo.get('id')
 		+ " " + yotoo.get('created_at') + " " + yotoo.get('burned_at')
 		+ " " + yotoo.get('chat_group_id') + " " + yotoo.get('source_id_str')
 		+ " " + yotoo.get('target_id_str') + " " + yotoo.get('unyotooed')
@@ -148,10 +148,10 @@ if( OS_IOS ){
 			Ti.Network.NOTIFICATION_TYPE_SOUND
 		],
 		'callback': function(e){
-			/* 
+			/*
 			 * Connection 탭의 activity history를 보여줄까?
 			 */
-// 이제 상대방이 수동 burn 했을때 날린 noti를 처리 해야 한다.  
+// 이제 상대방이 수동 burn 했을때 날린 noti를 처리 해야 한다.
 Ti.API.info("e.data:  "+ JSON.stringify(e.data));
 			var recipientCustomer = AG.customers.where({'id_str': e.data.t}).pop();
 			if( !recipientCustomer ){
@@ -161,7 +161,7 @@ Ti.API.info("e.data:  "+ JSON.stringify(e.data));
 			var relevantYotoo = recipientCustomer.getYotoos().where({
 				'source_id_str': e.data.t,
 				'target_id_str': e.data.f
-			}).pop(); 
+			}).pop();
 			/* 상황에 맞게 상대에게 유투 노티피케이션을 보낸다. */
 			if( e.data.sound === 'yotoo1' ){
 				// 유투 알람 완료를 acs에서 따로 관리 할까..
@@ -182,7 +182,7 @@ Ti.API.info("e.data:  "+ JSON.stringify(e.data));
 					'error': function(){}
 				});
 			}
-			
+
 			// case of background
 			if( e.inBackground ) {
 				// e.data.t
@@ -209,8 +209,8 @@ Ti.API.info("e.data:  "+ JSON.stringify(e.data));
 			}
 			// e.data.alert: hi hehe
 			// e.data.badge: 7
-			// e.data.sound: 
-			
+			// e.data.sound:
+
 			// e.data.aps.alert: asdf
 			// e.data.aps.badge: 1
 			// e.data.aps.sound: default
@@ -227,7 +227,7 @@ Ti.API.info("e.data:  "+ JSON.stringify(e.data));
 }
 
 
-// Alloy.builtins.moment 로 대체하자 
+// Alloy.builtins.moment 로 대체하자
 /**
  * Returns a description of this past date in relative terms.
  * Takes an optional parameter (default: 0) setting the threshold in ms which

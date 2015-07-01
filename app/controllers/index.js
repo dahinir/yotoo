@@ -1,7 +1,7 @@
 /*
  * index.js
  * deals with TabGroup and Telegrams
- * 
+ *
  */
 var customers = AG.customers;
 var yotoos = AG.yotoos;
@@ -23,7 +23,7 @@ var openMainTabGroup = function(customer){
 		Ti.API.info("[index.js] mainTabGroup is undefined, so will be created");
 		var mainTabGroup = Alloy.createController('mainTabGroup', {
 			"ownerCustomer" : customer
-		}); 
+		});
 		customer.mainTabGroup = mainTabGroup.getView();
 		customer.mainTabGroup.open();
 	}
@@ -46,7 +46,7 @@ setting.on('change:currentCustomerId', function(setting ){
 	Ti.API.info("[index.js] was:  " + setting.previous('currentCustomerId'));
 	// currentCustomer
 	openMainTabGroup(customers.get(setting.get('currentCustomerId')));
-	
+
 	// previousCustomer
 	closeMainTabGroup(customers.get(setting.previous('currentCustomerId')));
 });
@@ -57,7 +57,7 @@ customers.on('add', function(customer){
 customers.on('remove', function(customer){	// how about 'destroy'
 	Ti.API.info("[index.js] BackboneEvent(removed):" + customer.get('id') );
 	closeMainTabGroup(customer);
-	
+
 	if( customers.length == 0 ){
 		setting.set('currentCustomerId', "THERE_IS_NO_CUSTOMER");
 		setting.save();
@@ -87,7 +87,7 @@ var showTelegrams = function(telegrams){
 	telegrams.each(function(telegram){
 		if( !telegram.get('viewed') ){
 			var data = JSON.parse(telegram.get('data') || "");
-			
+
 			var ad = Ti.UI.createAlertDialog({
 				title: data.title,
 				message: data.message,
@@ -133,4 +133,3 @@ setTimeout(function(){
 		}
 	});
 }, 10000);
-

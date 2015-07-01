@@ -1,6 +1,4 @@
 // user는 인터페이스만 맞추고 twitterUser, instaUser 등으로 따로 구현 한다.
-
-
 exports.definition = {
 	config: {
 		"columns": {
@@ -10,23 +8,24 @@ exports.definition = {
 			"screen_name":"string",
 			"profile_image_url_https":"string",
 			"profile_background_image_url": "string",
-			
+
 			// for ACS
 			"acs_id":"string"
-			
+
 			// for this app
 			// "cached_at":
 		},
 		"adapter": {
 			"idAttribute": "id_str",	// twitter id
 			"type": "sql",
+			// "type": "properties",
 			// "type": "sqlrest",
-			"collection_name": "user"
+			"collection_name": "twitterUser"
 		},
 		URL:"/api/Customers"
-	},		
+	},
 
-	extendModel: function(Model) {		
+	extendModel: function(Model) {
 		_.extend(Model.prototype, {
 			// initialize: function(){
 			// },
@@ -48,6 +47,22 @@ exports.definition = {
 				return "babe";
 			},
 			*/
+			/*
+			fetch: function(options){
+				Ti.API.info("[user.js] fetch!!");
+
+				// call via "sqlrest" only for local
+				var options = options || {};
+				options.localOnly = true;
+				Backbone.Model.prototype.fetch.call(this, options);
+
+				// call via "externalApi" only for remote(twitter server)
+				externalApi.fetch();
+			},
+			*/
+			refresh: function(){
+
+			},
 			/**
 			 * @method fetchFromServer
 			 * designed like backbone.fetch()
@@ -61,11 +76,11 @@ exports.definition = {
 				var params = {
 					'include_entities': true,
 					'skip_status': true
-				}; 
+				};
 				_.extend(params, options.params);
 				var success = options.success;
 				var error = options.error;
-				
+
 				var thisModel = this;
 				var externalApi = this.externalApi;
 				externalApi.fetch({
@@ -85,13 +100,13 @@ exports.definition = {
 					}
 				});
 			},
-			
+
 			fetchMetaData_: function(options){
 				var params = {};
 				_.extend(params, options.params);
 				var success = options.success;
 				var error = options.error;
-				
+
 				var externalApi = this.externalApi;
 				externalApi.fetch({
 					'purpose': options.purpose,
@@ -105,12 +120,12 @@ exports.definition = {
 				});
 			}
 		}); // end extend
-		
+
 		return Model;
 	},
-	
-	
-	extendCollection: function(Collection) {		
+
+
+	extendCollection: function(Collection) {
 		_.extend(Collection.prototype, {
 			initialize: function(e, e2){
 				// if(this.get(''))
@@ -119,7 +134,7 @@ exports.definition = {
 				// this.externalApi = require('twitter').create({
 					// accessTokenKey: AG.customers.at(0).get('external_access_token'),
 					// accessTokenSecret: AG.customers.at(0).get('external_access_token_secret')
-				// }); 
+				// });
 				// if( e && e.ownerCustomer ){
 					// this.externalApi = e.ownerCustomer.externalApi;
 				// }
@@ -148,15 +163,15 @@ exports.definition = {
 				var reset = options.reset;
 				var success = options.success;
 				var error = options.error;
-				
+
 				var self = this;
-				
+
 				// cached user
 				if( options.purpose === 'lookupUsers'){
-					// 로컬에서 직접 패치하는 걸로.. 
-					// query: "select * from user where id_str in ('123','124','11')" 
+					// 로컬에서 직접 패치하는 걸로..
+					// query: "select * from user where id_str in ('123','124','11')"
 					//this.fetch({query: 'select * from ... where id = ' + 123 });
-					
+
 					var userIds = params.user_id.split(',');
 					for(var i = 0; i < userIds.length; i++){
 						if( AG.users.get(userIds[i]) ){
@@ -172,7 +187,7 @@ exports.definition = {
 						if( add || reset ){
 							self.reset();
 						}
-						
+
 						for(var i=0; i < resultJSON.length; i++){
 							var user = self.get(resultJSON[i].id_str);
 							if( user ){
@@ -185,7 +200,7 @@ exports.definition = {
 							}
 							Alloy.Globals.users.add(resultJSON[i]);
 						}
-						
+
 						if( success ){
 							success(self, resultJSON, options);
 						}
@@ -199,8 +214,7 @@ exports.definition = {
 				});
 			}
 		}); // end extend
-		
+
 		return Collection;
 	}
 };
-
