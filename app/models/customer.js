@@ -1,5 +1,5 @@
 // wrapping twiiterUser, instaUser..
-
+// KEEP CUSTOMERS FAT!!
 var baseUrl = ( ENV_PRODUCTION ?
 			Ti.App.Properties.getString("and-baseurl-production")
 			: Ti.App.Properties.getString("and-baseurl-local"));
@@ -78,15 +78,15 @@ exports.definition = {
 		_.extend(Model.prototype, {
 			initialize: function(e, e2){
 				var model = this;
-				// model.on("change",function(e){
-				// 	console.log("customer changed: ");
-				// });
-					// alert(e);
+				model.on("change",function(e){
+					console.log("[customer.js] customer changed");
+				});
+
 				if(!e.provider){
 					Ti.API.error("[customer.js] init error");
 					return;
 				}
-				// AG.users중에 자신의 프로필을 골라 셋팅(twitter 유저면 twitterApi 셋팅 )
+
 				switch (e.provider && e.provider.toLowerCase()) {
 					case "twitter":
 						var externalApi = require('twitter').create({
@@ -99,17 +99,16 @@ exports.definition = {
 						userIdentity.externalApi = externalApi;
 
 						userIdentity.fetch();	// fetch from local sql
-						userIdentity.refresh();	// fetch from server
 						userIdentity.on("change", function(e) {
 							// console.log(e);
-						  model.trigger("change", model);
+						  // model.trigger("change", model);
 						});
 						model.set("userIdentity", userIdentity);
 						break;
 					default:
-						model.refresh();
+						console.log("[customer.js] there is no proper provider")
 				}
-
+				// model.refresh();	// fetch from server
 			},
 			sync : function(method, model, opts){
 				// alert(opts);
@@ -128,11 +127,31 @@ exports.definition = {
 				};
 			},
 			refresh: function(){
-				console.log("refresh");
-				this.fetch({
-					urlparams : {
-            filter : JSON.stringify({ include:["identities"] })
-	        }
+				Ti.API.info("[customer.js] .refresh() ");
+				var model = this,
+					userIdentity = model.get("userIdentity");
+
+				model.fetch({
+					// "urlparams" : {
+          //   filter : JSON.stringify({ include:["identities"] })
+	        // },
+					"success": function(){
+						model.save(undefined, {localOnly:true});
+					}
+				});
+
+				userIdentity.refresh({
+					"success": function(){
+						switch (model.get("provider")) {
+							case "twitter":
+								model.set({
+									"profile_username": userIdentity.get("name"),
+									"profile_picture": userIdentity.get("profile_image_url_https")
+								});
+								model.save(undefined, {localOnly:true});
+								break;
+						}
+					}
 				});
 			},
 			getYotoos: function(){
@@ -184,10 +203,6 @@ exports.definition = {
 					query:'DROP TABLE IF EXISTS ' + this.config.adapter.collection_name
 				});
 			},
-			// changeCurrentCustomer: function(currentCustomer){
-				// Ti.API.info("[customer.js] will change to " + currentCustomer.get('id'));
-				// AG.setting.save('currentCustomerId', currentCustomer.get('id'));
-			// },
 			getCurrentCustomer: function(){
 				return AG.customers.get(AG.setting.get('currentCustomerId')) || AG.customers.at(0);
 			},
@@ -258,51 +273,6 @@ exports.definition = {
 				webView.setUrl(baseUrl + "/auth/twitter");
 				webWindowController.getView().open();
 			} // end of .addNewCustomer()
-
-			/*
-			addNewCustomer_parse: function(){
-				var twitterApi = require('twitter').create();
-						Ti.API.info("before====");
-						Ti.API.info(twitterApi.getAccessTokenKey());
-						Ti.API.info(twitterApi.getAccessTokenSecret());
-				twitterApi.authorize({
-					'onSuccess': function(){
-						var newCustomer = Alloy.createModel('customer');
-
-						twitterApi.fetch({
-							"purpose": 'profile',
-							"params":{
-								'include_entities': true,
-								'skip_status': true
-							},
-							"onSuccess": function( resultJSON ){
-								_.extend(resultJSON );
-								Ti.API.info(resultJSON);
-								newCustomer.set({
-									"authData" : {
-										"twitter" : {
-											"id" : resultJSON.id_str,
-											"screen_name" : resultJSON.screen_name,
-											"consumer_key" : require('tokens').twitter.consumerKey,
-											"consumer_secret" : require('tokens').twitter.consumerSecret,
-											"auth_token" : twitterApi.getAccessTokenKey(),
-											"auth_token_secret" : twitterApi.getAccessTokenSecret()
-										}
-									}
-								});
-								newCustomer.save();
-							},
-							"onFailure": function(){
-								Ti.API.info("[customer.js] twitterApi.fetch failure");
-							}
-						});
-					},
-					'onFailure': function(){
-						Ti.API.info("failure");
-					}
-				});
-			}
-			*/
 
 		});
 		return Collection;

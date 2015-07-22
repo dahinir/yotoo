@@ -72,8 +72,9 @@ exports.definition = {
 						"skip_status": true
 					},
 					"success": function(resultJson){
+						// Ti.API.info(resultJson);
 						model.set(resultJson);
-						model.save();
+						// model.save();
 						if(success){
 							success();
 						}
