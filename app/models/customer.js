@@ -78,9 +78,9 @@ exports.definition = {
 		_.extend(Model.prototype, {
 			initialize: function(e, e2){
 				var model = this;
-				model.on("change",function(e){
-					console.log("[customer.js] customer changed");
-				});
+				// model.on("change",function(e){
+				// 	console.log("[customer.js] customer changed");
+				// });
 
 				if(!e.provider){
 					Ti.API.error("[customer.js] init error");
@@ -99,10 +99,10 @@ exports.definition = {
 						userIdentity.externalApi = externalApi;
 
 						userIdentity.fetch();	// fetch from local sql
-						userIdentity.on("change", function(e) {
+						// userIdentity.on("change", function(e) {
 							// console.log(e);
 						  // model.trigger("change", model);
-						});
+						// });
 						model.set("userIdentity", userIdentity);
 						break;
 					default:
