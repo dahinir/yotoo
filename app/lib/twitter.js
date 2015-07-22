@@ -15,11 +15,11 @@ var social = require('alloy/social').create({
 });
 
 // If not authorized, get authorization from the user
-if(!social.isAuthorized()) { 
+if(!social.isAuthorized()) {
     social.authorize();
 }
 
-// 이런식의 객체 전달을 사용하자 
+// 이런식의 객체 전달을 사용하자
 social.share({
     message: "Salut, Monde!",
     success: function(e) {alert('Success!')},
@@ -43,29 +43,29 @@ var urls = {
     'accessToken': "https://api.twitter.com/oauth/access_token",
     'requestToken': "https://api.twitter.com/oauth/request_token",
     'authorize': "https://api.twitter.com/oauth/authorize",
-    
+
     'userStream': "https://userstream.twitter.com/1.1/user.json", // limit :yes
     // 'siteStream': "https://sitestream.twitter.com/1.1/site.json",
-    
+
 	'postTweet': "https://api.twitter.com/1.1/statuses/update.json",	// limit :no
 	'postTweetWithMedia': "https://api.twitter.com/1.1/statuses/update_with_media.json",	// limit :no
-	
+
 	'timeline': "https://api.twitter.com/1.1/statuses/home_timeline.json",	// limit :15
 	'mentions': "https://api.twitter.com/1.1/statuses/mentions_timeline.json",	// limit :15
 	'searchTweets': "https://api.twitter.com/1.1/search/tweets.json", // 180/user 450/app
 	'searchUsers': "https://api.twitter.com/1.1/users/search.json",	// 180/user
 	'lookupUsers': "https://api.twitter.com/1.1/users/lookup.json",	// 180/user 60/app
 	'profile': "https://api.twitter.com/1.1/account/verify_credentials.json",	// 15/user  Use this method to test if supplied user credentials are valid.
-	
+
 	'getDirectMessages': 'https://api.twitter.com/1.1/direct_messages.json',
-	
+
 	'userView': "https://api.twitter.com/1.1/users/show.json",	// 180/user 180/app
 	'profileBanner': "https://api.twitter.com/1.1/users/profile_banner.json",	// limit :180
 	'relationship': "https://api.twitter.com/1.1/friendships/show.json",	// 180/user 15/app.  it was 15! wow!
-	
+
 	'userTimeline': "https://api.twitter.com/1.1/statuses/user_timeline.json",	// limit :180
-	
-	
+
+
 	'ownershipLists': "https://api.twitter.com/1.1/lists/ownerships.json",	// 15/user, 15/app
 	'subscriptionLists': "https://api.twitter.com/1.1/lists/subscriptions.json"	// 15/user, 15/app
 };
@@ -87,14 +87,14 @@ var toUrlString = function(params){
  * @param {Object} options object
  * @param {String} options.url Url to open
  * @param {Object} options.oauthClient jsOAuth instance
- * @param {Function} [options.onSuccess] Callback function executed after a success
- * @param {Function} [options.onError] Callback function executed after a fail 
+ * @param {Function} [options.success] Callback function executed after a success
+ * @param {Function} [options.error] Callback function executed after a fail
  */
 var showAuthorizeUI = function(options){
 	var url = options.url;
 	var oauthClient = options.oauthClient;
-	var onSuccess = options.onSuccess;
-	var onError = options.onError;
+	var success = options.success;
+	var error = options.error;
 
 	var webWindowController = Alloy.createController('webWindow');
 	var webView = webWindowController.getWebView();
@@ -111,7 +111,7 @@ var showAuthorizeUI = function(options){
 
 	webView.addEventListener('load', function(e) {
 		// Ti.API.debug("webView load!");
-	    // var cookies = webView.evalJS("document.cookie").split(";"); 
+	    // var cookies = webView.evalJS("document.cookie").split(";");
 	    // Ti.API.info( "# of cookies -> " + cookies.length  );
 	    // for (i = 0; i <= cookies.length - 1; i++) {
 	            // Ti.API.info( "cookie -> " + cookies[i] );
@@ -121,7 +121,7 @@ var showAuthorizeUI = function(options){
 
 		// e.source.evalJS('Ti.App.fireEvent("webView:cancel");');
 		// Ti.API.info(webView.html);
-		// ios bug; focus not work  
+		// ios bug; focus not work
 		// e.source.evalJS('if(document.getElementById("username_or_email")){document.getElementById("username_or_email").focus();}');
 		e.source.evalJS('if(document.getElementById("cancel")){document.getElementById("cancel").addEventListener("touchstart", function(){ location.replace("cancelforyotoobabe"); }); }');
 
@@ -138,26 +138,26 @@ var showAuthorizeUI = function(options){
 		}else{
 			Ti.API.debug("callbackUrl is undefined");
 			var response = e.source.evalJS('(p = document.getElementById("oauth_pin")) && p.innerHTML;');
-			if( response ){ 
+			if( response ){
 				pin = response.split("<code>")[1].split("</code>")[0];
-			}else{ 
+			}else{
 				Ti.API.debug("not yet..");
 			}
 		}
-		
+
 		if( pin ){
 			Ti.API.debug("login succes, pin is " + pin);
 			oauthClient.setVerifier(pin);
 			oauthClient.fetchAccessToken(function(data) {
-				onSuccess(data);
+				success(data);
 				// if (Ti.Platform.osname === "android") {// we have to wait until now to close the modal window on Android: http://developer.appcelerator.com/question/91261/android-probelm-with-httpclient
 					webWindowController.getView().close();
 				// }
 			}, function(data) {
 				Ti.API.warn("Failure to fetch access token, try again. ");
-				onError(data);
+				error(data);
 			});
-			
+
 			// clear cookies for next login
 			Ti.Network.createHTTPClient().clearCookies('https://api.twitter.com/oauth');
 		}else if( loadCount > 1){
@@ -179,10 +179,10 @@ var showAuthorizeUI = function(options){
  * @param {String} options.url The url to send the XHR to
  * @param {Object} options.params The parameters to send
  * @param {Function} [options.success] Callback function executed after a success
- * @param {Function} [options.error] Callback function executed after a fail 
+ * @param {Function} [options.error] Callback function executed after a fail
  */
 var api = function(options){
-		
+
 };
 
 /**
@@ -191,7 +191,7 @@ var api = function(options){
  * @param {Object} settings Configuration object
  * @param {String} settings.consumerKey Application consumer key
  * @param {String} settings.consumerSecret Application consumer secret
- * @param {String} settings.callbackUrl 
+ * @param {String} settings.callbackUrl
  * @param {String} settings.accessTokenKey (optional) The user's access token key
  * @param {String} settings.accessTokenSecret (optional) The user's access token secret
  * @return {Object} Instance of social to make subsequent API calls.
@@ -201,7 +201,7 @@ exports.create = function(settings) {
 	if( !settings ){
 		settings = {};
 	}
-	
+
 	// instance variables //
 	var authorized = false;
 	var accessTokenKey = settings.accessTokenKey;
@@ -210,7 +210,7 @@ exports.create = function(settings) {
 	// shared variables //
 	if( settings.callbackUrl ){
 		cfg.callbackUrl = settings.callbackUrl;
-	}	
+	}
 	if( settings.consumerKey && settings.consumerSecret ){
 		cfg.consumerKey = settings.consumerKey;
 		cfg.consumerSecret = settings.consumerSecret;
@@ -221,44 +221,44 @@ exports.create = function(settings) {
 		requestTokenUrl: urls.requestToken,	// Required for 3-legged requests
 		authorizationUrl: urls.authorize,	// Required for 3-legged requests
 		accessTokenUrl: urls.accessToken,	// Required for 3-legged requests
-		
+
 		callbackUrl: cfg.callbackUrl,		// Required for 3-legged requests with callback url
 		consumerKey: cfg.consumerKey,
 		consumerSecret: cfg.consumerSecret,
 		signatureMethod: cfg.oauthSignatureMethod,
-		
+
 		accessTokenKey: accessTokenKey,	// if already login
 		accessTokenSecret: accessTokenSecret	// if already login
 	});
 
 	return {
 		/**
-		 * @param {Function} [options.onSuccess]
-		 * @param {Function} [options.onFailure]
+		 * @param {Function} [options.success]
+		 * @param {Function} [options.error]
 		 */
 		authorize: function(options){
-			var onSuccess = options.onSuccess;
-			var onFailure = options.onFailure;
-			
+			var success = options.success;
+			var error = options.error;
+
 			Ti.API.debug("[twitter.js] authorize()");
 			oauthClient.fetchRequestToken(function(authorizationUrlWithParams){ // on success
 				showAuthorizeUI({
 					'url': authorizationUrlWithParams,
 					'oauthClient': oauthClient,
-					'onSuccess': function(data){
+					'success': function(data){
 						accessTokenKey = oauthClient.getAccessTokenKey();
 						accessTokenSecret = oauthClient.getAccessTokenSecret();
 						Ti.API.info("wow: "+ accessTokenKey+ " "+ accessTokenSecret);
-						onSuccess();
+						success();
 					},
-					'onError': function(data){
+					'error': function(data){
 						Ti.API.debug("[twitter.js] authorize error. with this data:"+data);
-						onFailure();
+						error();
 					}
 				});
 			},function(data){ // on failure
 				Ti.API.error("[twitter.js] Failure to fetch request token: "+ JSON.stringify(data));
-				onFailure();
+				error();
 			});
 		},
 		getAccessTokenKey: function(){
@@ -275,9 +275,9 @@ exports.create = function(settings) {
 		 * @param {Object} options
 		 * @param {String} options.url If this described, options.purpose will ignored
 		 * @param {String} options.purpose We got some twitter.com urls
-		 * @param {Object} options.params  
-		 * @param {Functioin} [options.onSuccess]
-		 * @param {Functioin} [options.onFailure]
+		 * @param {Object} options.params
+		 * @param {Functioin} [options.success]
+		 * @param {Functioin} [options.error]
 		 */
 		fetch: function(options){
 			// Ti.API.debug("[twitter.js] fetch");
@@ -286,24 +286,24 @@ exports.create = function(settings) {
 			if( params.length > 1){
 				url = url + "?" + params;
 			}
-			var onSuccess = options.onSuccess;
-			var onFailure = options.onFailure;
-			
+			var success = options.success;
+			var error = options.error;
+
 			Ti.API.debug("[twitter.js] url: "+ url);
 			oauthClient.request({
 				'url': url,
 				'success': function(data){
 					Ti.API.debug("[twitter.js] fetch success.");
 					var result = JSON.parse(data.text || '');
-					onSuccess(result); 
+					success(result);
 				},
 				'failure': function(data){
 					Ti.API.debug("[twitter.js] failure to fetch.");
 					var result = JSON.parse(data.text);
-					
+
 					if (result.errors) {
 						Ti.API.debug("[twitter.js] error code: " + result.errors[0].code + ", " + result.errors[0].message);
-						
+
 						if (result.errors[0].code === 32) {
 							// "Could not authenticate you", why?
 						}else if (result.errors[0].code === 34) {
@@ -317,8 +317,8 @@ exports.create = function(settings) {
 					}else {
 						Ti.API.debug("[twitter.js] fetch() unkwon error.");
 					}
-					onFailure( result );
-				}	 
+					error( result );
+				}
 			});
 		},
 		post: function(options){
@@ -329,8 +329,8 @@ exports.create = function(settings) {
 					'Content-Type': 'multipart/form-data'
 				};
 			}
-			var onSuccess = options.onSuccess;
-			var onFailure = options.onFailure;
+			var success = options.success;
+			var error = options.error;
 			Ti.API.debug("[twitter.js] url: "+ url);
 			oauthClient.request({
 				'method': 'POST',
@@ -342,16 +342,16 @@ exports.create = function(settings) {
 					// Ti.API.debug("[twitter.js] JSON.stringify" + JSON.stringify(data.text));
 					Ti.API.debug("[twitter.js] success post. id_str:" + result.id_str);
 					if( result.id_str ){
-						onSuccess();
+						success();
 					}else{
-						onFailure();
+						error();
 					}
 				},
 				'failure': function(data){
 					var result = JSON.parse(data.text);
 					Ti.API.debug(JSON.stringify(data.text));
 					Ti.API.debug("[twitter.js] failure post.");
-					onFailure();
+					error();
 				}
 			});
 		},
@@ -364,8 +364,8 @@ exports.create = function(settings) {
 			if( params.length > 1){
 				url = url + "?" + params;
 			}
-			var onSuccess = options.onSuccess;
-			var onFailure = options.onFailure;
+			var success = options.success;
+			var error = options.error;
 			Ti.API.debug("[twitter.js] url: "+ url);
 			oauthClient.post({
 				'method': 'POST',
@@ -378,20 +378,20 @@ exports.create = function(settings) {
 					Ti.API.debug("[twitter.js] JSON.stringify" + JSON.stringify(data.text));
 					Ti.API.debug("[twitter.js] success post. id_str:" + result.id_str);
 					if( result.id_str ){
-						onSuccess();
+						success();
 					}else{
-						onFailure();
+						error();
 					}
 				},
 				'failure': function(data){
 					var result = JSON.parse(data.text);
 					Ti.API.debug(JSON.stringify(data.text));
 					Ti.API.debug("[twitter.js] failure post.");
-					onFailure();
+					error();
 				}
 			});
 			*/
 		}
-		
+
 	}; // return object
 };

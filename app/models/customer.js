@@ -20,12 +20,11 @@ exports.definition = {
 			"provider_accessTokenSecret": "string",
 
 			// common used attributes
-			// :이 모델(customer)의 .attributes에 저장되는 것은 여러 써드 파티 중에서 공통적으로 사용되는 것만(ex: 이름, 프로필 이미지,)
-			"username": "string",
-			// "profile_picture":"",
+			// :이 모델(customer)의 .attributes에 저장되는 것은 yotoo앱에서 진짜 쓰는 것만
+			"profile_username": "string",
+			"profile_picture": "string",
 
 			// for this app
-			// "active": "boolean", // moved to AG.setting.currentCustomerId
 			"status_activeTabIndex": "int"
 		},
 		adapter: {
@@ -33,7 +32,6 @@ exports.definition = {
 			"type": "sqlrest",
 			"collection_name": "customer"	// use for sqlite table name
 		},
-		// idAttribute: 'id',	// default is alloy_id
 		URL: baseUrl + "/api/Customers",
 		// URL: "https://api.parse.com/1/users",
 		disableSaveDataLocallyOnServerError: true,
@@ -79,33 +77,43 @@ exports.definition = {
 	extendModel: function(Model) {
 		_.extend(Model.prototype, {
 			initialize: function(e, e2){
+				var model = this;
+				// model.on("change",function(e){
+				// 	console.log("customer changed: ");
+				// });
 					// alert(e);
 				if(!e.provider){
-					alert("[customer.js] init error");
+					Ti.API.error("[customer.js] init error");
 					return;
 				}
 				// AG.users중에 자신의 프로필을 골라 셋팅(twitter 유저면 twitterApi 셋팅 )
 				switch (e.provider && e.provider.toLowerCase()) {
 					case "twitter":
-						this.externalApi = require('twitter').create({
-							accessTokenKey: this.get('provider_accessToken'),
-							accessTokenSecret: this.get('provider_accessTokenSecret')
+						var externalApi = require('twitter').create({
+							accessTokenKey: model.get('provider_accessToken'),
+							accessTokenSecret: model.get('provider_accessTokenSecret')
 						});
-						// this.user = Alloy.createModel("twitterUser",{id_str,});
+						var userIdentity = Alloy.createModel("twitterUser", {
+								"id_str": model.get('provider_id')
+						});
+						userIdentity.externalApi = externalApi;
 
-						// Ti.API.info(this.get('external_access_token'));
-						// alert( this.externalApi.getAccessTokenKey());
+						userIdentity.fetch();	// fetch from local sql
+						userIdentity.refresh();	// fetch from server
+						userIdentity.on("change", function(e) {
+							// console.log(e);
+						  model.trigger("change", model);
+						});
+						model.set("userIdentity", userIdentity);
 						break;
 					default:
-
+						model.refresh();
 				}
 
-				if( e.provider && e.provider.toLowerCase() == "twitter"){
-
-				}
 			},
 			sync : function(method, model, opts){
 				// alert(opts);
+				console.log("syss====");
 				opts = opts || {};
 				opts.headers = _.extend( opts.headers || {},
 					this.getHeaders()
@@ -118,6 +126,14 @@ exports.definition = {
 					// And server access token
 					"authorization" : this.get("accessToken")
 				};
+			},
+			refresh: function(){
+				console.log("refresh");
+				this.fetch({
+					urlparams : {
+            filter : JSON.stringify({ include:["identities"] })
+	        }
+				});
 			},
 			getYotoos: function(){
 				Ti.API.info("[customer.js] .getYootoos()");
@@ -157,7 +173,6 @@ exports.definition = {
 				return collection;
 			}
 		});
-
 		return Model;
 	},
 	extendCollection: function(Collection) {
@@ -216,8 +231,8 @@ exports.definition = {
 						if( newCustomer ){
 							newCustomer.set(customerObj);
 						}else{
-							newCustomer = Alloy.createModel('customer',
-								_.extend(customerObj,{"id": customerId}));
+							customerObj.id = customerId;
+							newCustomer = Alloy.createModel('customer', customerObj);
 						}
 
 						Ti.API.debug(newCustomer);

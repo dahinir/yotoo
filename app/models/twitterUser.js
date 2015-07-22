@@ -60,8 +60,30 @@ exports.definition = {
 				externalApi.fetch();
 			},
 			*/
-			refresh: function(){
-
+			refresh: function(options){
+				var options = options || {},
+					success = options.success,
+					error = options.error,
+					model = this;
+				this.externalApi.fetch({
+					"purpose": "profile",
+					"params": {
+						"include_entities": true,
+						"skip_status": true
+					},
+					"success": function(resultJson){
+						model.set(resultJson);
+						model.save();
+						if(success){
+							success();
+						}
+					},
+					"error": function(resultJson){
+						if(error){
+							error();
+						}
+					}
+				});
 			},
 			/**
 			 * @method fetchFromServer
@@ -86,14 +108,14 @@ exports.definition = {
 				externalApi.fetch({
 					'purpose': options.purpose,
 					'params': params,
-					'onSuccess': function( resultJSON ){
+					'success': function( resultJSON ){
 						// thisModel.clear();
 						thisModel.set( resultJSON );
 						if( success ){
 							success();
 						}
 					},
-					'onFailure': function( resultJSON ){
+					'error': function( resultJSON ){
 						if( error ){
 							error();
 						}
@@ -111,10 +133,10 @@ exports.definition = {
 				externalApi.fetch({
 					'purpose': options.purpose,
 					'params': params,
-					'onSuccess': function( resultJSON ){
+					'success': function( resultJSON ){
 						success( resultJSON );
 					},
-					'onFailure': function( resultJSON ){
+					'error': function( resultJSON ){
 						error( resultJSON );
 					}
 				});
@@ -183,7 +205,7 @@ exports.definition = {
 				getOwnerCustomer().externalApi.fetch({
 					'purpose': purpose,
 					'params': params,
-					'onSuccess': function( resultJSON ){
+					'success': function( resultJSON ){
 						if( add || reset ){
 							self.reset();
 						}
@@ -205,7 +227,7 @@ exports.definition = {
 							success(self, resultJSON, options);
 						}
 					},
-					'onFailure': function( resultJSON ){
+					'error': function( resultJSON ){
 						Ti.API.info("[user.fetchFromServer] error");
 						if( error ){
 							error();

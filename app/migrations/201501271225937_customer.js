@@ -10,7 +10,8 @@ migration.up = function(db) {
 			"provider_accessToken": "TEXT",
 			"provider_accessTokenSecret": "TEXT",
 
-			"username": "TEXT",
+			"profile_username": "TEXT",
+			"profile_picture": "TEXT",
 
 			"status_activeTabIndex": "INTEGER"
 		}

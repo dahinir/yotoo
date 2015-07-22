@@ -92,7 +92,7 @@ AG.customers.fetch({
     localOnly:true
 });
 // AG.accounts.fetch();
-AG.users.fetch();
+// AG.users.fetch();
 // AG.yotoos.fetch();
 AG.chats.fetch();
 
