@@ -82,7 +82,7 @@ exports.definition = {
 				// 	console.log("[customer.js] customer changed");
 				// });
 
-				if(!e.provider){
+				if(!e.provider || !e.provider_id){
 					Ti.API.error("[customer.js] init error");
 					return;
 				}
@@ -98,7 +98,7 @@ exports.definition = {
 						});
 						userIdentity.externalApi = externalApi;
 
-						userIdentity.fetch();	// fetch from local sql
+						userIdentity.refresh();
 						// userIdentity.on("change", function(e) {
 							// console.log(e);
 						  // model.trigger("change", model);
@@ -112,7 +112,7 @@ exports.definition = {
 			},
 			sync : function(method, model, opts){
 				// alert(opts);
-				console.log("syss====");
+				console.log("[customer.js] .sync() called");
 				opts = opts || {};
 				opts.headers = _.extend( opts.headers || {},
 					this.getHeaders()
@@ -129,9 +129,9 @@ exports.definition = {
 			refresh: function(){
 				Ti.API.info("[customer.js] .refresh() ");
 				var model = this,
-					userIdentity = model.get("userIdentity");
+					userIdentity = this.get("userIdentity");
 
-				model.fetch({
+				this.fetch({
 					// "urlparams" : {
           //   filter : JSON.stringify({ include:["identities"] })
 	        // },

@@ -1,18 +1,20 @@
-//Besides, JSON values and Titanium SDK constants, 
-//the TSS can handle the localization function Ti.Locale.getString() 
+//Besides, JSON values and Titanium SDK constants,
+//the TSS can handle the localization function Ti.Locale.getString()
 //and its shorthand L() as well as
 //expr(), which can contain any valid JavaScript, executed at runtime.
 
 // density == Ti.Platform.DisplayCaps.density
-// pixel == dp * ( density / 160 ) 
+// pixel == dp * ( density / 160 )
 
 "Window": {
-	navBarHidden: true,
+	// navBarHidden: true,
 	backgroundColor: "white"
 	// backgroundImage:'images/back.png',
 	// softInputMode:(Ti.UI.Android) ? Ti.UI.Android.SOFT_INPUT_ADJUST_RESIZE : ''
 }
 "Window[platform=ios]": {
+	barColor: "white"
+	// navTintColor: "yellow"
 	// statusBarStyle: Ti.UI.iPhone.StatusBar.LIGHT_CONTENT,
 	// statusBarStyle: Ti.UI.iPhone.StatusBar.GRAY,
 	// includeOpaqueBars: true,
@@ -22,7 +24,7 @@
 	// autoAdjustScrollViewInsets : true
 }
 "Window[platform=android]": {
-    softInputMode: Ti.UI.Android.SOFT_INPUT_ADJUST_RESIZE 
+    softInputMode: Ti.UI.Android.SOFT_INPUT_ADJUST_RESIZE
 }
 ".appWindow": {
 	layout: "vertical"
@@ -98,9 +100,9 @@
         type: 'linear',
         startPoint: { x: 0, y: '0%' },
         endPoint: { x: 0, y: '100%' },
-        colors: [ { color: '#CCC', offset: 0.0 }, 
+        colors: [ { color: '#CCC', offset: 0.0 },
         		{ color: '#666', offset: 0.05 },
-        		{ color: '#222', offset: 0.95 }, 
+        		{ color: '#222', offset: 0.95 },
         		{ color: '#000', offset: 1.0 } ]
     },
     */
@@ -166,5 +168,3 @@
 	},
 	height:'auto'
 }
-
-

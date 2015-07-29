@@ -1,5 +1,9 @@
 <Alloy>
 	<Window id="discoverWindow" class="tapWindow" >
+		<LeftNavButton platform=ios>
+			<Require id="listCustomersButton" src="listCustomersButton" class="leftNavButton" />
+		</LeftNavButton>
+		<!--
 		<View id="navBarView" >
 			<Require id="listCustomersButton" src="listCustomersButton" class="leftNavButton" />
 			<View id="titleView">
@@ -8,6 +12,7 @@
 			</View>
 			<Require id="newTweetButton" src="newTweetButton" class="rightNavButton" />
 		</View>
+		-->
 		<!-- <Require id="localView" src="discover/localView" /> -->
 		<Require id="globalView" src="discover/globalView" />
 	</Window>

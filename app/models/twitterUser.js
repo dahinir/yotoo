@@ -10,10 +10,10 @@ exports.definition = {
 			"profile_background_image_url": "string",
 
 			// for ACS
-			"acs_id":"string"
+			// "acs_id":"string"
 
 			// for this app
-			// "cached_at":
+			"cached_at":"int"	// milliseconds since 1970
 		},
 		"adapter": {
 			"idAttribute": "id_str",	// twitter id
@@ -27,7 +27,7 @@ exports.definition = {
 
 	extendModel: function(Model) {
 		_.extend(Model.prototype, {
-			// initialize: function(){
+			// initialize: function(e, e2){
 			// },
 			/*
 			getUser: function(purpose, params, callback) {
@@ -61,30 +61,47 @@ exports.definition = {
 			},
 			*/
 			refresh: function(options){
-				var options = options || {},
+				var options = _.extend({
+					force: false
+				}, options),
 					success = options.success,
 					error = options.error,
 					model = this;
-				this.externalApi.fetch({
-					"purpose": "profile",
-					"params": {
-						"include_entities": true,
-						"skip_status": true
-					},
-					"success": function(resultJson){
-						// Ti.API.info(resultJson);
-						model.set(resultJson);
-						model.save();
-						if(success){
-							success();
+				var MIN_REFRESH_MS = 1000*60*60*24; // one day as milliseconds
+
+				// fetch from local sqlite
+				this.fetch({query: {
+					statement: 'select * from ' + model.config.adapter.collection_name + ' where id_str = ?',
+					params: [model.get("id_str")] }});
+
+				// fetch from Twitter.com
+				if( !this.get("cached_at")
+					|| (Date.now()-this.get("cached_at")) > MIN_REFRESH_MS
+					|| options.force ) {
+					// Ti.API.info("[twitterUser.js] .refresh() go remote!!");
+					this.externalApi.fetch({
+						"purpose": "profile",
+						"params": {
+							"include_entities": true,
+							"skip_status": true
+						},
+						"success": function(resultJson){
+							// Ti.API.info(resultJson);
+							var resultJson = resultJson || {};
+							resultJson.cached_at = Date.now();
+							model.set(resultJson);
+							model.save();
+							if(success){
+								success();
+							}
+						},
+						"error": function(resultJson){
+							if(error){
+								error();
+							}
 						}
-					},
-					"error": function(resultJson){
-						if(error){
-							error();
-						}
-					}
-				});
+					});
+				}
 			},
 			/**
 			 * @method fetchFromServer
@@ -229,7 +246,7 @@ exports.definition = {
 						}
 					},
 					'error': function( resultJSON ){
-						Ti.API.info("[user.fetchFromServer] error");
+						Ti.API.info("[user.fetchFromServer] error ");
 						if( error ){
 							error();
 						}
