@@ -95,7 +95,7 @@ function Migrator(config, transactionDb) {
 			var columns = [];
 			columns.push(config[i]);
 			var sql = "CREATE INDEX IF NOT EXISTS " + i + " ON '" + this.table + "' (" + columns.join(",") + ")";
-			this.db.execute(sql);	
+			this.db.execute(sql);
 		}
 	};
 	this.dropTable = function(config) {
@@ -136,9 +136,9 @@ function Migrator(config, transactionDb) {
 }
 
 function apiCall(_options, _callback) {
-	Ti.API.debug("[sqlrest.js] _options: "+ JSON.stringify(_options) );
-	Ti.API.debug("[sqlrest.js] _options.localOnly: "+ _options.localOnly );
-	
+	// Ti.API.debug("[sqlrest.js] _options: "+ JSON.stringify(_options) );
+	// Ti.API.debug("[sqlrest.js] _options.localOnly: "+ _options.localOnly );
+
 	//adding localOnly
 	if (Ti.Network.online && !_options.localOnly) {
 		//we are online - talk with Rest API
@@ -292,7 +292,7 @@ function Sync(method, model, opts) {
 		lastModifiedDateFormat : model.config.adapter.lastModifiedDateFormat,
 		singleModelRequest : singleModelRequest,
 
-		// eTag 
+		// eTag
 		eTagEnabled : model.config.eTagEnabled,
 
 		// Used for custom parsing of the response data
@@ -312,13 +312,13 @@ function Sync(method, model, opts) {
 
 		// Save data locally on server error?
 		disableSaveDataLocallyOnServerError : model.config.disableSaveDataLocallyOnServerError,
-		
+
 		// Return the exact error reponse
 		returnErrorResponse : model.config.returnErrorResponse,
-		
+
 		// Request params
 		requestparams : model.config.requestparams,
-		
+
 		// xhr settings
 		timeout: 7000,
 		cache: false,
@@ -384,7 +384,7 @@ function Sync(method, model, opts) {
 		}
 		_.extend(params.urlparams, _.isFunction(model.config.URLPARAMS) ? model.config.URLPARAMS() : model.config.URLPARAMS);
 	}
-	
+
 	// parse url {requestparams}
 	_.each(params.requestparams, function(value,key) {
 		params.url = params.url.replace('{' + key + '}', value ? escape(value) : '', "gi");
@@ -1394,4 +1394,4 @@ function guid() {
 	return S4() + S4() + "-" + S4() + "-" + S4() + "-" + S4() + "-" + S4() + S4() + S4();
 }
 
-module.exports.sync = Sync; 
+module.exports.sync = Sync;

@@ -77,6 +77,7 @@ exports.definition = {
 	extendModel: function(Model) {
 		_.extend(Model.prototype, {
 			initialize: function(e, e2){
+				Ti.API.info("[customer.js] initialize customer");
 				var model = this;
 				// model.on("change",function(e){
 				// 	console.log("[customer.js] customer changed");

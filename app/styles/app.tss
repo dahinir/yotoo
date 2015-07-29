@@ -88,6 +88,28 @@
 	height: 43
 }
 
+// yeah!
+".profileImage":{
+	height : 36.5, // 73/2 is 36.5
+	width : 36.5,
+	defaultImage: 'images/defaultImageView.png',
+	borderWidth : 0.5,
+	borderRadius : 9,
+	borderColor : Alloy.Globals.COLORS.midGray
+}
+// window nav
+".leftNavButton": {
+	top: 28,
+	left: 8
+}
+".rightNavButton": {
+	top: 28,
+	right: 8
+}
+".closeButton": {
+	title: L("close")
+}
+
 // navigation bar :will be remove
 "#navBarView":{
 	top: 0,
@@ -135,17 +157,6 @@
 		fontSize: 19,
 		fontWeight: 'bold'
 	}
-}
-".leftNavButton": {
-	top: 28,
-	left: 8
-}
-".rightNavButton": {
-	top: 28,
-	right: 8
-}
-".closeButton": {
-	title: L("close")
 }
 // navigation bar end
 
