@@ -20,7 +20,7 @@
 
 
 "#mainTabGroup":{
-	borderWidth: 1,
+	/*borderWidth: 1,
 	borderColor: "green",
-	borderRadius: 2
+	borderRadius: 2*/
 }

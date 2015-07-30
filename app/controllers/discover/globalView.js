@@ -1,7 +1,6 @@
 var args = arguments[0] || {};
 var ownerCustomer = args.ownerCustomer || AG.customers.getCurrentCustomer();
 
-Ti.API.debug(ownerCustomer);
 // var users = ownerCustomer.createCollection('user');
 // var users = Alloy.createCollection('user', {ownerCustomer: ownerCustomer});
 var yotoos = ownerCustomer.getYotoos();
@@ -37,11 +36,11 @@ userListView.getView().addEventListener('rightButtonClick', function(e){
 			});
 		}else if( e.index === 1 ){
 			alert(L('yotoo_effect'));
-			
+
 			var targetUser = users.where({
 				'id_str' : id_str
 			}).pop();
-			
+
 			yotoos.addNewYotoo({
 				'sourceUser' : ownerCustomer,
 				'targetUser' : targetUser,
@@ -49,7 +48,7 @@ userListView.getView().addEventListener('rightButtonClick', function(e){
 				},
 				'error' : function() {
 				}
-			}); 			
+			});
 		}
 	});
 });
@@ -114,4 +113,3 @@ $.searchBar.addEventListener('change', function(e){
 });
 
 $.searchBar.focus();
-

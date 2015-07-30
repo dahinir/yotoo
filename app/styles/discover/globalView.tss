@@ -2,7 +2,8 @@
 	// layout: "vertical"
 },
 "#searchBar": {
-	top: 0
+	top: 0,
+	barColor: Alloy.Globals.COLORS.lightWarmGray
 },
 "#dummyScreen": {
 	backgroundColor: "#000",

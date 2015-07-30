@@ -98,12 +98,14 @@ exports.definition = {
 								"id_str": model.get('provider_id')
 						});
 						userIdentity.externalApi = externalApi;
-
+						userIdentity.on("remoteRefesh", function(e) {
+							model.set({
+								"profile_username": e.get("name"),
+								"profile_picture": e.get("profile_image_url_https")
+							});
+							model.save(undefined, {localOnly:true});
+						});
 						userIdentity.refresh();
-						// userIdentity.on("change", function(e) {
-							// console.log(e);
-						  // model.trigger("change", model);
-						// });
 						model.set("userIdentity", userIdentity);
 						break;
 					default:
@@ -145,11 +147,6 @@ exports.definition = {
 					"success": function(){
 						switch (model.get("provider")) {
 							case "twitter":
-								model.set({
-									"profile_username": userIdentity.get("name"),
-									"profile_picture": userIdentity.get("profile_image_url_https")
-								});
-								model.save(undefined, {localOnly:true});
 								break;
 						}
 					}

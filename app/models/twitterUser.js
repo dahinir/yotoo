@@ -94,6 +94,7 @@ exports.definition = {
 							if(success){
 								success();
 							}
+							model.trigger("remoteRefesh", model);
 						},
 						"error": function(resultJson){
 							if(error){

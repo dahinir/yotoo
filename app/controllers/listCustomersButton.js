@@ -8,10 +8,11 @@ exports.init = function( options ) {
 	}
 };
 
-var refreshProfileImage = function(){
+var updateData = function(){
 	$.listCustomersButton.setBackgroundImage(ownerCustomer.get("profile_picture"));
 };
-refreshProfileImage();
+updateData();
+ownerCustomer.on("change:profile_picture", updateData);
 
 $.listCustomersButton.addEventListener('click', function(e) {
 	Ti.API.debug("[listCustomersButton.js] "+ownerCustomer.get('id'));
