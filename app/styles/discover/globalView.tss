@@ -1,14 +1,16 @@
 "#globalView": {
-	// layout: "vertical"
+	layout: "vertical"
 },
 "#searchBar": {
-	top: 0,
+	showCancel:false,
 	barColor: Alloy.Globals.COLORS.lightWarmGray
 },
 "#dummyScreen": {
-	backgroundColor: "#000",
-	borderWidth: 3,
+	/*zIndex: 1,*/
+	visible: false,
+	backgroundColor: "yellow",
+	/*borderWidth: 3,
+	borderColor: "#334400",*/
 	opacity: 0.3,
-	top: 43,
 	height: Ti.UI.FILL
 }

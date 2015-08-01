@@ -5,6 +5,8 @@
 var args = arguments[0] || {};
 var ownerCustomer = args.ownerCustomer || AG.customers.getCurrentCustomer();
 
+Ti.API.info("[mainTabGroup.js]");
+
 // $.timelineTab.title = L('timeline');
 // $.connectTab.title = L('connect');
 $.discoverTab.title = L('discover');
@@ -23,7 +25,7 @@ $.mainTabGroup.addEventListener('focus', function(e){
 
 $.mainTabGroup.addEventListener('postlayout', function(e){
 	// Ti.API.debug("[mainTabGroup] postlayout");
-	// slow down.. animate 알파값 상승 
+	// slow down.. animate 알파값 상승
 	// $.mainTabGroup.borderWidth = 0;
 });
 
@@ -31,7 +33,7 @@ $.mainTabGroup.addEventListener('postlayout', function(e){
 exports.init = function( options ){
 	ownerAccount = options.ownerAccount;
 	Ti.API.info("[mainTabGroup] mainTabGroup init with owner: " + ownerAccount.get('access_token'));
-	
+
 	$.timelineWindow.init({"ownerAccount" : ownerAccount});
 	$.connectWindow.init({"ownerAccount" : ownerAccount});
 	$.discoverWindow.init({"ownerAccount" : ownerAccount});

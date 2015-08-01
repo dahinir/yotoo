@@ -13,21 +13,18 @@
 	// softInputMode:(Ti.UI.Android) ? Ti.UI.Android.SOFT_INPUT_ADJUST_RESIZE : ''
 }
 "Window[platform=ios]": {
-	barColor: "white"
+	barColor: "white",
 	// navTintColor: "yellow"
 	// statusBarStyle: Ti.UI.iPhone.StatusBar.LIGHT_CONTENT,
 	// statusBarStyle: Ti.UI.iPhone.StatusBar.GRAY,
-	// includeOpaqueBars: true,
-	// translucent: false,
+	/*includeOpaqueBars: true,*/
+	translucent: false,
 
-	// extendEdges : [Ti.UI.EXTEND_EDGE_TOP, Ti.UI.EXTEND_EDGE_BOTTOM],
-	// autoAdjustScrollViewInsets : true
+	/*autoAdjustScrollViewInsets : true,*/
+	extendEdges : [Ti.UI.EXTEND_EDGE_TOP, Ti.UI.EXTEND_EDGE_BOTTOM]
 }
 "Window[platform=android]": {
     softInputMode: Ti.UI.Android.SOFT_INPUT_ADJUST_RESIZE
-}
-".appWindow": {
-	layout: "vertical"
 }
 ".tapWindow":{
 	layout: "vertical"

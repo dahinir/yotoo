@@ -2,7 +2,6 @@ var args = arguments[0] || {};
 var ownerCustomer = args.ownerCustomer || AG.customers.getCurrentCustomer();
 
 $.discoverWindow.setTitle( L("discover") );
-
 /*
 $.navBarView.init({
 	// "ownerAccount": ownerAccount,

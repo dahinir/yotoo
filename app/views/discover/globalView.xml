@@ -1,6 +1,8 @@
 <Alloy>
 	<View id="globalView">
-		<SearchBar id="searchBar" showCancel="false" />
-		<View id="dummyScreen" zIndex="1" visible="false" />
+		<SearchBar id="searchBar">
+		</SearchBar>
+		<View id="dummyScreen" >
+		</View>
 	</View>
 </Alloy>

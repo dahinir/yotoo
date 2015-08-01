@@ -94,21 +94,12 @@ AG.customers.fetch({
 // AG.accounts.fetch();
 // AG.users.fetch();
 // AG.yotoos.fetch();
-AG.chats.fetch();
-
+// AG.chats.fetch();
+/*
 Ti.API.info("[alloy.js] " + AG.customers.length + " loged in customers loaded");
 Ti.API.info("[alloy.js] " + AG.users.length + " users loaded");
 Ti.API.info("[alloy.js] " + AG.yotoos.length + " yotoos");
 Ti.API.info("[alloy.js] " + AG.chats.length + " chats");
-
-
-
-/*
-var w = Titanium.UI.createWindow({
-  url:'cloudProxy.js'
-});
-w.open();
-*/
 
 AG.customers.map(function(customer){
 	// customer.save({'status_active_tab_index': 12})
@@ -136,7 +127,7 @@ AG.chats.map(function( chat ){
 	Ti.API.info("[alloy.js] chats: " + chat.get('id')
 		+ " " + chat.get('chat_group_id') + " " + chat.get('message'));
 });
-
+*/
 
 // push notification
 if( OS_IOS ){

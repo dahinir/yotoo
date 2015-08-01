@@ -112,4 +112,4 @@ $.searchBar.addEventListener('change', function(e){
 	}, 1000);
 });
 
-$.searchBar.focus();
+// $.searchBar.focus();

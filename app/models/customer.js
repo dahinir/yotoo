@@ -109,7 +109,7 @@ exports.definition = {
 						model.set("userIdentity", userIdentity);
 						break;
 					default:
-						console.log("[customer.js] there is no proper provider")
+						console.log("[customer.js] there is no proper provider");
 				}
 				// model.refresh();	// fetch from server
 			},
