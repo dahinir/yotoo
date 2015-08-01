@@ -1,7 +1,7 @@
-var baseUrl = ( ENV_PRODUCTION ? 
-			Ti.App.Properties.getString("and-baseurl-production") 
+var baseUrl = ( ENV_PRODUCTION ?
+			Ti.App.Properties.getString("and-baseurl-production")
 			: Ti.App.Properties.getString("and-baseurl-local"));
-			
+
 // test for local
 baseUrl = Ti.App.Properties.getString("and-baseurl-local");
 
@@ -10,15 +10,15 @@ exports.definition = {
 		columns: {
 			// for And server
 			"id": "string",
-			
+
 			"provider": "string",	// like twitter, facebook..
 		    "senderId": "string",
 		    "receiverId": "string",
-		    
+
 		    // "chat_group_id": "string",	// acs chat group id
 		    "created": "datetime",
 		    // "burned_at": "datetime",	// for last burned_at
-		    
+
 		    // status //
 		    "hided": "boolean",		// 1:true, 0:false
 		    "unyotooed": "boolean",
@@ -34,11 +34,11 @@ exports.definition = {
 			'type': "sqlrest",
 			'collection_name': "yotoo"
 		},
-		debug: 1, 
+		debug: 1,
 		URL: baseUrl + "/api/Yotoos",
 		initFetchWithLocalData: true,
 	    deleteAllOnFetch: false,
-		
+
 		// optimise the amount of data transfer from remote server to app
 	    addModifedToUrl: true,
 	    lastModifiedColumn: "modified"
@@ -67,11 +67,11 @@ exports.definition = {
 					this.getOwnerCustomer.getHeaders()
 				);
 				// return Backbone.sync(method, model, opts);
-				return require("alloy/sync/"+this.config.adapter.type).sync.call(this, method, model, opts);				
+				return require("alloy/sync/"+this.config.adapter.type).sync.call(this, method, model, opts);
 			},
 			'complete': function( options ){
 				var mainAgent = options.mainAgent;
-				
+
 				var thisModel = this;
 				var fields = {
 					'completed': 1	// true
@@ -84,7 +84,7 @@ exports.definition = {
 					'fields': fields,
 					'onSuccess': function( result ){
 						thisModel.set(fields);
-						
+
 						// to persistence :must save after success of server post
 						thisModel.save();
 						if( options.success ){
@@ -101,7 +101,7 @@ exports.definition = {
 			},
 			'unyotoo': function( options ){
 				var mainAgent = options.mainAgent;
-				
+
 				var thisModel = this;
 				var fields = {
 					'unyotooed': 1	// true
@@ -114,7 +114,7 @@ exports.definition = {
 					'fields': fields,
 					'onSuccess': function( result ){
 						thisModel.set(fields);
-						
+
 						// to persistence :must save after success of server post
 						thisModel.save();
 						if( options.success ){
@@ -144,7 +144,7 @@ exports.definition = {
 					'fields': fields,
 					'onSuccess': function( result ){
 						thisModel.set(fields);
-						
+
 						// to persistence :must save after success of server post
 						thisModel.save();
 						if( options.success ){
@@ -162,7 +162,7 @@ exports.definition = {
 			'burn': function( options ){
 				var mainAgent = options.mainAgent;
 				var withNotification = options.withNotification;
-				
+
 				var thisModel = this;
 				var fields = {
 				    // 'hided': 0,
@@ -187,7 +187,7 @@ exports.definition = {
 							}
 						}
 						Alloy.Globals.chats.fetch();
-						
+
 						thisModel.set(result);
 						thisModel.unset('chat_group_id');
 						thisModel.save();
@@ -217,9 +217,9 @@ exports.definition = {
 										error(e);
 									}
 								}
-							});	
+							});
 						}
-						 
+
 						if( options.success ){
 							options.success();
 						}
@@ -233,10 +233,10 @@ exports.definition = {
 				});
 			}
 		});
-		
+
 		return Model;
 	},
-	extendCollection: function(Collection) {		
+	extendCollection: function(Collection) {
 		_.extend(Collection.prototype, {
 			'initialize': function(e) {
 				this.cloudApi = require('cloudProxy').getCloud();
@@ -251,12 +251,12 @@ exports.definition = {
 				var reset = options.reset;
 				var success = options.success;
 				var error = options.error;
-				
+
 				var thisCollection = this;
 				var query ={
 					'source_id': mainAgent.get('id_str')
 				};
-				
+
 				this.cloudApi.excuteWithLogin({
 					'mainAgent': mainAgent,
 					'method': 'get',
@@ -305,10 +305,10 @@ exports.definition = {
 						'onSuccess': function( result ){
 							existYotoo.targetUser = targetUser;
 							existYotoo.set(result);
-							
+
 							// to persistence :must save after success of server post
 							existYotoo.save();
-							
+
 							thisCollection.checkTargetYotoo({
 								'sourceUser': sourceUser,
 								'targetUser': targetUser,
@@ -343,11 +343,11 @@ exports.definition = {
 							newYotoo.set(result);
 							// to persistence :must save after success of server post
 							newYotoo.save();
-							
+
 							// for runtime
 							newYotoo.targetUser = targetUser;	// using in peopleView.js
 							thisCollection.add( newYotoo );
-							
+
 							// It'll see whether opponent is yotoo me
 							// should be add retry action..
 							thisCollection.checkTargetYotoo({
@@ -372,9 +372,9 @@ exports.definition = {
 				var targetUser = options.targetUser;
 				var success = options.success;
 				var error = options.error;
-				
+
 				var thisCollection = this;
-				
+
 				var query ={
 					'source_id': targetUser.get('id_str'),
 					'target_id': sourceUser.get('id_str')
@@ -388,15 +388,15 @@ exports.definition = {
 						var checkingYotoo = thisCollection.where({
 							'source_id' : sourceUser.get('id_str'),
 							'target_id' : targetUser.get('id_str')
-						}).pop(); 
-						
+						}).pop();
+
 						if( resultsJSON.length === 0 ){
 							Ti.API.info("[yotoo.checkTargetYotoo] not yet. haha");
 							if( success ){
 								success( checkingYotoo );
 							}
 						}else if( resultsJSON.length > 0){
-							// 요투 컴플릿은 노티를 받았을 때 해야지!  
+							// 요투 컴플릿은 노티를 받았을 때 해야지!
 							// checkingYotoo.set({'completed': 1});
 							// checkingYotoo.save();
 							// alert(L('YOTOO!!'));
@@ -425,16 +425,16 @@ exports.definition = {
 				var alert = options.alert || "@"+sourceUser.get('screen_name') + " " + L('yotoo_you_too');
 				var success = options.success;
 				var error = options.error;
-				
+
 				var thisCollection = this;
-				
+
 				var payload = {
 					'sound': sound,
 					'alert': alert,
 					'f':sourceUser.get('id_str'),
 					't':targetUser.get('id_str')
 				};
-				
+
 				thisCollection.cloudApi.excuteWithLogin({
 					'mainAgent': sourceUser,
 					'targetUser': targetUser,
@@ -447,12 +447,12 @@ exports.definition = {
 							success();
 						}
 
-						/* update relevant yotoo's completed :콜백으로 이전 
+						/* update relevant yotoo's completed :콜백으로 이전
 						var relevantYotoo = thisCollection.where({
 							'source_id': sourceUser.get('id_str'),
 							'target_id': targetUser.get('id_str')
 						}).pop();
-						
+
 						thisCollection.cloudApi.excuteWithLogin({
 							'mainAgent': sourceUser,
 							'method': 'put',
@@ -473,11 +473,11 @@ exports.definition = {
 								}
 							}
 						});
-						*/		
+						*/
 					},
 					'onError': function(e){
 						// 노티피케이션을 보냈는지 확인하고 실패했으면 큐에 넣던지
-						// 해서 반드시 성공 시켜야 한다. 
+						// 해서 반드시 성공 시켜야 한다.
 						Ti.API.info("[yotoo.sendYotooNotification] error");
 						if( error ){
 							error(e);
@@ -486,8 +486,7 @@ exports.definition = {
 				});
 			}
 		});
-		
+
 		return Collection;
 	}
 };
-

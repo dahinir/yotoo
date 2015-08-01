@@ -2,7 +2,6 @@
 	<View id="globalView">
 		<SearchBar id="searchBar">
 		</SearchBar>
-		<View id="dummyScreen" >
-		</View>
+		<Require id="userListView" src="userListView" />
 	</View>
 </Alloy>

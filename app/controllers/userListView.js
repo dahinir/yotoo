@@ -1,10 +1,73 @@
 var args = arguments[0] || {};
-var ownerCustomer = args.ownerCustomer || AG.customers.getCurrentCustomer();
+var ownerCustomer = args.ownerCustomer,
+		users = args.users,
+		yotoos;
 
-var yotoos = args.yotoos || ownerCustomer.getYotoos();
-var users = args.users;
+exports.set = function(attrs) {
+	Ti.API.info("[userListView.js] .set()");
+	attrs = attrs || {};
 
-// var _PLAIN = 1; 
+	if(users){
+		Ti.API.debug("[userListView.js] only call .set() once")
+		return;
+	}
+
+	if(attrs.users){
+		users = attrs.users;
+		users.on('remove', function(deletedUser){
+			var index = _getIndexByItemId( deletedUser.get('id_str') );
+			section.deleteItemsAt( index, 1 );
+		});
+		users.on('reset', function(){
+			section.deleteItemsAt( 0, section.getItems().length);
+		});
+		users.on('change', function(changedUser){
+			var index = _getIndexByItemId(changedUser.get('id_str'));
+			var data = _settingData( changedUser );
+			section.updateItemAt(index, data, {'animated': true});
+		});
+		users.on('add', function(addedUser, collection, options){
+			addRows({
+				'addedUsers': addedUser,
+				'reset': false
+			});
+		});
+	}
+
+	if(attrs.ownerCustomer){
+		yotoos = attrs.ownerCustomer;
+		yotoos.on('change:unyotooed change:completed', function(yotoo){
+			var changedUser = users.where({'id_str': yotoo.get('target_id_str')}).pop();
+			if( !changedUser ){
+				return;
+			}
+			var index = _getIndexByItemId(changedUser.get('id_str'));
+			var data = section.getItemAt(index);
+
+			if( yotoo.get('completed') ){
+				data.template = 'completed';
+			}else if( yotoo.get('unyotooed') ){
+				data.template = 'unyotooed';
+			}else{
+				data.template = 'plain';
+			}
+			section.updateItemAt(index, data, {'animated': true});
+		});
+	}
+};
+if(ownerCustomer){
+	exports.set({
+		ownerCustomer: ownerCustomer,
+		users: users
+	});
+}
+
+$.userListView.addEventListener("scrollstart", function(){
+	Ti.API.info("ha ha");
+	// set();
+});
+
+// var _PLAIN = 1;
 // var _SELF = 2;
 // var _UNYOTOOED = 3;
 // var _COMPLETED = 4;
@@ -150,7 +213,7 @@ var getTemplate = function(type){
 			click : rightButtonAction
 		}
 	}];
-	
+
 	var listItemProps = {
 		// accessoryType: Ti.UI.LIST_ACCESSORY_TYPE_NONE,
 		// backgroundColor: '#0F0',
@@ -158,7 +221,7 @@ var getTemplate = function(type){
 		selectionStyle : Ti.UI.iPhone.ListViewCellSelectionStyle.NONE	// only iOS
 	};
 	var rightActionButtonIndex = 8;
-	
+
 	// if (rightActionButton) {
 		// plainTemplates[rightActionButttonIndex] = rightActionButton;
 	// }
@@ -187,7 +250,7 @@ var getTemplate = function(type){
 		// plainTemplates[rightActionButtonIndex].properties.borderColor = '#0F0';
 		// plainTemplates[rightActionButtonIndex].properties.title = 'completed';
 	}
-	
+
 	return {
 		'childTemplates': plainTemplates,
 		'events': {
@@ -226,8 +289,10 @@ $.userListView.add(listView);
 // });
 var section = Ti.UI.createListSection();
 */
+
+
 var section = $.section;
-var listView = $.listView;
+var listView = $.userListView;
 var _settingData = function(user) {
 	data = {
 		profileImage : {
@@ -257,10 +322,10 @@ var _settingData = function(user) {
 			visible : true
 		};
 	}
-	
+
 	// alert(user.get('id_str') +", "+ yotoos.where({'target_id_str': user.get('id_str')}).pop().get('completed') );
-	
-	/* template select */
+
+	// template select
 	var relevantYotoo = yotoos.where({'target_id_str': user.get('id_str')}).pop();
 	if( user.get('id_str') === ownerCustomer.get('id_str')){
 		data.template = 'self';
@@ -272,7 +337,7 @@ var _settingData = function(user) {
 	}
 	// data.template = 'completed';
 	// Ti.API.info("......" +relevantYotoo.get('source_id_str')+ ", "+relevantYotoo.get('target_id_str')+", "+relevantYotoo.get('unyotooed')+", "+ relevantYotoo.get('completed'));
-	
+
 	if (OS_ANDROID) {
 		data.description_ = {
 			text : user.get('description')
@@ -294,7 +359,7 @@ var addRows = function(options){
 	}else{
 		dataArray.push( _settingData( addedUsers ) );
 	}
-	
+
 	if( reset ){
 		// listView.deleteSectionAt(0);
 		section.setItems(dataArray, {'animated': true});
@@ -335,64 +400,3 @@ function onRightButtonClick(e){
 
 // listView.addEventListener('itemclick', function(e){
 // });
-
-
-/* event listeners of models; users, yotoos*/
-users.on('remove', function(deletedUser){
-	var index = _getIndexByItemId( deletedUser.get('id_str') );
-	section.deleteItemsAt( index, 1 );
-});
-
-users.on('reset', function(){
-	section.deleteItemsAt( 0, section.getItems().length);
-});
-
-users.on('change', function(changedUser){
-	var index = _getIndexByItemId(changedUser.get('id_str'));
-	var data = _settingData( changedUser );
-	section.updateItemAt(index, data, {'animated': true});
-});
-
-users.on('add', function(addedUser, collection, options){
-	addRows({ 
-		'addedUsers': addedUser,
-		'reset': false 
-	});
-});
-// var tempAddedUsers = Alloy.createCollection('user');
-// users.on('add', function(addedUser, collection, options){
-	// // alert("add"+addedUser.get('id_str'));
-	// alert( options.index + ", " + (users.length - 1) );
-// 	
-	// tempAddedUsers.add(addedUser);
-	// if( options.index === (users.length - 1) ){
-		// addRows({ 
-			// 'addedUsers': tempAddedUsers,
-			// 'reset': false 
-		// });
-		// tempAddedUsers.reset();
-	// }
-// });
-
-
-// Notice! yotoos is shared!
-yotoos.on('change:unyotooed change:completed', function(yotoo){
-	var changedUser = users.where({'id_str': yotoo.get('target_id_str')}).pop();
-	if( !changedUser ){
-		return;
-	}
-	var index = _getIndexByItemId(changedUser.get('id_str'));
-	var data = section.getItemAt(index);
-	
-	if( yotoo.get('completed') ){
-		data.template = 'completed';
-	}else if( yotoo.get('unyotooed') ){
-		data.template = 'unyotooed';
-	}else{
-		data.template = 'plain';
-	}
-	section.updateItemAt(index, data, {'animated': true});
-});
-
-
-

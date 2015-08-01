@@ -1,17 +1,24 @@
 var args = arguments[0] || {};
 var ownerCustomer = args.ownerCustomer || AG.customers.getCurrentCustomer();
 
-// var users = ownerCustomer.createCollection('user');
-// var users = Alloy.createCollection('user', {ownerCustomer: ownerCustomer});
-var yotoos = ownerCustomer.getYotoos();
-/*
-var autoComplete = function(){
-};
+var yotoos = ownerCustomer.get("yotoos");
+var users = ownerCustomer.createCollection("user");
 
-var userListView = Alloy.createController('userListView', {
-	'ownerCustomer': ownerCustomer,
-	'users': users
+// var userListView = Alloy.createController("userListView", {
+// 	"ownerCustomer": ownerCustomer,
+// 	"users": users
+// });
+// userListView.getView().setTop( $.searchBar.getHeight() );
+// $.globalView.add( userListView.getView() );
+$.userListView.set({
+	"ownerCustomer": ownerCustomer,
+	"users": users
 });
+$.userListView.getView().addEventListener("scrollstart", function(){
+	$.searchBar.blur();
+});
+
+/*
 userListView.getView().addEventListener('rightButtonClick', function(e){
 	var id_str = e.id_str;
 	var dialogOptions = {
@@ -79,13 +86,20 @@ function fetchUsers(query){
 	});
 }
 
-$.dummyScreen.addEventListener('touchstart', function(){
-	$.searchBar.blur();
-});
+
+*/
+
+
+
 Ti.App.addEventListener('app:buttonClick', function(){
 	$.searchBar.blur();
 });
-*/
+
+// $.dummyScreen.addEventListener('touchstart', function(){
+// 	$.searchBar.blur();
+// });
+
+
 /* SearchBar */
 $.searchBar.setHintText( L('search_twitter_users') );
 $.searchBar.addEventListener('return', function(e){
@@ -97,19 +111,19 @@ $.searchBar.addEventListener('cancel', function(){
 	$.searchBar.blur();
 });
 $.searchBar.addEventListener('focus', function(){
-	$.dummyScreen.show();
+	// $.dummyScreen.show();
 });
 $.searchBar.addEventListener('blur', function(){
-	$.dummyScreen.hide();
+	// $.dummyScreen.hide();
 });
-var typeDelayTimerId;
+var timerId;
 $.searchBar.addEventListener('change', function(e){
-	if( typeDelayTimerId ){
-		clearTimeout( typeDelayTimerId );
+	if( timerId ){
+		clearTimeout( timerId );
 	}
-	typeDelayTimerId = setTimeout(function(){
+	timerId = setTimeout(function(){
 		fetchUsers( e.value );
-	}, 1000);
+	}, 700);
 });
 
-// $.searchBar.focus();
+$.searchBar.focus();

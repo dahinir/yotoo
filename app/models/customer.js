@@ -88,6 +88,28 @@ exports.definition = {
 					return;
 				}
 
+				// for yotoo
+				var yotoos = Alloy.createCollection('yotoo');
+				yotoos.fetch({
+					localOnly: true,
+					sql: {
+								where: {
+										senderId: this.get('id')
+								}
+								// wherenot: {
+										// title: "Hello World"
+								// },
+								// orderBy:"title",
+								// offset:20,
+								// limit:20,
+								// like: {
+										// description: "search query"
+								// }
+						}
+				});
+				this.set("yotoos", yotoos);
+
+				// for user
 				switch (e.provider && e.provider.toLowerCase()) {
 					case "twitter":
 						var externalApi = require('twitter').create({
@@ -145,13 +167,15 @@ exports.definition = {
 
 				userIdentity.refresh({
 					"success": function(){
-						switch (model.get("provider")) {
-							case "twitter":
-								break;
-						}
+						// switch (model.get("provider")) {
+						// 	case "twitter":
+						// 		break;
+						// }
 					}
 				});
 			},
+
+			// deprecated: use .get("yotoos")
 			getYotoos: function(){
 				Ti.API.info("[customer.js] .getYootoos()");
 				if( this.yotoos ){
@@ -185,8 +209,11 @@ exports.definition = {
 				return this.yotoos;
 			},
 			createCollection: function(name, options){
+				if(name == "user"){
+					name = this.get("provider") + "User";
+				}
 				var collection = Alloy.createCollection(name, options);
-				collection.ownerCustomer = this;
+				collection.externalApi = this.get("userIdentity").externalApi;
 				return collection;
 			}
 		});

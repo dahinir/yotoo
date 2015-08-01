@@ -4,13 +4,4 @@
 "#searchBar": {
 	showCancel:false,
 	barColor: Alloy.Globals.COLORS.lightWarmGray
-},
-"#dummyScreen": {
-	/*zIndex: 1,*/
-	visible: false,
-	backgroundColor: "yellow",
-	/*borderWidth: 3,
-	borderColor: "#334400",*/
-	opacity: 0.3,
-	height: Ti.UI.FILL
 }
