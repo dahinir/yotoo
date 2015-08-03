@@ -6,6 +6,13 @@
 // density == Ti.Platform.DisplayCaps.density
 // pixel == dp * ( density / 160 )
 
+"TabGroup":{
+	tabsBackgroundColor : "white"
+}
+"TabGroup[platform=ios]":{
+	//pullBackgroundColor : "yellow",
+	tintColor : "orange"
+}
 "Window": {
 	// navBarHidden: true,
 	backgroundColor: "white"
@@ -14,14 +21,22 @@
 }
 "Window[platform=ios]": {
 	barColor: "white",
+	tintColor: "green",
 	// navTintColor: "yellow"
 	// statusBarStyle: Ti.UI.iPhone.StatusBar.LIGHT_CONTENT,
 	// statusBarStyle: Ti.UI.iPhone.StatusBar.GRAY,
+	/*
+	titleAttributes:{
+		color: Alloy.Globals.COLORS.red,
+		font: {fontFamily:'AppleSDGothicNeo', fontSize:17},
+		left : 0,
+		right : 0
+	},
+	*/
 	/*includeOpaqueBars: true,*/
-	translucent: false,
-
+	/*translucent: false,*/
 	/*autoAdjustScrollViewInsets : true,*/
-	extendEdges : [Ti.UI.EXTEND_EDGE_TOP, Ti.UI.EXTEND_EDGE_BOTTOM]
+	/*extendEdges : [Ti.UI.EXTEND_EDGE_TOP, Ti.UI.EXTEND_EDGE_BOTTOM]*/
 }
 "Window[platform=android]": {
     softInputMode: Ti.UI.Android.SOFT_INPUT_ADJUST_RESIZE
