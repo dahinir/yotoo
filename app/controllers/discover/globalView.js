@@ -62,14 +62,19 @@ userListView.getView().addEventListener('rightButtonClick', function(e){
 
 userListView.getView().setTop( $.searchBar.getHeight() );
 $.globalView.add( userListView.getView() );
-
+*/
 var lastSearchQuery;
 function fetchUsers(query){
+	Ti.API.info("fetch");
+
 	if(lastSearchQuery === query){
 		return;
 	}else{
 		lastSearchQuery = query;
 	}
+
+	users.search({"query":query});
+	return;
 	users.fetchFromServer({
 		'purpose': 'searchUsers',
 		'params': {
@@ -87,17 +92,11 @@ function fetchUsers(query){
 }
 
 
-*/
-
 
 
 Ti.App.addEventListener('app:buttonClick', function(){
 	$.searchBar.blur();
 });
-
-// $.dummyScreen.addEventListener('touchstart', function(){
-// 	$.searchBar.blur();
-// });
 
 
 /* SearchBar */

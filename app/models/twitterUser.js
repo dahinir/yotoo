@@ -76,13 +76,13 @@ exports.definition = {
 
 				// fetch from Twitter.com
 				if( !this.get("cached_at")
-					|| (Date.now()-this.get("cached_at")) > MIN_REFRESH_MS
-					|| options.force ) {
+						|| (Date.now()-this.get("cached_at")) > MIN_REFRESH_MS
+						|| options.force ) {
 					// Ti.API.info("[twitterUser.js] .refresh() go remote!!");
 					this.externalApi.fetch({
 						"purpose": "profile",
 						"params": {
-							"include_entities": true,
+							"include_entities": false,
 							"skip_status": true
 						},
 						"success": function(resultJson){
@@ -127,14 +127,14 @@ exports.definition = {
 				externalApi.fetch({
 					'purpose': options.purpose,
 					'params': params,
-					'success': function( resultJSON ){
+					'success': function( resultJson ){
 						// thisModel.clear();
-						thisModel.set( resultJSON );
+						thisModel.set( resultJson );
 						if( success ){
 							success();
 						}
 					},
-					'error': function( resultJSON ){
+					'error': function( resultJson ){
 						if( error ){
 							error();
 						}
@@ -152,11 +152,11 @@ exports.definition = {
 				externalApi.fetch({
 					'purpose': options.purpose,
 					'params': params,
-					'success': function( resultJSON ){
-						success( resultJSON );
+					'success': function( resultJson ){
+						success( resultJson );
 					},
-					'error': function( resultJSON ){
-						error( resultJSON );
+					'error': function( resultJson ){
+						error( resultJson );
 					}
 				});
 			}
@@ -180,6 +180,41 @@ exports.definition = {
 					// this.externalApi = e.ownerCustomer.externalApi;
 				// }
 			},
+
+			// using for autocomplete
+			search: function(options){
+				var options = options || {};
+				var query = options.query,
+						self = this;
+
+				this.externalApi.fetch({
+					"purpose": "searchUsers",
+					"params": {
+						"include_entities": false,
+						'skip_status': true,
+						"count": 20, // maxium 20
+						"q": query
+					},
+					"success": function(resultJson){
+						self.reset(resultJson);
+						return;
+
+						for(var i=0; i < resultJson.length; i++){
+							var user = self.get(resultJson[i].id_str);
+							if( user ){
+								user.set(resultJson[i]);
+							}else{
+								self.add(resultJson[i]);
+							}
+						}
+					},
+					"error": function( resultJson ){
+						Ti.API.info("[twitterUser.search] remote error ");
+					}
+				})
+			},
+
+			// deprecated :user don't know about Customer
 			getOwnerCustomer: function(){
 				if( this.ownerCustomer ){
 					return this.ownerCustomer;
@@ -196,6 +231,7 @@ exports.definition = {
 			 * @param {Function} [options.success] Callback function executed after a successful fetch tweets.
 			 * @param {Function} [options.error] Callback function executed after a failed fetch.
 			 */
+			// deprecated : i dont like this way
 			fetchFromServer: function(options){
 				var params = {'include_entities' : true};
 				_.extend(params, options.params);
@@ -224,29 +260,29 @@ exports.definition = {
 				getOwnerCustomer().externalApi.fetch({
 					'purpose': purpose,
 					'params': params,
-					'success': function( resultJSON ){
+					'success': function( resultJson ){
 						if( add || reset ){
 							self.reset();
 						}
 
-						for(var i=0; i < resultJSON.length; i++){
-							var user = self.get(resultJSON[i].id_str);
+						for(var i=0; i < resultJson.length; i++){
+							var user = self.get(resultJson[i].id_str);
 							if( user ){
-								user.set(resultJSON[i]);
+								user.set(resultJson[i]);
 							}else{
-								self.add(resultJSON[i]);
+								self.add(resultJson[i]);
 							}
 							if( Alloy.Globals.users.length > 1024 ){
 								Alloy.Globals.users.reset();
 							}
-							Alloy.Globals.users.add(resultJSON[i]);
+							Alloy.Globals.users.add(resultJson[i]);
 						}
 
 						if( success ){
-							success(self, resultJSON, options);
+							success(self, resultJson, options);
 						}
 					},
-					'error': function( resultJSON ){
+					'error': function( resultJson ){
 						Ti.API.info("[user.fetchFromServer] error ");
 						if( error ){
 							error();

@@ -14,19 +14,26 @@ exports.set = function(attrs) {
 
 	if(attrs.users){
 		users = attrs.users;
+		AG.uu = users;
 		users.on('remove', function(deletedUser){
 			var index = _getIndexByItemId( deletedUser.get('id_str') );
 			section.deleteItemsAt( index, 1 );
 		});
-		users.on('reset', function(){
-			section.deleteItemsAt( 0, section.getItems().length);
+		users.on('reset', function(collection, options){
+			Ti.API.info("[userListView.js] users reset event");
+			var listDataItems = [];
+			collection.each(function(mo){
+				listDataItems.push(_settingData(mo));
+			})
+			section.setItems(listDataItems, {'animated': true});
 		});
 		users.on('change', function(changedUser){
 			var index = _getIndexByItemId(changedUser.get('id_str'));
-			var data = _settingData( changedUser );
-			section.updateItemAt(index, data, {'animated': true});
+			var listDataItem = _settingData( changedUser );
+			section.updateItemAt(index, listDataItem, {'animated': true});
 		});
 		users.on('add', function(addedUser, collection, options){
+			Ti.API.info("[userListView.js] users add event");
 			addRows({
 				'addedUsers': addedUser,
 				'reset': false
@@ -62,10 +69,6 @@ if(ownerCustomer){
 	});
 }
 
-$.userListView.addEventListener("scrollstart", function(){
-	Ti.API.info("ha ha");
-	// set();
-});
 
 // var _PLAIN = 1;
 // var _SELF = 2;
@@ -326,6 +329,7 @@ var _settingData = function(user) {
 	// alert(user.get('id_str') +", "+ yotoos.where({'target_id_str': user.get('id_str')}).pop().get('completed') );
 
 	// template select
+	/*
 	var relevantYotoo = yotoos.where({'target_id_str': user.get('id_str')}).pop();
 	if( user.get('id_str') === ownerCustomer.get('id_str')){
 		data.template = 'self';
@@ -335,8 +339,7 @@ var _settingData = function(user) {
 	}else if( relevantYotoo && relevantYotoo.get('unyotooed') ){
 		data.template = 'unyotooed';
 	}
-	// data.template = 'completed';
-	// Ti.API.info("......" +relevantYotoo.get('source_id_str')+ ", "+relevantYotoo.get('target_id_str')+", "+relevantYotoo.get('unyotooed')+", "+ relevantYotoo.get('completed'));
+	*/
 
 	if (OS_ANDROID) {
 		data.description_ = {
@@ -347,6 +350,7 @@ var _settingData = function(user) {
 	}
 	return data;
 };
+
 var addRows = function(options){
 	var addedUsers = options.addedUsers;
 	var reset = options.reset;
