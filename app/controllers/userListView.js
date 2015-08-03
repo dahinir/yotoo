@@ -14,7 +14,6 @@ exports.set = function(attrs) {
 
 	if(attrs.users){
 		users = attrs.users;
-		AG.uu = users;
 		users.on('remove', function(deletedUser){
 			var index = _getIndexByItemId( deletedUser.get('id_str') );
 			section.deleteItemsAt( index, 1 );
@@ -42,7 +41,8 @@ exports.set = function(attrs) {
 	}
 
 	if(attrs.ownerCustomer){
-		yotoos = attrs.ownerCustomer;
+		ownerCustomer = attrs.ownerCustomer;
+		yotoos = attrs.ownerCustomer.get("yotoos");
 		yotoos.on('change:unyotooed change:completed', function(yotoo){
 			var changedUser = users.where({'id_str': yotoo.get('target_id_str')}).pop();
 			if( !changedUser ){
@@ -329,17 +329,15 @@ var _settingData = function(user) {
 	// alert(user.get('id_str') +", "+ yotoos.where({'target_id_str': user.get('id_str')}).pop().get('completed') );
 
 	// template select
-	/*
-	var relevantYotoo = yotoos.where({'target_id_str': user.get('id_str')}).pop();
+	var itsYotoo = yotoos.where({'target_id_str': user.get('id_str')}).pop();
 	if( user.get('id_str') === ownerCustomer.get('id_str')){
 		data.template = 'self';
-	}else if( relevantYotoo && relevantYotoo.get('completed') ){
+	}else if( itsYotoo && itsYotoo.get('completed') ){
 		data.template = 'completed';
 	// }else if( user.get('unyotooed') ){
-	}else if( relevantYotoo && relevantYotoo.get('unyotooed') ){
+	}else if( itsYotoo && itsYotoo.get('unyotooed') ){
 		data.template = 'unyotooed';
 	}
-	*/
 
 	if (OS_ANDROID) {
 		data.description_ = {
