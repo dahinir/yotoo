@@ -151,9 +151,10 @@ exports.definition = {
 					"authorization" : this.get("accessToken")
 				};
 			},
-			refresh: function(){
+			refresh: function(options){
 				Ti.API.info("[customer.js] .refresh() ");
-				var model = this,
+				var options = options || {},
+					model = this,
 					userIdentity = this.get("userIdentity");
 
 				this.fetch({
@@ -166,6 +167,7 @@ exports.definition = {
 				});
 
 				userIdentity.refresh({
+					"force": options.force,
 					"success": function(){
 						// switch (model.get("provider")) {
 						// 	case "twitter":
