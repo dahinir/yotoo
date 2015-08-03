@@ -4,22 +4,18 @@ var ownerCustomer = args.ownerCustomer || AG.customers.getCurrentCustomer();
 var yotoos = ownerCustomer.get("yotoos");
 var users = ownerCustomer.createCollection("user");
 
-// var userListView = Alloy.createController("userListView", {
-// 	"ownerCustomer": ownerCustomer,
-// 	"users": users
-// });
-// userListView.getView().setTop( $.searchBar.getHeight() );
-// $.globalView.add( userListView.getView() );
-$.userListView.set({
+$.userList.set({
 	"ownerCustomer": ownerCustomer,
 	"users": users
 });
-$.userListView.getView().addEventListener("scrollstart", function(){
+$.userList.getView().addEventListener("scrollstart", function(){
 	$.searchBar.blur();
 });
 
-/*
-userListView.getView().addEventListener('rightButtonClick', function(e){
+
+$.userList.getView().addEventListener('rightButtonClick', function(e){
+	Ti.API.info(e);
+
 	var id_str = e.id_str;
 	var dialogOptions = {
 	  'title': 'hello?',
@@ -60,9 +56,7 @@ userListView.getView().addEventListener('rightButtonClick', function(e){
 	});
 });
 
-userListView.getView().setTop( $.searchBar.getHeight() );
-$.globalView.add( userListView.getView() );
-*/
+
 var lastSearchQuery;
 function fetchUsers(query){
 	Ti.API.info("fetch");

@@ -24,7 +24,7 @@ exports.set = function(attrs) {
 			collection.each(function(mo){
 				listDataItems.push(_settingData(mo));
 			})
-			section.setItems(listDataItems, {'animated': true});
+			section.setItems(listDataItems, {'animated': false});
 		});
 		users.on('change', function(changedUser){
 			var index = _getIndexByItemId(changedUser.get('id_str'));
@@ -393,7 +393,7 @@ var _getIndexByItemId = function(itemId){
 };
 
 function onRightButtonClick(e){
-	// alert(e.itemId + e.bubbles);
+	Ti.API.info(e.itemId + e.bubbles);
 	$.userListView.fireEvent('rightButtonClick', {
 		'id_str': e.itemId
 	});
