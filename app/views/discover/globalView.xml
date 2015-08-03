@@ -2,8 +2,6 @@
 	<View id="globalView">
 		<SearchBar id="searchBar">
 		</SearchBar>
-		<View id="listContainer" borderWidth="4" borderColor="green">
-			<Require id="userList" src="userListView" />
-		</View>
+		<Require id="userList" src="userListView" />
 	</View>
 </Alloy>

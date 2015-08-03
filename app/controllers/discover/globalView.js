@@ -14,8 +14,6 @@ $.userList.getView().addEventListener("scrollstart", function(){
 
 
 $.userList.getView().addEventListener('rightButtonClick', function(e){
-	Ti.API.info(e);
-
 	var id_str = e.id_str;
 	var dialogOptions = {
 	  'title': 'hello?',
