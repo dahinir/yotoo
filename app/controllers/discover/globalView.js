@@ -1,20 +1,20 @@
 var args = arguments[0] || {};
-var ownerCustomer = args.ownerCustomer || AG.customers.getCurrentCustomer();
+var customer = args.ownerCustomer || AG.customers.getCurrentCustomer();
 
-var yotoos = ownerCustomer.get("yotoos");
-var users = ownerCustomer.createCollection("user");
+var yotoos = customer.get("yotoos");
+var users = customer.createCollection("user");
 
 $.userList.set({
-	"ownerCustomer": ownerCustomer,
+	"ownerCustomer": customer,
 	"users": users
 });
 $.userList.getView().addEventListener("scrollstart", function(){
 	$.searchBar.blur();
 });
 
-
+// AG.yts = yotoos;
 $.userList.getView().addEventListener('rightButtonClick', function(e){
-	var id_str = e.id_str;
+	var userId = e.userId;
 	var dialogOptions = {
 	  'title': 'hello?',
 	  'options': [L('unyotoo'), L('yotoo'), L('cancel')],
@@ -27,9 +27,9 @@ $.userList.getView().addEventListener('rightButtonClick', function(e){
 	optionDialog.addEventListener('click', function(e){
 		if( e.index === 0){
 			alert(L('unyotoo_effect'));
-			var yt = yotoos.where({'target_id_str':  id_str}).pop();
+			var yt = yotoos.where({'target_id_str':  userId}).pop();
 			yt.unyotoo({
-				'mainAgent': ownerCustomer,
+				'mainAgent': customer,
 				'success': function(){
 				},
 				'error': function(){
@@ -37,17 +37,15 @@ $.userList.getView().addEventListener('rightButtonClick', function(e){
 			});
 		}else if( e.index === 1 ){
 			alert(L('yotoo_effect'));
-
-			var targetUser = users.where({
-				'id_str' : id_str
-			}).pop();
-
+			// var receiverUser = users.where({'id_str': userId}).pop();
 			yotoos.addNewYotoo({
-				'sourceUser' : ownerCustomer,
-				'targetUser' : targetUser,
-				'success' : function() {
+				senderUser: customer.get("userIdentity"),
+				receiverUser: users.get(userId),
+				success: function() {
+					alert(L("yotoo_save_success"));
 				},
-				'error' : function() {
+				error: function() {
+					alert(L("yotoo_save_error"));
 				}
 			});
 		}

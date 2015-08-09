@@ -78,8 +78,8 @@ exports.definition = {
 		_.extend(Model.prototype, {
 			initialize: function(e, e2){
 				Ti.API.info("[customer.js] initialize customer");
-				var model = this;
-				// model.on("change",function(e){
+				var self = this;
+				// self.on("change",function(e){
 				// 	console.log("[customer.js] customer changed");
 				// });
 
@@ -90,11 +90,12 @@ exports.definition = {
 
 				// for yotoo
 				var yotoos = Alloy.createCollection('yotoo');
+				yotoos.customer = self;
 				yotoos.fetch({
 					localOnly: true,
 					sql: {
 								where: {
-										senderId: this.get('id')
+										senderId: self.get("provider_id")
 								}
 								// wherenot: {
 										// title: "Hello World"
@@ -113,27 +114,27 @@ exports.definition = {
 				switch (e.provider && e.provider.toLowerCase()) {
 					case "twitter":
 						var externalApi = require('twitter').create({
-							accessTokenKey: model.get('provider_accessToken'),
-							accessTokenSecret: model.get('provider_accessTokenSecret')
+							accessTokenKey: self.get('provider_accessToken'),
+							accessTokenSecret: self.get('provider_accessTokenSecret')
 						});
 						var userIdentity = Alloy.createModel("twitterUser", {
-								"id_str": model.get('provider_id')
+								"id_str": self.get('provider_id')
 						});
 						userIdentity.externalApi = externalApi;
 						userIdentity.on("remoteRefesh", function(e) {
-							model.set({
+							self.set({
 								"profile_username": e.get("name"),
 								"profile_picture": e.get("profile_image_url_https")
 							});
-							model.save(undefined, {localOnly:true});
+							self.save(undefined, {localOnly:true});
 						});
 						userIdentity.refresh();
-						model.set("userIdentity", userIdentity);
+						self.set("userIdentity", userIdentity);
 						break;
 					default:
 						console.log("[customer.js] there is no proper provider");
 				}
-				// model.refresh();	// fetch from server
+				// self.refresh();	// fetch from server
 			},
 			sync : function(method, model, opts){
 				// alert(opts);

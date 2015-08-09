@@ -5,7 +5,7 @@
 var args = arguments[0] || {};
 var ownerCustomer = args.ownerCustomer || AG.customers.getCurrentCustomer();
 
-Ti.API.info("[mainTabGroup.js]");
+Ti.API.info("[mainTabGroup.js] hello");
 
 // $.timelineTab.title = L('timeline');
 // $.connectTab.title = L('connect');

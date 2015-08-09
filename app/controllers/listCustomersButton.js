@@ -1,7 +1,6 @@
 var args = arguments[0] || {};
 var ownerCustomer = args.ownerCustomer || AG.customers.getCurrentCustomer();
 
-
 exports.init = function( options ) {
 	if( options.ownerCustomer){
 		ownerCustomer = options.ownerCustomer;

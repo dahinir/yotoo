@@ -2,7 +2,7 @@
 	<Window id="welcomeWindow">
 		<View layout="vertical">
 			<Label>..</Label>
-			<Label>WELCOME, some guidance of using yotoo should here.</Label>
+			<Label>WELCOME, mother fuckers</Label>
 			<Button id="signInButton">sign in</Button>
 			<Button id="signUpButton">sign up</Button>
 		</View>

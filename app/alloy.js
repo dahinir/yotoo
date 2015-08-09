@@ -5,12 +5,12 @@
  * for define some global javascript APIs
  * -rapodor
  *
-OS_IOS : true if the current compiler target is iOS
-OS_ANDROID : true if the current compiler target is Android
-OS_MOBILEWEB : true if the current compiler target is Mobile Web
-ENV_DEV : true if the current compiler target is built for development (running in the simulator or emulator)
-ENV_TEST : true if the current compiler target is built for testing on a device
-ENV_PRODUCTION : true if the current compiler target is built for production (running after a packaged installation)
+OS_IOS: true if the current compiler target is iOS
+OS_ANDROID: true if the current compiler target is Android
+OS_MOBILEWEB: true if the current compiler target is Mobile Web
+ENV_DEV: true if the current compiler target is built for development (running in the simulator or emulator)
+ENV_TEST: true if the current compiler target is built for testing on a device
+ENV_PRODUCTION: true if the current compiler target is built for production (running after a packaged installation)
  */
 "use strict";
 if(ENV_DEV){
@@ -42,11 +42,11 @@ var AG = Alloy.Globals;
 	var platformVersionInt = parseInt(Ti.Platform.version, 10);
 	var platformHeight = Ti.Platform.displayCaps.platformHeight;
 	AG.is = {
-		iOS7 : (OS_IOS && platformVersionInt == 7),
-		iOS8 : (OS_IOS && platformVersionInt >= 8),
-		talliPhone : (OS_IOS && platformHeight == 568),
-		iPhone6 : (OS_IOS && platformHeight == 667),
-		iPhone6Plus : (OS_IOS && platformHeight == 736)
+		iOS7: (OS_IOS && platformVersionInt == 7),
+		iOS8: (OS_IOS && platformVersionInt >= 8),
+		talliPhone: (OS_IOS && platformHeight == 568),
+		iPhone6: (OS_IOS && platformHeight == 667),
+		iPhone6Plus: (OS_IOS && platformHeight == 736)
 	};
 })();
 _.extend(AG ,{
@@ -72,7 +72,7 @@ _.extend(AG ,{
 	// 각 커스토머마다 생성되어야 한다.
 	users: Alloy.Collections.instance('twitterUser'),	// only important user
 	// users: Alloy.createCollection('user', {temp:"hehe"}),	// only important user
-	yotoos: Alloy.Collections.instance('yotoo'),
+	// yotoos: Alloy.Collections.instance('yotoo'),
 	chats: Alloy.Collections.instance('chat')
 });
 

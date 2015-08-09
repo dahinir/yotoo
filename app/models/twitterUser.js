@@ -21,8 +21,7 @@ exports.definition = {
 			// "type": "properties",
 			// "type": "sqlrest",
 			"collection_name": "twitterUser"
-		},
-		URL:"/api/Customers"
+		}
 	},
 
 	extendModel: function(Model) {

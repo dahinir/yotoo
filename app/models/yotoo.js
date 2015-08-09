@@ -12,22 +12,22 @@ exports.definition = {
 			"id": "string",
 
 			"provider": "string",	// like twitter, facebook..
-		    "senderId": "string",
-		    "receiverId": "string",
+	    "senderId": "string",
+	    "receiverId": "string",
 
-		    // "chat_group_id": "string",	// acs chat group id
-		    "created": "datetime",
-		    // "burned_at": "datetime",	// for last burned_at
+	    // "chat_group_id": "string",	// acs chat group id
+	    "created": "datetime",
+	    // "burned_at": "datetime",	// for last burned_at
 
-		    // status //
-		    "hided": "boolean",		// 1:true, 0:false
-		    "unyotooed": "boolean",
-		    "completed": "boolean",
-		    "burned": "boolean"
+	    // status //
+	    "hided": "boolean",		// 1:true, 0:false
+	    "unyotooed": "boolean",
+	    "completed": "boolean",
+	    "burned": "boolean"
 		},
-        // 'defaults': {
-        	// 'burned': 0	// false
-        // },
+    // 'defaults': {
+    	// 'burned': 0	// false
+    // },
 		adapter: {
 			// 'migration': ,
 			'idAttribute': "id",	// default is alloy_id
@@ -37,34 +37,43 @@ exports.definition = {
 		debug: 1,
 		URL: baseUrl + "/api/Yotoos",
 		initFetchWithLocalData: true,
-	    deleteAllOnFetch: false,
+    deleteAllOnFetch: false,
+		disableSaveDataLocallyOnServerError: true,	// important!!
+		// headers: function(){
+			// return "asdf";
+			// "i":"ii"
+			// "access_token": function(){
+			// 	return "asdf";
+		// },
 
 		// optimise the amount of data transfer from remote server to app
-	    addModifedToUrl: true,
-	    lastModifiedColumn: "modified"
+    addModifedToUrl: true,
+    lastModifiedColumn: "modified"
 	},
 	extendModel: function(Model) {
 		_.extend(Model.prototype, {
-	        defaults: {
-	        	'burned': 0	// false
-	        },
+      // defaults: {
+      	// 'burned': 0	// false
+      // },
 			initialize: function(e, e2){
 				// alert("init2" + JSON.stringify(e2));
 				// this.cloudApi = require('cloudProxy').getCloud();
 			},
-			getOwnerCustomer: function(){
-				if( this.ownerCustomer ){
-					return this.ownerCustomer;
+			getCustomer: function(){
+				if( this.customer ){
+					return this.customer;
 				}else if( this.collection ){
-					return this.collection.ownerCustomer;
+					return this.collection.customer;
 				}else{
-					Ti.API.error("[yotoo.js] getOwnerCustomer() :there is no owner customer");
+					Ti.API.error("[yotoo.js] getCustomer(): there is no owner customer");
 				}
+			},
+			test: function(){
 			},
 			sync: function(method, model, opts){
 				opts = opts || {};
 				opts.headers = _.extend( opts.headers || {},
-					this.getOwnerCustomer.getHeaders()
+					this.getCustomer().getHeaders()
 				);
 				// return Backbone.sync(method, model, opts);
 				return require("alloy/sync/"+this.config.adapter.type).sync.call(this, method, model, opts);
@@ -85,7 +94,7 @@ exports.definition = {
 					'onSuccess': function( result ){
 						thisModel.set(fields);
 
-						// to persistence :must save after success of server post
+						// to persistence: must save after success of server post
 						thisModel.save();
 						if( options.success ){
 							options.success();
@@ -115,7 +124,7 @@ exports.definition = {
 					'onSuccess': function( result ){
 						thisModel.set(fields);
 
-						// to persistence :must save after success of server post
+						// to persistence: must save after success of server post
 						thisModel.save();
 						if( options.success ){
 							options.success();
@@ -145,7 +154,7 @@ exports.definition = {
 					'onSuccess': function( result ){
 						thisModel.set(fields);
 
-						// to persistence :must save after success of server post
+						// to persistence: must save after success of server post
 						thisModel.save();
 						if( options.success ){
 							options.success();
@@ -238,10 +247,22 @@ exports.definition = {
 	},
 	extendCollection: function(Collection) {
 		_.extend(Collection.prototype, {
-			'initialize': function(e) {
-				this.cloudApi = require('cloudProxy').getCloud();
+			'initialize': function(e, e2) {
+				// Ti.API.info(arguments);
+				// Ti.API.info(e2);
+				// this.cloudApi = require('cloudProxy').getCloud();
+			},
+			sync: function(method, model, opts){
+				Ti.API.info("[yotoo.js] Collection.sync() called ");
+				opts = opts || {};
+				opts.headers = _.extend( opts.headers || {},
+					this.customer.getHeaders()
+				);
+				// return Backbone.sync.call(this, method, model, opts);
+				return require("alloy/sync/" + this.config.adapter.type).sync.call(this, method, model, opts);
 			},
 			/**
+			 * @deprecated since version ...
 			 * designed like backbone.fetch()
  			 * @param {Object} options
 			 */
@@ -279,61 +300,77 @@ exports.definition = {
 					}
 				});
 			},
-			'addNewYotoo': function(options){
-				var sourceUser = options.sourceUser;
-				var targetUser = options.targetUser;
-				var success = options.success;
-				var error = options.error;
-				var thisCollection = this;
-				var fields = {
-					'hided': 0,	// false
-					'completed': 0,
-					'unyotooed': 0,
-					'burned': 0
-				};
+			addNewYotoo: function(options){
+				var senderUser = options.senderUser  || this.customer.get("userIdentity"),
+					receiverUser = options.receiverUser,
+					success = options.success,
+					error = options.error,
+					self = this,
+					fields = {
+						"hided": 0,	// 0 for false
+						"completed": 0,
+						"unyotooed": 0,
+						"burned": 0
+					};
+				var existYotoo;
+				// = this.where({
+				// 	"senderId": receiverUser.id,
+				// 	"provider": self.customer.get("provider")
+				// }).pop();
 
-				var existYotoo = this.where({'target_id': targetUser.get('id_str')}).pop();
 				/* case of reyotoo */
 				if ( existYotoo ){
-					// alert("exist");
 					this.cloudApi.excuteWithLogin({
-						'mainAgent': sourceUser,
+						'mainAgent': senderUser,
 						'modelType': 'yotoo',
 						'method': 'put',
 						'id': existYotoo.get('id'),
 						'fields': fields,
 						'onSuccess': function( result ){
-							existYotoo.targetUser = targetUser;
+							existYotoo.receiverUser = receiverUser;
 							existYotoo.set(result);
 
-							// to persistence :must save after success of server post
+							// to persistence: must save after success of server post
 							existYotoo.save();
 
-							thisCollection.checkTargetYotoo({
-								'sourceUser': sourceUser,
-								'targetUser': targetUser,
+							self.checkTargetYotoo({
+								'senderUser': senderUser,
+								'receiverUser': receiverUser,
 								'success': success,
 								'error': error
 							});
 							Ti.API.info("[yotoo.addNewYotoo] success ");
 						},
 						'onError': function(e){
-							Ti.API.info("[yotoo.addNewYotoo] error ");
+							Ti.API.info("[yotoo.addNewYotoo] error  ");
 							if( error ){
 								error(e);
 							}
-							// alert(JSON.stringify(e));
 						}
 					});
 				/* case of new yotoo */
 				}else{
-					_.extend(fields, {
-						'source_id': sourceUser.get('id_str'),
-						'target_id': targetUser.get('id_str'),
-						'platform': 'twitter'	// default
+					var newYotoo = Alloy.createModel("yotoo", {
+						"provider": self.customer.get("provider"),
+						"senderId": senderUser.id,
+						"receiverId": receiverUser.id
 					});
+					newYotoo.customer = self.customer;
+					// save remote and local
+					newYotoo.save({
+						success: function(){
+							// add only if success remote and local
+							self.add(newYotoo);
+							success || success();
+						},
+						error: function(){
+							error || error();
+						}
+					})
+
+					/*
 					this.cloudApi.excuteWithLogin({
-						'mainAgent': sourceUser,
+						'mainAgent': senderUser,
 						'method': 'post',
 						'modelType': 'yotoo',
 						'fields': fields,
@@ -341,18 +378,18 @@ exports.definition = {
 							// for local save
 							var newYotoo = Alloy.createModel('yotoo');
 							newYotoo.set(result);
-							// to persistence :must save after success of server post
+							// to persistence: must save after success of server post
 							newYotoo.save();
 
 							// for runtime
-							newYotoo.targetUser = targetUser;	// using in peopleView.js
-							thisCollection.add( newYotoo );
+							newYotoo.receiverUser = receiverUser;	// using in peopleView.js
+							self.add( newYotoo );
 
 							// It'll see whether opponent is yotoo me
 							// should be add retry action..
-							thisCollection.checkTargetYotoo({
-								'sourceUser': sourceUser,
-								'targetUser': targetUser,
+							self.checkTargetYotoo({
+								'senderUser': senderUser,
+								'receiverUser': receiverUser,
 								'success': success,
 								'error': error
 							});
@@ -364,9 +401,13 @@ exports.definition = {
 							}
 						}
 					});
+					*/
 				}
 				return;
 			},
+			/**
+			* @deprecated go to the server
+			*/
 			'checkTargetYotoo': function(options){
 				var sourceUser = options.sourceUser;
 				var targetUser = options.targetUser;
@@ -386,8 +427,8 @@ exports.definition = {
 					'query': query,
 					'onSuccess': function( resultsJSON ){
 						var checkingYotoo = thisCollection.where({
-							'source_id' : sourceUser.get('id_str'),
-							'target_id' : targetUser.get('id_str')
+							'source_id': sourceUser.get('id_str'),
+							'target_id': targetUser.get('id_str')
 						}).pop();
 
 						if( resultsJSON.length === 0 ){
@@ -447,7 +488,7 @@ exports.definition = {
 							success();
 						}
 
-						/* update relevant yotoo's completed :콜백으로 이전
+						/* update relevant yotoo's completed: 콜백으로 이전
 						var relevantYotoo = thisCollection.where({
 							'source_id': sourceUser.get('id_str'),
 							'target_id': targetUser.get('id_str')

@@ -315,9 +315,9 @@ var _settingData = function(user) {
 		},
 		// description_: { text: user.get('description') },
 
-		// template: 'plain',
+		// properties are defined ListItem
 		properties : {
-			itemId : user.get('id_str')
+			itemId : user.id
 		}
 	};
 	if (user.get('verified')) {
@@ -394,9 +394,8 @@ var _getIndexByItemId = function(itemId){
 
 function onRightButtonClick(e){
 	Ti.API.info(e.itemId + e.bubbles);
-	$.userListView.fireEvent('rightButtonClick', {
-		'id_str': e.itemId
-	});
+	e.userId = e.itemId;
+	$.userListView.fireEvent('rightButtonClick', e);
 };
 // $.trigger('rightButtonClick');
 
