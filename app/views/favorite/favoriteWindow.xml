@@ -1,13 +1,16 @@
 <Alloy>
 	<Window id="favoriteWindow" class="tapWindow" >
-		<View id="navBarView" >
+		<LeftNavButton platform=ios>
+			<Require id="listCustomersButton" src="listCustomersButton" class="leftNavButton" />
+		</LeftNavButton>
+		<!-- <View id="navBarView" >
 			<Require id="listCustomersButton" src="listCustomersButton" class="leftNavButton" />
 			<View id="titleView">
 				<ImageView id="titleImageView" />
 				<Label id="titleLabel" />
 			</View>
 			<Require id="newTweetButton" src="newTweetButton" class="rightNavButton" />
-		</View>
+		</View> -->
 		<!-- <Require id="tweetsView" src="favorit/tweetsView" /> -->
 		<Require id="peopleView" src="favorite/peopleView" />
 	</Window>

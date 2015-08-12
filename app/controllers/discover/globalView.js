@@ -1,13 +1,18 @@
-var args = arguments[0] || {};
-var customer = args.ownerCustomer || AG.customers.getCurrentCustomer();
+// var args = arguments[0] || {};
+var customer; // = args.ownerCustomer || AG.customers.getCurrentCustomer();
+var yotoos, users;
 
-var yotoos = customer.get("yotoos");
-var users = customer.createCollection("user");
+exports.init = function(options) {
+	if(options.customer) {
+		customer = options.customer;
+		user = customer.createCollection("user");
+		$.userList.init({
+			customer: customer,
+			users: users
+		});
+	}
+};
 
-$.userList.set({
-	"ownerCustomer": customer,
-	"users": users
-});
 $.userList.getView().addEventListener("scrollstart", function(){
 	$.searchBar.blur();
 });

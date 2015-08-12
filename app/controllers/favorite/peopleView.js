@@ -1,6 +1,11 @@
+// var args = arguments[0] || {};
+var customer; // = args.ownerCustomer || AG.customers.getCurrentCustomer();
 
-var args = arguments[0] || {};
-var ownerCustomer = args.ownerCustomer || AG.customers.getCurrentCustomer();
+exports.init = function( options ) {
+	if( options.customer){
+		customer = options.customer;
+	}
+};
 /*
 var users = ownerCustomer.createCollection('user');
 var yotoos = ownerCustomer.getYotoos();
@@ -101,8 +106,8 @@ $.peopleView.add( userListView.getView() );
 	// newYotoos.map(function(yotoo){
 		// userIds = userIds + "," + yotoo.get('target_id_str');
 	// });
-// 	
-	// return userIds.replace( /^,/g , '');	
+//
+	// return userIds.replace( /^,/g , '');
 // };
 var fetchYotooUsers = function( newYotoos ) {
 	if( newYotoos.length === 0 ){
@@ -131,7 +136,7 @@ var fetchYotooUsers = function( newYotoos ) {
 fetchYotooUsers(yotoos);
 
 
-// should be 'pull to refresh' 
+// should be 'pull to refresh'
 var testButton = Ti.UI.createButton();
 $.peopleView.add( testButton);
 testButton.addEventListener('click', function(){
@@ -153,18 +158,18 @@ testButton.addEventListener('click', function(){
 	require('ti.cloud').PushNotifications.query();
 	// yyyy-mm-ddThh:mm:ss+zzzz
 	// yotoos.map(function(yotoo){
-		// Ti.API.info("[people.js] yotoo: " + yotoo.get('id')	
+		// Ti.API.info("[people.js] yotoo: " + yotoo.get('id')
 			// + " " + yotoo.get('chat_group_id') + " " + yotoo.get('source_id_str')
 			// + " " + yotoo.get('target_id_str') + " " + yotoo.get('unyotooed')
 			// + " " + yotoo.get('completed'));
 	// });
 	// var relevantYotoo = yotoos.where({'target_id_str': "283003008"}).pop();
 	// alert( relevantYotoo.get('completed') );
-	
+
 	// var cloudApi = require('cloudProxy').getCloud();
 	// cloudApi.deleteAllYotoos(ownerAccount);
 
-	// yotoos.fetchFromServer({ 
+	// yotoos.fetchFromServer({
 		// 'mainAgent': ownerAccount,
 		// 'success': function(){
 			// yotoos.map(function(yotoo){
@@ -181,6 +186,3 @@ testButton.addEventListener('click', function(){
 
 
 */
-
-
-

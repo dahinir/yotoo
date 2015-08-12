@@ -1,24 +1,17 @@
-/*
+/**
  * mainTabGroup.js
- * -rapodor
  */
 var args = arguments[0] || {};
-var ownerCustomer = args.ownerCustomer || AG.customers.getCurrentCustomer();
+var customer = args.customer;	// no mercy!
 
-Ti.API.info("[mainTabGroup.js] hello");
+Ti.API.debug("[mainTabGroup.js] called");
 
-// $.timelineTab.title = L('timeline');
-// $.connectTab.title = L('connect');
-$.discoverTab.title = L('discover');
-$.favoriteTab.title = L('favorite');
-// $.profileTab.title = L('profile');
-
-$.mainTabGroup.setActiveTab( ownerCustomer.get('status_activeTabIndex'));
+$.mainTabGroup.setActiveTab(customer.get('status_activeTabIndex'));
 
 $.mainTabGroup.addEventListener('focus', function(e){
 	// Ti.API.debug("[mainTabGroup] focused, index:" + e.index);
-	ownerCustomer.set('status_activeTabIndex', e.index);
-	ownerCustomer.save(undefined, {
+	customer.set('status_activeTabIndex', e.index);
+	customer.save(undefined, {
 		localOnly:true
 	});
 });
@@ -29,14 +22,9 @@ $.mainTabGroup.addEventListener('postlayout', function(e){
 	// $.mainTabGroup.borderWidth = 0;
 });
 
-/*
-exports.init = function( options ){
-	ownerAccount = options.ownerAccount;
-	Ti.API.info("[mainTabGroup] mainTabGroup init with owner: " + ownerAccount.get('access_token'));
-
-	$.timelineWindow.init({"ownerAccount" : ownerAccount});
-	$.connectWindow.init({"ownerAccount" : ownerAccount});
-	$.discoverWindow.init({"ownerAccount" : ownerAccount});
-	$.profileWindow.init({"ownerAccount" : ownerAccount});
-};
-*/
+$.discoverWindow.init({
+	customer: customer
+});
+$.favoriteWindow.init({
+	customer: customer
+});

@@ -7,12 +7,12 @@ var customers = AG.customers;
 var yotoos = AG.yotoos;
 var setting = AG.setting;
 
-var openWelcomeWindow = function(){
+function openWelcomeWindow(){
 	Alloy.createController('welcomeWindow').getView().open();
-};
-var openMainTabGroup = function(customer){
+}
+function openMainTabGroup(customer){
 	if(!customer){
-		Ti.API.info("[index.js] .openMainTabGroup() customer is undefined");
+		Ti.API.warn("[index.js] .openMainTabGroup() customer is undefined");
 		return;
 	}
 	if(customer.mainTabGroup){
@@ -21,16 +21,15 @@ var openMainTabGroup = function(customer){
 		customer.mainTabGroup.open();
 	}else{
 		Ti.API.info("[index.js] mainTabGroup is undefined, so will be created");
-		var mainTabGroup = Alloy.createController('mainTabGroup', {
-			"ownerCustomer" : customer
-		});
-		customer.mainTabGroup = mainTabGroup.getView();
+		customer.mainTabGroup = Alloy.createController("mainTabGroup", {
+			customer: customer
+		}).getView();
 		customer.mainTabGroup.open();
 	}
-};
-var closeMainTabGroup = function(customer){
+}
+function closeMainTabGroup(customer){
 	if(!customer){
-		Ti.API.info("[index.js] .closeMainTabGroup() customer is undefined");
+		Ti.API.warn("[index.js] .closeMainTabGroup() customer is undefined");
 		return;
 	}
 	if(customer.mainTabGroup){
@@ -38,17 +37,16 @@ var closeMainTabGroup = function(customer){
 		// customer.mainTabGroup.hide();
 		customer.mainTabGroup.close();
 	}
-};
+}
 
 /* Backbone events */
 // on changed current customers, reponse UI, create mainTabGroup is only in this.
 setting.on('change:currentCustomerId', function(setting ){
 	Ti.API.info("[index.js] was:  " + setting.previous('currentCustomerId'));
-	// currentCustomer
-	openMainTabGroup(customers.get(setting.get('currentCustomerId')));
-
 	// previousCustomer
 	closeMainTabGroup(customers.get(setting.previous('currentCustomerId')));
+	// currentCustomer
+	openMainTabGroup(customers.get(setting.get('currentCustomerId')));
 });
 customers.on('add', function(customer){
 	// create mainTabGroup is only in customers.on('change:active', funtion(e)){}
@@ -78,7 +76,6 @@ if( customers.length > 0){
 	// alert(L('when_first_run'));
 	openWelcomeWindow();
 }
-
 
 
 

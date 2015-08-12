@@ -1,25 +1,23 @@
 var args = arguments[0] || {};
-var ownerCustomer = args.ownerCustomer || AG.customers.getCurrentCustomer();
-
+var customer = args.ownerCustomer || AG.customers.getCurrentCustomer();
+// var getCurrentCustomer = AG.customers.getCurrentCustomer;
 exports.init = function( options ) {
-	if( options.ownerCustomer){
-		ownerCustomer = options.ownerCustomer;
+	if( options.customer){
+		customer = options.customer;
+		customer.on("change:profile_picture", updateData);
+		updateData();
 	}
 };
 
-var updateData = function(){
-	$.listCustomersButton.setBackgroundImage(ownerCustomer.get("profile_picture"));
-};
-updateData();
-ownerCustomer.on("change:profile_picture", updateData);
+function updateData(){
+	$.listCustomersButton.setBackgroundImage(customer.get("profile_picture"));
+}
 
 $.listCustomersButton.addEventListener('click', function(e) {
-	Ti.API.debug("[listCustomersButton.js] "+ownerCustomer.get('id'));
+	Ti.API.debug("[listCustomersButton.js] "+customer.get('id'));
 	Ti.App.fireEvent('app:buttonClick');
 
-	var customersWindow = Alloy.createController('customersWindow', {
-		"ownerCustomer" : ownerCustomer
-	}).getView();
+	var customersWindow = Alloy.createController('customersWindow').getView();
 
 	// pop animation
 	var t0 = Titanium.UI.create2DMatrix();

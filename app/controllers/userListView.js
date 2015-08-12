@@ -1,19 +1,22 @@
-var args = arguments[0] || {};
-var ownerCustomer = args.ownerCustomer,
-		users = args.users,
+// var args = arguments[0] || {};
+var customer,
+		users,
 		yotoos;
 
-exports.set = function(attrs) {
+/**
+* customer, users
+*/
+exports.init = function(options) {
 	Ti.API.info("[userListView.js] .set()");
-	attrs = attrs || {};
+	options = options || {};
 
 	if(users){
-		Ti.API.debug("[userListView.js] only call .set() once")
+		Ti.API.debug("[userListView.js] only call .init() once")
 		return;
 	}
 
-	if(attrs.users){
-		users = attrs.users;
+	if(options.users){
+		users = options.users;
 		users.on('remove', function(deletedUser){
 			var index = _getIndexByItemId( deletedUser.get('id_str') );
 			section.deleteItemsAt( index, 1 );
@@ -40,9 +43,9 @@ exports.set = function(attrs) {
 		});
 	}
 
-	if(attrs.ownerCustomer){
-		ownerCustomer = attrs.ownerCustomer;
-		yotoos = attrs.ownerCustomer.get("yotoos");
+	if(options.customer){
+		customer = options.customer;
+		yotoos = options.customer.get("yotoos");
 		yotoos.on('change:unyotooed change:completed', function(yotoo){
 			var changedUser = users.where({'id_str': yotoo.get('target_id_str')}).pop();
 			if( !changedUser ){
@@ -62,12 +65,6 @@ exports.set = function(attrs) {
 		});
 	}
 };
-if(ownerCustomer){
-	exports.set({
-		ownerCustomer: ownerCustomer,
-		users: users
-	});
-}
 
 
 // var _PLAIN = 1;
@@ -330,7 +327,7 @@ var _settingData = function(user) {
 
 	// template select
 	var itsYotoo = yotoos.where({'target_id_str': user.get('id_str')}).pop();
-	if( user.get('id_str') === ownerCustomer.get('id_str')){
+	if( user.get('id_str') === customer.get('id_str')){
 		data.template = 'self';
 	}else if( itsYotoo && itsYotoo.get('completed') ){
 		data.template = 'completed';

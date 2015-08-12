@@ -1,6 +1,6 @@
 <Alloy>
 	<!-- <Collection src="user" /> -->
-	<TabGroup id="mainTabGroup">
+	<TabGroup>
 		<!-- Explicit Window declaration -->
 <!--
 		<Tab id="timelineTab">

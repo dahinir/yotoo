@@ -1,12 +1,7 @@
 var args = arguments[0] || {};
-var ownerCustomer = args.ownerCustomer || AG.customers.getCurrentCustomer();
+// var ownerCustomer = args.ownerCustomer || AG.customers.getCurrentCustomer();
 var customers = AG.customers;
 
-exports.init = function(args) {
-	if( args.ownerCustomer ){
-		ownerCustomer = args.ownerCustomer;
-	}
-};
 
 $.backgroundView.addEventListener('click', function(e) {
 	$.customersWindow.close();
@@ -37,11 +32,6 @@ customers.map(function(customer){
 		AG.setting.set("currentCustomerId", customer.get('id'));
 		AG.setting.save();
 	});
-		
+
 	$.customersTable.appendRow(row);
 });
-
-
-
-
-
