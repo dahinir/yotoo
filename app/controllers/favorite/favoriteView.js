@@ -32,21 +32,22 @@ exports.init = function( options ) {
 	}
 };
 
-$.userList.getView().addEventListener('rightButtonClick', function(e){
-	var id_str = e.id_str;
-	var dialogOptions = {
-	  'title': 'hello?',
-	  'options': [L('unyotoo'), L('yotoo'), L('hide'), L('chat'), L('cancel')],
-	  'cancel': 4,
-	  'selectedIndex': 1,
-	  'destructive': 0
-	};
-	var optionDialog = Ti.UI.createOptionDialog(dialogOptions);
+$.userList.getView().addEventListener("rightButtonClick", function(e){
+	var userId = e.userId;
+console.log(e.user);
+	var optionDialog = Ti.UI.createOptionDialog({
+	  // title: 'hello?',
+	  options: [L("unyotoo"), L("yotoo"), L("hide"), L("chat"), L("cancel")],
+	  cancel: 4,
+	  selectedIndex: 1,
+	  destructive: 0
+	});
+
 	optionDialog.addEventListener('click', function(e){
-		var yt = yotoos.where({'target_id_str':  id_str}).pop();
-		var targetUser = users.where({
-			'id_str': id_str
-		}).pop();
+		// var yt = yotoos.where({'target_id_str':  id_str}).pop();
+		// var targetUser = users.where({
+		// 	'id_str': id_str
+		// }).pop();
 
 		if( e.index === 0){
 			yt.unyotoo({
@@ -59,11 +60,13 @@ $.userList.getView().addEventListener('rightButtonClick', function(e){
 			// yotoos.where({'target_id_str':  e.itemId}).pop().destroy();
 		}else if( e.index === 1){
 			yotoos.addNewYotoo({
-				'sourceUser': ownerCustomer,
-				'targetUser': targetUser,
-				'success': function(){
+				senderUser: customer.get("userIdentity"),
+				receiverUser: users.get(userId),
+				success: function() {
+					alert(L("yotoo_save_success"));
 				},
-				'error': function(){
+				error: function() {
+					alert(L("yotoo_save_error"));
 				}
 			});
 		}else if( e.index === 2 ){
@@ -77,6 +80,7 @@ $.userList.getView().addEventListener('rightButtonClick', function(e){
 			chatWindow.getView().open();
 		}
 	});
+
 	optionDialog.show();
 });
 

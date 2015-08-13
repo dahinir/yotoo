@@ -392,7 +392,7 @@ var _getIndexByItemId = function(itemId){
 function onRightButtonClick(e){
 	Ti.API.info(e.itemId + e.bubbles);
 	e.userId = e.itemId;
-	$.userListView.fireEvent('rightButtonClick', e);
+	$.userListView.fireEvent("rightButtonClick", e);
 };
 // $.trigger('rightButtonClick');
 

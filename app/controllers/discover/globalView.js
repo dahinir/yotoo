@@ -19,7 +19,7 @@ $.userList.getView().addEventListener("scrollstart", function(){
 });
 
 // AG.yts = yotoos;
-$.userList.getView().addEventListener('rightButtonClick', function(e){
+$.userList.getView().addEventListener("rightButtonClick", function(e){
 	var userId = e.userId;
 	var dialogOptions = {
 	  'title': 'hello?',
@@ -42,7 +42,7 @@ $.userList.getView().addEventListener('rightButtonClick', function(e){
 				}
 			});
 		}else if( e.index === 1 ){
-			alert(L('yotoo_effect'));
+			alert(L("yotoo_effect"));
 			// var receiverUser = users.where({'id_str': userId}).pop();
 			yotoos.addNewYotoo({
 				senderUser: customer.get("userIdentity"),
