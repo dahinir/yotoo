@@ -12,6 +12,6 @@
 			<Require id="newTweetButton" src="newTweetButton" class="rightNavButton" />
 		</View> -->
 		<!-- <Require id="tweetsView" src="favorit/tweetsView" /> -->
-		<Require id="peopleView" src="favorite/peopleView" />
+		<Require id="favoriteView" src="favorite/favoriteView" />
 	</Window>
 </Alloy>

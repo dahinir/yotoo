@@ -1,0 +1,9 @@
+<Alloy>
+	<View id="favoriteView">
+		<!-- <SearchBar id="searchBar" >
+		</SearchBar> -->
+		<Require id="userList" src="userListView" />
+		<!-- <View id="dummyScreen" zIndex="1" visible="false" >
+		</View> -->
+	</View>
+</Alloy>

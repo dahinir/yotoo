@@ -7,7 +7,7 @@ var customer,
 * customer, users
 */
 exports.init = function(options) {
-	Ti.API.info("[userListView.js] .set()");
+	Ti.API.info("[userListView.js] .init()");
 	options = options || {};
 
 	if(users){

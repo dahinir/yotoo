@@ -1,4 +1,4 @@
-"#globalView": {
+"#favoriteView": {
 	layout: "vertical"
 },
 "#searchBar": {

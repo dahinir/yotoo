@@ -96,7 +96,8 @@
 	width: Ti.UI.SIZE
 }
 "SearchBar": {
-	barColor: '#666',
+	showCancel: false,
+	barColor: Alloy.Globals.COLORS.lightWarmGray,
 	height: 43
 }
 

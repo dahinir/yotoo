@@ -22,6 +22,7 @@ $.mainTabGroup.addEventListener('postlayout', function(e){
 	// $.mainTabGroup.borderWidth = 0;
 });
 
+// init child views
 $.discoverWindow.init({
 	customer: customer
 });

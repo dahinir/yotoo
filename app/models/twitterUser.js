@@ -210,7 +210,46 @@ exports.definition = {
 					"error": function( resultJson ){
 						Ti.API.info("[twitterUser.search] remote error ");
 					}
-				})
+				});
+			},
+			lookup: function(options){
+				var options = options || {};
+				var userIds = options.userIds,
+						self = this;
+
+				if(!userIds){
+					Ti.API.warn("[twitterUser.lookup] where is userIds?");
+					return;
+				}else if(Array.isArray(userIds)){
+					userIds = userIds.join(",");
+				}
+
+				// fetch from local sqlite
+				// this.fetch({query: {
+				// 	statement: 'select * from ' + model.config.adapter.collection_name + ' where id_str = ?',
+				// 	params: [model.get("id_str")] }});
+
+				this.externalApi.fetch({
+					purpose: "lookupUsers",
+					params: {
+						"include_entities": false,
+						'skip_status': true,
+						"user_id": userIds	// TODO: A comma separated list of user IDs, up to 100 are allowed in a single request. You are strongly encouraged to use a POST for larger requests.
+					},
+					success: function(resultJson){
+						resultJson.forEach(function(json){
+							var user = self.get(json.id_str);
+							if(user){
+								user.set(json);
+							}else{
+								self.add(json);
+							}
+						});
+					},
+					error: function(resultJson){
+						Ti.API.info("[twitterUser.lookup] remote error ");
+					}
+				});
 			},
 
 			// deprecated :user don't know about Customer

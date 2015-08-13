@@ -1,58 +1,38 @@
 // var args = arguments[0] || {};
-var customer; // = args.ownerCustomer || AG.customers.getCurrentCustomer();
+var customer, // = args.ownerCustomer || AG.customers.getCurrentCustomer();
+	users,
+	yotoos;
 
 exports.init = function( options ) {
 	if( options.customer){
 		customer = options.customer;
+		users = customer.createCollection("user");
+		yotoos = customer.get("yotoos");
+
+		// sort this users by order of yotoo id
+		users.comparator = function(user) {
+			return yotoos.where({
+				"provider": customer.get("provider"),
+				"receiverId": user.id
+		 	}).pop().get("created");
+		};
+		users.on("add change", function(user){
+			// this users is yotooed users that means important
+			user.save();
+		});
+
+		fetchYotooUsers(yotoos);
+
+		$.userList.init({
+			customer: customer,
+			users: users
+		});
+
+		AG.cus = customer;AG.usrs = users;AG.yts = yotoos;
 	}
 };
-/*
-var users = ownerCustomer.createCollection('user');
-var yotoos = ownerCustomer.getYotoos();
-*/
-/* sort this users by order of yotoo id */
-/*
-users.comparator = function(user) {
-	return yotoos.where({'target_id_str': user.get('id_str') }).pop().get('created_at');
-};
-users.on('add change', function(user){
-	// this users is yotooed users that means important
-	user.save();
-});
 
-var tempAddedYotoos = Alloy.createCollection('yotoo');
-yotoos.on('add', function(addedYotoo, collection, options){
-	// alert(addedYotoo.get('source_id_str'));
-	// alert(options.index + ", "+ collection.length + ", "+ yotoos.length);
-	addedYotoo.save();
-	if( addedYotoo.targetUser ){
-		users.add( addedYotoo.targetUser );
-	}else{
-		tempAddedYotoos.add(addedYotoo);
-		if( options.index === yotoos.length - 1){
-			fetchYotooUsers( tempAddedYotoos );
-			tempAddedYotoos.reset();
-		}
-	}
-	Ti.API.info("[peopleView.js] yotoo add event");
-});
-
-yotoos.on('change:hided', function(yotoo){
-	var changedUser = users.where({'id_str': yotoo.get('target_id_str')}).pop();
-	if( yotoo.get('hided') ){
-		users.remove( changedUser );
-	}else{
-		var tempUnhidedYotoos = Alloy.createCollection('yotoo');
-		tempUnhidedYotoos.add( yotoo );
-		fetchYotooUsers( tempUnhidedYotoos );
-	}
-});
-
-var userListView = Alloy.createController('userListView', {
-	'users': users,
-	'yotoos': yotoos
-});
-userListView.getView().addEventListener('rightButtonClick', function(e){
+$.userList.getView().addEventListener('rightButtonClick', function(e){
 	var id_str = e.id_str;
 	var dialogOptions = {
 	  'title': 'hello?',
@@ -99,7 +79,63 @@ userListView.getView().addEventListener('rightButtonClick', function(e){
 	});
 	optionDialog.show();
 });
-$.peopleView.add( userListView.getView() );
+
+function fetchYotooUsers(newYotoos) {
+	if( !newYotoos || newYotoos.length == 0 ){
+		return;
+	}
+	var userIds = [];
+	newYotoos.map(function(yotoo){
+		if( yotoo.get("hided") ){
+			return;
+		}
+		userIds.push(yotoo.get("receiverId"));
+	});
+	// userIds = userIds.replace( /^,/g , '');
+
+	users.lookup({
+		userIds: userIds,
+		success: function(){
+			Ti.API.info("[peopleView.fetchUsersBy] success");
+		},
+		error: function(){
+			Ti.API.info("[peopleView.fetchUsersBy] failure");
+		}
+	});
+}
+
+
+
+/*
+var tempAddedYotoos = Alloy.createCollection('yotoo');
+yotoos.on('add', function(addedYotoo, collection, options){
+	// alert(addedYotoo.get('source_id_str'));
+	// alert(options.index + ", "+ collection.length + ", "+ yotoos.length);
+	addedYotoo.save();
+	if( addedYotoo.targetUser ){
+		users.add( addedYotoo.targetUser );
+	}else{
+		tempAddedYotoos.add(addedYotoo);
+		if( options.index === yotoos.length - 1){
+			fetchYotooUsers( tempAddedYotoos );
+			tempAddedYotoos.reset();
+		}
+	}
+	Ti.API.info("[peopleView.js] yotoo add event");
+});
+
+yotoos.on('change:hided', function(yotoo){
+	var changedUser = users.where({'id_str': yotoo.get('target_id_str')}).pop();
+	if( yotoo.get('hided') ){
+		users.remove( changedUser );
+	}else{
+		var tempUnhidedYotoos = Alloy.createCollection('yotoo');
+		tempUnhidedYotoos.add( yotoo );
+		fetchYotooUsers( tempUnhidedYotoos );
+	}
+});
+
+
 
 // var retrieveTargetIds = function( yotoos ){
 	// var userIds = "";
@@ -109,36 +145,12 @@ $.peopleView.add( userListView.getView() );
 //
 	// return userIds.replace( /^,/g , '');
 // };
-var fetchYotooUsers = function( newYotoos ) {
-	if( newYotoos.length === 0 ){
-		return;
-	}
-	var userIds = "";
-	newYotoos.map(function(yotoo){
-		if( yotoo.get('hided') ){
-			return;
-		}
-		userIds = userIds + "," + yotoo.get('target_id_str');
-	});
-	userIds = userIds.replace( /^,/g , '');
 
-	users.fetchFromServer({
-		'purpose': 'lookupUsers',
-		'params': { 'user_id': userIds },
-		'success': function(){
-			Ti.API.info("[peopleView.fetchUsersBy] success");
-		},
-		'error': function(){
-			Ti.API.info("[peopleView.fetchUsersBy] failure");
-		}
-	});
-};
-fetchYotooUsers(yotoos);
 
 
 // should be 'pull to refresh'
 var testButton = Ti.UI.createButton();
-$.peopleView.add( testButton);
+$.favoriteView.add( testButton);
 testButton.addEventListener('click', function(){
 	// tUser = Alloy.createModel('user',{
 		// id_str: '603155477',
@@ -183,6 +195,4 @@ testButton.addEventListener('click', function(){
 		// }
 	// });
 });
-
-
 */

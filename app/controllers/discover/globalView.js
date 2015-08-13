@@ -5,7 +5,8 @@ var yotoos, users;
 exports.init = function(options) {
 	if(options.customer) {
 		customer = options.customer;
-		user = customer.createCollection("user");
+		users = customer.createCollection("user");
+		yotoos = customer.get("yotoos");
 		$.userList.init({
 			customer: customer,
 			users: users

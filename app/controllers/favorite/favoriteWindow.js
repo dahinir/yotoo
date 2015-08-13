@@ -7,7 +7,7 @@ exports.init = function( options ) {
 		$.listCustomersButton.init({
 			customer: customer
 		});
-		$.peopleView.init({
+		$.favoriteView.init({
 			customer: customer
 		});
 	}
