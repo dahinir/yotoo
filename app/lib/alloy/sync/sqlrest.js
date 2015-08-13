@@ -1,7 +1,7 @@
 /**
  * SQL Rest Adapter for Titanium Alloy
  * @author Mads Møller
- * @version 0.3.0
+ * @version 0.3.2
  * Copyright Napp ApS
  * www.napp.dk
  */
@@ -136,9 +136,6 @@ function Migrator(config, transactionDb) {
 }
 
 function apiCall(_options, _callback) {
-	// Ti.API.debug("[sqlrest.js] _options: "+ JSON.stringify(_options) );
-	// Ti.API.debug("[sqlrest.js] _options.localOnly: "+ _options.localOnly );
-
 	//adding localOnly
 	if (Ti.Network.online && !_options.localOnly) {
 		//we are online - talk with Rest API
@@ -148,9 +145,6 @@ function apiCall(_options, _callback) {
 			cache : _options.cache,
 			validatesSecureCertificate: _options.validatesSecureCertificate
 		});
-
-		//Prepare the request
-		xhr.open(_options.type, _options.url);
 
 		xhr.onload = function() {
 			var responseJSON,
@@ -216,7 +210,10 @@ function apiCall(_options, _callback) {
 			cleanup();
 		};
 
-		// headers
+		//Prepare the request
+		xhr.open(_options.type, _options.url);
+
+		// headers (should be between open and send methods)
 		for (var header in _options.headers) {
 			// use value or function to return value
 			xhr.setRequestHeader(header, _.isFunction(_options.headers[header]) ? _options.headers[header]() : _options.headers[header]);
@@ -230,6 +227,8 @@ function apiCall(_options, _callback) {
 			var etag = getETag(_options.url);
 			etag && xhr.setRequestHeader('IF-NONE-MATCH', etag);
 		}
+
+
 
 		xhr.send(_options.data);
 	} else {
@@ -335,7 +334,7 @@ function Sync(method, model, opts) {
 	var type = methodMap[method];
 	params.type = type;
 
-	// set default headers[]
+	// set default headers
 	params.headers = params.headers || {};
 
 	// process the runtime params
@@ -1255,46 +1254,82 @@ function installDatabase(config) {
 	// get the database name from the db file path
 	var dbFile = config.adapter.db_file;
 	var table = config.adapter.collection_name;
-	var rx = /^([\/]{0,1})([^\/]+)\.[^\/]+$/;
+
+	var rx = /(^|.*\/)([^\/]+)\.[^\/]+$/;
 	var match = dbFile.match(rx);
 	if (match === null) {
 		throw 'Invalid sql database filename "' + dbFile + '"';
 	}
 	//var isAbsolute = match[1] ? true : false;
-	var dbName = config.adapter.db_name = match[2];
+	config.adapter.db_name = config.adapter.db_name || match[2];
+	var dbName = config.adapter.db_name;
 
 	// install and open the preloaded db
 	Ti.API.debug('Installing sql database "' + dbFile + '" with name "' + dbName + '"');
 	var db = Ti.Database.install(dbFile, dbName);
 
+	// set remoteBackup status for iOS
+	if (config.adapter.remoteBackup === false && OS_IOS) {
+		Ti.API.debug('iCloud "do not backup" flag set for database "'+ dbFile + '"');
+		db.file.setRemoteBackup(false);
+	}
+
 	// compose config.columns from table definition in database
 	var rs = db.execute('pragma table_info("' + table + '");');
-	var columns = {};
-	while (rs.isValidRow()) {
-		var cName = rs.fieldByName('name');
-		var cType = rs.fieldByName('type');
-		columns[cName] = cType;
+	var columns = {}, cName, cType;
+	if(rs) {
+		while (rs.isValidRow()) {
+			cName = rs.fieldByName('name');
+			cType = rs.fieldByName('type');
+			columns[cName] = cType;
 
-		// see if it already has the ALLOY_ID_DEFAULT
-		if (cName === ALLOY_ID_DEFAULT && !config.adapter.idAttribute) {
-			config.adapter.idAttribute = ALLOY_ID_DEFAULT;
+			// see if it already has the ALLOY_ID_DEFAULT
+			if (cName === ALLOY_ID_DEFAULT && !config.adapter.idAttribute) {
+				config.adapter.idAttribute = ALLOY_ID_DEFAULT;
+			}
+
+			rs.next();
 		}
+		rs.close();
+	} else {
+		var idAttribute = (config.adapter.idAttribute) ? config.adapter.idAttribute : ALLOY_ID_DEFAULT;
+		for (var k in config.columns) {
+			cName = k;
+			cType = config.columns[k];
 
-		rs.next();
+			// see if it already has the ALLOY_ID_DEFAULT
+			if (cName === ALLOY_ID_DEFAULT && !config.adapter.idAttribute) {
+				config.adapter.idAttribute = ALLOY_ID_DEFAULT;
+			} else if(k === config.adapter.idAttribute) {
+				cType += " UNIQUE";
+			}
+			columns[cName] = cType;
+		}
 	}
 	config.columns = columns;
-	rs.close();
 
 	// make sure we have a unique id field
 	if (config.adapter.idAttribute) {
 		if (!_.contains(_.keys(config.columns), config.adapter.idAttribute)) {
-			throw 'config.adapter.idAttribute "' + config.adapter.idAttribute + '" not found in list of columns for table "' + table + '"\n' + 'columns: [' + _.keys(config.columns).join(',') + ']';
+			throw 'config.adapter.idAttribute "' + config.adapter.idAttribute + '" not found in list of columns for table "' + table + '"\n' +
+				'columns: [' + _.keys(config.columns).join(',') + ']';
 		}
 	} else {
 		Ti.API.info('No config.adapter.idAttribute specified for table "' + table + '"');
 		Ti.API.info('Adding "' + ALLOY_ID_DEFAULT + '" to uniquely identify rows');
-		db.execute('ALTER TABLE ' + table + ' ADD ' + ALLOY_ID_DEFAULT + ' TEXT;');
-		config.columns[ALLOY_ID_DEFAULT] = 'TEXT';
+
+		var fullStrings = [],
+			colStrings = [];
+		_.each(config.columns, function(type, name) {
+			colStrings.push(name);
+			fullStrings.push(name + ' ' + type);
+		});
+		var colsString = colStrings.join(',');
+		db.execute('ALTER TABLE ' + table + ' RENAME TO ' + table + '_temp;');
+		db.execute('CREATE TABLE ' + table + '(' + fullStrings.join(',') + ',' + ALLOY_ID_DEFAULT + ' TEXT UNIQUE);');
+		db.execute('INSERT INTO ' + table + '(' + colsString + ',' + ALLOY_ID_DEFAULT + ') SELECT ' + colsString + ',CAST(_ROWID_ AS TEXT) FROM ' + table + '_temp;');
+		db.execute('DROP TABLE ' + table + '_temp;');
+		config.columns[ALLOY_ID_DEFAULT] = 'TEXT UNIQUE';
 		config.adapter.idAttribute = ALLOY_ID_DEFAULT;
 	}
 
@@ -1314,11 +1349,11 @@ module.exports.beforeModelCreate = function(config, name) {
 	}
 
 	// install database file, if specified
-	config.adapter.db_file && installDatabase(config);
+	if (config.adapter.db_file) { installDatabase(config); }
 	if (!config.adapter.idAttribute) {
 		Ti.API.info('No config.adapter.idAttribute specified for table "' + config.adapter.collection_name + '"');
 		Ti.API.info('Adding "' + ALLOY_ID_DEFAULT + '" to uniquely identify rows');
-		config.columns[ALLOY_ID_DEFAULT] = 'TEXT';
+		config.columns[ALLOY_ID_DEFAULT] = 'TEXT UNIQUE';
 		config.adapter.idAttribute = ALLOY_ID_DEFAULT;
 	}
 
@@ -1337,11 +1372,13 @@ module.exports.afterModelCreate = function(Model, name) {
 	// create and migrate the Model class
 	Model || ( Model = {});
 	Model.prototype.config.Model = Model;
+
 	// needed for fetch operations to initialize the collection from persistent store
 	Model.prototype.idAttribute = Model.prototype.config.adapter.idAttribute;
 	Migrate(Model);
-	cache.Model[name] = Model;
+
 	// Add the Model class to the cache
+	cache.Model[name] = Model;
 
 	return Model;
 };
@@ -1356,7 +1393,7 @@ function getParam(name) {
 
 function logger(DEBUG, message, data) {
 	if (DEBUG) {
-		Ti.API.debug("[REST API] " + message);
+		Ti.API.debug("[SQL REST API] " + message);
 		if (data) {
 			Ti.API.debug( typeof data === 'object' ? JSON.stringify(data, null, '\t') : data);
 		}
