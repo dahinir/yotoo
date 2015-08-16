@@ -41,6 +41,12 @@ exports.init = function(options) {
 				'reset': false
 			});
 		});
+		if(users.length){
+			users.map(function(mo){
+				return _settingData(mo);
+			});
+			section.setItems(listDataItems, {'animated': false});
+		}
 	}
 
 	if(options.customer){
@@ -293,7 +299,7 @@ var section = Ti.UI.createListSection();
 
 var section = $.section;
 var listView = $.userListView;
-var _settingData = function(user) {
+function _settingData(user) {
 	data = {
 		profileImage : {
 			image : user.get('profile_image_url_https').replace(/_normal\./g, '_bigger.')

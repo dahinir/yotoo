@@ -1,6 +1,6 @@
 <Alloy>
 	<Window id="favoriteWindow" class="tapWindow" >
-		<LeftNavButton platform=ios>
+		<LeftNavButton platform="ios">
 			<Require id="listCustomersButton" src="listCustomersButton" class="leftNavButton" />
 		</LeftNavButton>
 		<!-- <View id="navBarView" >

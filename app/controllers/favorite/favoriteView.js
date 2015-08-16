@@ -11,6 +11,9 @@ exports.init = function( options ) {
 
 		// sort this users by order of yotoo id
 		users.comparator = function(user) {
+			console.log(customer.get("provider"));
+			console.log("user.id: "+ user.id);
+			console.log(user);
 			return yotoos.where({
 				"provider": customer.get("provider"),
 				"receiverId": user.id
@@ -21,12 +24,12 @@ exports.init = function( options ) {
 			user.save();
 		});
 
-		fetchYotooUsers(yotoos);
 
 		$.userList.init({
 			customer: customer,
 			users: users
 		});
+// fetchYotooUsers(yotoos);
 
 		AG.cus = customer;AG.usrs = users;AG.yts = yotoos;
 	}
@@ -34,7 +37,7 @@ exports.init = function( options ) {
 
 $.userList.getView().addEventListener("rightButtonClick", function(e){
 	var userId = e.userId;
-console.log(e.user);
+
 	var optionDialog = Ti.UI.createOptionDialog({
 	  // title: 'hello?',
 	  options: [L("unyotoo"), L("yotoo"), L("hide"), L("chat"), L("cancel")],
@@ -97,13 +100,13 @@ function fetchYotooUsers(newYotoos) {
 	});
 	// userIds = userIds.replace( /^,/g , '');
 
-	users.lookup({
+	users.addByIds({
 		userIds: userIds,
 		success: function(){
-			Ti.API.info("[peopleView.fetchUsersBy] success");
+			Ti.API.info("[peopleView.fetchUsersBy] success ");
 		},
 		error: function(){
-			Ti.API.info("[peopleView.fetchUsersBy] failure");
+			Ti.API.info("[peopleView.fetchUsersBy] failure ");
 		}
 	});
 }

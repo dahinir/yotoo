@@ -77,7 +77,7 @@ exports.definition = {
 				if( !this.get("cached_at")
 						|| (Date.now()-this.get("cached_at")) > MIN_REFRESH_MS
 						|| options.force ) {
-					// Ti.API.info("[twitterUser.js] .refresh() go remote!!");
+					Ti.API.info("[twitterUser.js] .refresh() go remote!!");
 					this.externalApi.fetch({
 						"purpose": "profile",
 						"params": {
@@ -180,7 +180,7 @@ exports.definition = {
 				// }
 			},
 
-			// using for autocomplete
+			// using for autocomplete: reset
 			search: function(options){
 				var options = options || {};
 				var query = options.query,
@@ -208,35 +208,46 @@ exports.definition = {
 						}
 					},
 					"error": function( resultJson ){
-						Ti.API.info("[twitterUser.search] remote error ");
+						Ti.API.info("[twitterUser.search] remote error  ");
 					}
 				});
 			},
-			lookup: function(options){
+			addByIds: function(options){
+				Ti.API.info("[twitterUser.js] .addByids() called");
+
 				var options = options || {};
-				var userIds = options.userIds,
+				var userIds = options.userIds,	// Array!
 						self = this;
 
 				if(!userIds){
 					Ti.API.warn("[twitterUser.lookup] where is userIds?");
 					return;
-				}else if(Array.isArray(userIds)){
-					userIds = userIds.join(",");
 				}
 
 				// fetch from local sqlite
-				// this.fetch({query: {
-				// 	statement: 'select * from ' + model.config.adapter.collection_name + ' where id_str = ?',
-				// 	params: [model.get("id_str")] }});
+				var newUsers = Alloy.createCollection("twitterUser");
+				var qstring = "(" + userIds.map(function(){return "?";}).join(",") + ")";
+				newUsers.fetch({
+					query: {
+						statement: "select * from "+self.config.adapter.collection_name+" where id_str in "+qstring,
+						params: userIds
+				}});
+				newUsers.each(function(newUser){
+					if(newUser.id && !self.get(newUser.id)){
+						self.add(newUser);
+					}
+				});
 
+				// fetch from remote server
 				this.externalApi.fetch({
 					purpose: "lookupUsers",
 					params: {
 						"include_entities": false,
 						'skip_status': true,
-						"user_id": userIds	// TODO: A comma separated list of user IDs, up to 100 are allowed in a single request. You are strongly encouraged to use a POST for larger requests.
+						"user_id": userIds.join(",")	// TODO: A comma separated list of user IDs, up to 100 are allowed in a single request. You are strongly encouraged to use a POST for larger requests.
 					},
 					success: function(resultJson){
+						Ti.API.info("[twitterUser] sucess fetch by externaApi");
 						resultJson.forEach(function(json){
 							var user = self.get(json.id_str);
 							if(user){

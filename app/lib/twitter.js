@@ -197,7 +197,6 @@ var api = function(options){
  * @return {Object} Instance of social to make subsequent API calls.
  */
 exports.create = function(settings) {
-	Ti.API.debug("[twitter.js] create()");
 	if( !settings ){
 		settings = {};
 	}
@@ -291,13 +290,13 @@ exports.create = function(settings) {
 
 			Ti.API.debug("[twitter.js] url: "+ url);
 			oauthClient.request({
-				'url': url,
-				'success': function(data){
-					Ti.API.debug("[twitter.js] fetch success.");
+				url: url,
+				success: function(data){
+					Ti.API.debug("[twitter.js] fetch success. url: "+ url + " accesskey: "+accessTokenKey);
 					var result = JSON.parse(data.text || '');
 					success(result);
 				},
-				'failure': function(data){
+				failure: function(data){
 					Ti.API.debug("[twitter.js] failure to fetch.");
 					var result = JSON.parse(data.text);
 

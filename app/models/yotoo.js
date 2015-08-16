@@ -247,13 +247,28 @@ exports.definition = {
 	},
 	extendCollection: function(Collection) {
 		_.extend(Collection.prototype, {
-			'initialize': function(e, e2) {
+			initialize: function(e, e2) {
 				// Ti.API.info(arguments);
 				// Ti.API.info(e2);
+				this.customer = e.customer;
 				// this.cloudApi = require('cloudProxy').getCloud();
+
+				// for yotooedUsers
+				// var users = e.users;
+				// users.on("add change", function(user){
+				// 	// yotooed users should be saved
+				// 	user.save();
+				// });
+				// 		yotoos.on("add", function(model, collection, options){
+				// 			users.addByIds({ userIds: yotoos.getIds() });
+				// 		});
+				// 		yotoos.on("change:hided", function(yotoo){
+				// 		});
+				// users.addByIds({ userIds: yotoos.getIds() });
+				// this.set("yotooedUsers", users);
 			},
 			sync: function(method, model, opts){
-				Ti.API.info("[yotoo.js] Collection.sync() called ");
+				Ti.API.info("[yotoo.js] .sync() called ");
 				opts = opts || {};
 				opts.headers = _.extend( opts.headers || {},
 					this.customer.getHeaders()
@@ -262,41 +277,12 @@ exports.definition = {
 				return require("alloy/sync/" + this.config.adapter.type).sync.call(this, method, model, opts);
 			},
 			/**
-			 * @deprecated since version ...
-			 * designed like backbone.fetch()
- 			 * @param {Object} options
-			 */
-			'fetchFromServer': function(options){
-				var mainAgent = options.mainAgent;
-				var add = options.add;
-				var reset = options.reset;
-				var success = options.success;
-				var error = options.error;
-
-				var thisCollection = this;
-				var query ={
-					'source_id': mainAgent.get('id_str')
-				};
-
-				this.cloudApi.excuteWithLogin({
-					'mainAgent': mainAgent,
-					'method': 'get',
-					'modelType': 'yotoo',
-					'query': query,
-					'onSuccess': function( resultsJSON ){
-						if( reset ){
-							thisCollection.reset();
-						}
-						thisCollection.add( resultsJSON );
-						if( success ){
-							success(thisCollection, resultsJSON, options);
-						}
-					},
-					'onError': function(e){
-						Ti.API.info("[yotoo.fetchFromServer] error ");
-						if( error ){
-							error(e);
-						}
+			* @returns {Array}
+			*/
+			getIds: function(options){
+				return this.map(function(yotoo){
+					if( !yotoo.get("hided") ){
+						return yotoo.get("receiverId");
 					}
 				});
 			},
@@ -356,9 +342,12 @@ exports.definition = {
 						"receiverId": receiverUser.id
 					});
 					newYotoo.customer = self.customer;
+
 					// save remote and local
 					newYotoo.save({
 						success: function(){
+							// new yotooed users should be saved
+							receiverUser.save();
 							// add only if success remote and local
 							self.add(newYotoo);
 							success || success();
@@ -404,6 +393,45 @@ exports.definition = {
 					*/
 				}
 				return;
+			},
+			/**
+			 * @deprecated since version ...
+			 * designed like backbone.fetch()
+ 			 * @param {Object} options
+			 */
+			'fetchFromServer': function(options){
+				var mainAgent = options.mainAgent;
+				var add = options.add;
+				var reset = options.reset;
+				var success = options.success;
+				var error = options.error;
+
+				var thisCollection = this;
+				var query ={
+					'source_id': mainAgent.get('id_str')
+				};
+
+				this.cloudApi.excuteWithLogin({
+					'mainAgent': mainAgent,
+					'method': 'get',
+					'modelType': 'yotoo',
+					'query': query,
+					'onSuccess': function( resultsJSON ){
+						if( reset ){
+							thisCollection.reset();
+						}
+						thisCollection.add( resultsJSON );
+						if( success ){
+							success(thisCollection, resultsJSON, options);
+						}
+					},
+					'onError': function(e){
+						Ti.API.info("[yotoo.fetchFromServer] error ");
+						if( error ){
+							error(e);
+						}
+					}
+				});
 			},
 			/**
 			* @deprecated go to the server

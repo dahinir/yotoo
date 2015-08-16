@@ -37,7 +37,7 @@ exports.definition = {
 		disableSaveDataLocallyOnServerError: true,
 		// initFetchWithLocalData: true,
 		// returnErrorResponse: true,
-	    deleteAllOnFetch: false,
+    deleteAllOnFetch: false,
         // headers: {
         	// "access_token": function(){
         		// return "asdf";
@@ -77,7 +77,8 @@ exports.definition = {
 	extendModel: function(Model) {
 		_.extend(Model.prototype, {
 			initialize: function(e, e2){
-				Ti.API.info("[customer.js] initialize customer");
+				Ti.API.info("[customer.js] initialize customer. cid:  "+ this.cid);
+
 				var self = this;
 				// self.on("change",function(e){
 				// 	console.log("[customer.js] customer changed");
@@ -88,11 +89,14 @@ exports.definition = {
 					return;
 				}
 
-				// for yotoo
-				var yotoos = Alloy.createCollection('yotoo');
-				yotoos.customer = self;
+				// for yotoos
+				var yotoos = Alloy.createCollection("yotoo", {
+					customer: self
+				});
+				// yotoos.customer = self;
 				yotoos.fetch({
 					localOnly: true,
+					add: true,	// must!!
 					sql: {
 								where: {
 										senderId: self.get("provider_id")
@@ -110,17 +114,17 @@ exports.definition = {
 				});
 				this.set("yotoos", yotoos);
 
-				// for user
+				// for userIdentity
+				var userIdentity;
 				switch (e.provider && e.provider.toLowerCase()) {
 					case "twitter":
-						var externalApi = require('twitter').create({
+						userIdentity = Alloy.createModel("twitterUser", {
+								"id_str": self.get('provider_id')
+						});
+						userIdentity.externalApi = require('twitter').create({
 							accessTokenKey: self.get('provider_accessToken'),
 							accessTokenSecret: self.get('provider_accessTokenSecret')
 						});
-						var userIdentity = Alloy.createModel("twitterUser", {
-								"id_str": self.get('provider_id')
-						});
-						userIdentity.externalApi = externalApi;
 						userIdentity.on("remoteRefesh", function(e) {
 							self.set({
 								"profile_username": e.get("name"),
@@ -128,17 +132,40 @@ exports.definition = {
 							});
 							self.save(undefined, {localOnly:true});
 						});
-						userIdentity.refresh();
-						self.set("userIdentity", userIdentity);
 						break;
 					default:
 						console.log("[customer.js] there is no proper provider");
 				}
+				userIdentity.refresh();
+				this.set("userIdentity", userIdentity);
 				// self.refresh();	// fetch from server
-			},
+
+
+				// // for yotooedUsers
+				// var users;
+				// // users = this.createCollection("user");
+				// switch (e.provider && e.provider.toLowerCase()) {
+				// 	case "twitter":
+				// 		users = Alloy.createCollection("twitterUser");
+				// 		users.externalApi = userIdentity.externalApi;
+				//
+				// 		users.on("add change", function(user){
+				// 			// yotooed users should be saved
+				// 			user.save();
+				// 		});
+				// 		yotoos.on("add", function(model, collection, options){
+				// 			users.addByIds({ userIds: yotoos.getIds() });
+				// 		});
+				// 		yotoos.on("change:hided", function(yotoo){
+				// 		});
+				// 		break;
+				// }
+				// // users.addByIds({ userIds: yotoos.getIds() });
+				// this.set("yotooedUsers", users);
+			},	// end of initialize
 			sync : function(method, model, opts){
 				// alert(opts);
-				console.log("[customer.js] .sync() called");
+				console.log("[customer.js] .sync() called   ");
 				opts = opts || {};
 				opts.headers = _.extend( opts.headers || {},
 					this.getHeaders()
@@ -177,6 +204,14 @@ exports.definition = {
 					}
 				});
 			},
+			createCollection: function(name, options){
+				if(name == "user"){
+					name = this.get("provider") + "User";
+				}
+				var collection = Alloy.createCollection(name, options);
+				collection.externalApi = this.get("userIdentity").externalApi;
+				return collection;
+			},
 
 			// deprecated: use .get("yotoos")
 			getYotoos: function(){
@@ -210,14 +245,6 @@ exports.definition = {
 					// this.yotoos = Alloy.createCollection('yotoo', relevantYotoos);
 				}
 				return this.yotoos;
-			},
-			createCollection: function(name, options){
-				if(name == "user"){
-					name = this.get("provider") + "User";
-				}
-				var collection = Alloy.createCollection(name, options);
-				collection.externalApi = this.get("userIdentity").externalApi;
-				return collection;
 			}
 		});
 		return Model;

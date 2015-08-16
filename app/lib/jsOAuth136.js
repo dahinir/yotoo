@@ -312,7 +312,7 @@ exports.OAuth = (function (global) {
             this.setCallbackUrl = function (url) {
                 oauth.callbackUrl = url;
             };
-            
+
 
             /**
              * Makes an authenticated http request
@@ -348,7 +348,7 @@ exports.OAuth = (function (global) {
                         // if(data[name] instanceof  File || typeof data[name].fileName != 'undefined') hasFile = true; // comment out by rapodor
                         if( typeof data[name].fileName != 'undefined') hasFile = true;
                     }
-                    
+
                     return hasFile;
                 })();
 
@@ -401,20 +401,20 @@ exports.OAuth = (function (global) {
 							    if(arg.bytesProcessed == -1) {
 							        Ti.API.info("At end of stream.");
 							    } else {
-							        Ti.API.info(String.format("Received %.0f bytes. Total: %.0f bytes.", 
+							        Ti.API.info(String.format("Received %.0f bytes. Total: %.0f bytes.",
 							                    arg.bytesProcessed, arg.totalBytesProcessed));
 							        // do something useful with the data in arg.buffer
 							    }
-							}					
+							}
 
 							// Ti.API.debug("clear interval");
 							// xhr.abort();
 						    // clearInterval(interval);
-					}, 5000);   
+					}, 5000);
 				}
 				// end of add
 				*/
-				
+
                 xhr.onreadystatechange = function () {
                 	// Ti.API.debug("[jsOAuth] onreadystatechange " + xhr.status +" ("+xhr.statusText+"), "+ xhr.readyState );
                     if (xhr.readyState === 4) {
@@ -448,6 +448,7 @@ exports.OAuth = (function (global) {
                         var responseObject = {text: xhr.responseText, xml: (includeXML ? xhr.responseXML : ''), requestHeaders: requestHeaders, responseHeaders: responseHeaders};
                         // we are powerless against 3xx redirects
                         if((xhr.status >= 200 && xhr.status <= 226) || xhr.status == 304 || xhr.status === 0) {
+                          // console.log("097070706989869876876 xht.status: "+ xhr.status);
                             success(responseObject);
                         // everything what is 400 and above is a failure code
                         } else if(xhr.status >= 400 && xhr.status !== 0) {
@@ -538,8 +539,8 @@ exports.OAuth = (function (global) {
                     xhr.setRequestHeader(i, headers[i]);
                 }
 
-                // xhr.send(query); // comment out by rapodor
-                xhr.send(data); // added by rapodor
+                xhr.send(query); // original
+                // xhr.send(data); // added by rapodor
             };
 
             return this;
@@ -1077,7 +1078,7 @@ exports.OAuth = (function (global) {
     }
 
     return OAuth;
-// })(exports); // comment out by rapodor 
+// })(exports); // comment out by rapodor
 })(this); // added by rapodor
 // var exports = exports || this; // comment out by rapodor
 (function (global) {
@@ -1116,5 +1117,5 @@ exports.OAuth = (function (global) {
 
         return output;
     };
-// })(exports); // comment out by rapodor 
+// })(exports); // comment out by rapodor
 })(this); // added by rapodor

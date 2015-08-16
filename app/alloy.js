@@ -66,6 +66,7 @@ _.extend(AG ,{
 	//singleton Models (static id)
 	setting: Alloy.Models.instance('setting'),
 	customers: Alloy.Collections.instance('customer'),
+	// customers: Alloy.createCollection("customer"),
 	// accounts: Alloy.Collections.instance('account'),
 
 	// 유저, 유투, 챗은 글로벌 하게 사용할 필요 없다. 삭제요망.
@@ -89,8 +90,10 @@ AG.setting.fetch({
 });
 
 AG.customers.fetch({
-    localOnly:true
+	localOnly:true,
+	add:true	// must set "add" sqlrest.js가 add를 셋팅해야 쓸모없는 모델이 생성 안한다.
 });
+
 // AG.accounts.fetch();
 // AG.users.fetch();
 // AG.yotoos.fetch();
