@@ -287,7 +287,7 @@ exports.definition = {
 				});
 			},
 			addNewYotoo: function(options){
-				var senderUser = options.senderUser  || this.customer.get("userIdentity"),
+				var senderUser = options.senderUser  || this.customer.userIdentity,
 					receiverUser = options.receiverUser,
 					success = options.success,
 					error = options.error,
@@ -344,16 +344,17 @@ exports.definition = {
 					newYotoo.customer = self.customer;
 
 					// save remote and local
-					newYotoo.save({
+					newYotoo.save(undefined, {
 						success: function(){
-							// new yotooed users should be saved
+							// new yotooed users should be saved (sqlite)
 							receiverUser.save();
 							// add only if success remote and local
 							self.add(newYotoo);
-							success || success();
+							success && success();
 						},
 						error: function(){
-							error || error();
+							alert("error");
+							error && error();
 						}
 					})
 
