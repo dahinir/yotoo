@@ -225,18 +225,13 @@ exports.definition = {
 				}
 
 				// fetch from local sqlite
-				var newUsers = Alloy.createCollection("twitterUser");
 				var qstring = "(" + userIds.map(function(){return "?";}).join(",") + ")";
-				newUsers.fetch({
+				// add
+				self.fetch({
 					query: {
 						statement: "select * from "+self.config.adapter.collection_name+" where id_str in "+qstring,
 						params: userIds
 				}});
-				newUsers.each(function(newUser){
-					if(newUser.id && !self.get(newUser.id)){
-						self.add(newUser);
-					}
-				});
 
 				// fetch from remote server
 				this.externalApi.fetch({
