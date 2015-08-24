@@ -7,7 +7,7 @@ exports.init = function( options ) {
 	if( options.customer){
 		customer = options.customer;
 		users = customer.createCollection("user");
-		yotoos = customer.get("yotoos");
+		yotoos = customer.yotoos;
 
 		// sort this users by order of yotoo id
 		users.comparator = function(user) {
@@ -63,7 +63,7 @@ $.userList.getView().addEventListener("rightButtonClick", function(e){
 			// yotoos.where({'target_id_str':  e.itemId}).pop().destroy();
 		}else if( e.index === 1){
 			yotoos.addNewYotoo({
-				senderUser: customer.get("userIdentity"),
+				senderUser: customer.userIdentity,
 				receiverUser: users.get(userId),
 				success: function() {
 					alert(L("yotoo_save_success"));

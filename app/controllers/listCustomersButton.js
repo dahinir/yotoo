@@ -5,11 +5,13 @@ exports.init = function( options ) {
 	if( options.customer){
 		customer = options.customer;
 		customer.on("change:profile_picture", updateData);
+		// alert("init:"+ customer.get('profile_username'));
 		updateData();
 	}
 };
 
 function updateData(){
+	// alert(customer.get("profile_picture"));
 	$.listCustomersButton.setBackgroundImage(customer.get("profile_picture"));
 }
 

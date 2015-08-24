@@ -6,7 +6,7 @@ exports.init = function(options) {
 	if(options.customer) {
 		customer = options.customer;
 		users = customer.createCollection("user");
-		yotoos = customer.get("yotoos");
+		yotoos = customer.yotoos;
 		$.userList.init({
 			customer: customer,
 			users: users
@@ -42,10 +42,10 @@ $.userList.getView().addEventListener("rightButtonClick", function(e){
 				}
 			});
 		}else if( e.index === 1 ){
-			alert(L("yotoo_effect"));
+			// alert(L("yotoo_effect"));
 			// var receiverUser = users.where({'id_str': userId}).pop();
 			yotoos.addNewYotoo({
-				senderUser: customer.get("userIdentity"),
+				senderUser: customer.userIdentity,
 				receiverUser: users.get(userId),
 				success: function() {
 					alert(L("yotoo_save_success"));

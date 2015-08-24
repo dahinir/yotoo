@@ -353,7 +353,6 @@ exports.definition = {
 							success && success();
 						},
 						error: function(){
-							alert("error");
 							error && error();
 						}
 					})

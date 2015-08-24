@@ -78,13 +78,14 @@ exports.definition = {
 		_.extend(Model.prototype, {
 			initialize: function(e, e2){
 				Ti.API.info("[customer.js] initialize customer. cid:  "+ this.cid);
+				// alert( this.get("provider_id") +"\n" + e.provider + "\n"+ "haha");
 
 				var self = this;
 				// self.on("change",function(e){
 				// 	console.log("[customer.js] customer changed");
 				// });
 
-				if(!e.provider || !e.provider_id){
+				if(!self.get("provider") || !self.get("provider_id")){
 					Ti.API.error("[customer.js] init error");
 					return;
 				}
@@ -96,7 +97,7 @@ exports.definition = {
 				// yotoos.customer = self;
 				yotoos.fetch({
 					localOnly: true,
-					add: true,	// must!!
+					// add: true,	// I don't know but if "add" setted as true, problem
 					sql: {
 								where: {
 										senderId: self.get("provider_id")
@@ -112,11 +113,11 @@ exports.definition = {
 								// }
 						}
 				});
-				this.set("yotoos", yotoos);
+				this.yotoos = yotoos;
 
 				// for userIdentity
 				var userIdentity;
-				switch (e.provider && e.provider.toLowerCase()) {
+				switch (self.get("provider") && self.get("provider").toLowerCase()) {
 					case "twitter":
 						userIdentity = Alloy.createModel("twitterUser", {
 								"id_str": self.get('provider_id')
@@ -125,10 +126,10 @@ exports.definition = {
 							accessTokenKey: self.get('provider_accessToken'),
 							accessTokenSecret: self.get('provider_accessTokenSecret')
 						});
-						userIdentity.on("remoteRefesh", function(e) {
+						userIdentity.on("remoteRefesh", function(userIdentity) {
 							self.set({
-								"profile_username": e.get("name"),
-								"profile_picture": e.get("profile_image_url_https")
+								"profile_username": userIdentity.get("name"),
+								"profile_picture": userIdentity.get("profile_image_url_https")
 							});
 							self.save(undefined, {localOnly:true});
 						});
@@ -137,31 +138,24 @@ exports.definition = {
 						console.log("[customer.js] there is no proper provider");
 				}
 				userIdentity.refresh();
-				this.set("userIdentity", userIdentity);
+				this.userIdentity = userIdentity;
 				// self.refresh();	// fetch from server
 
+				// for yotooedUsers
+				var yotooedUsers = Alloy.createCollection(self.get("provider") + "User");
+				yotooedUsers.externalApi = userIdentity.externalApi;
+				yotooedUsers.addByIds({ userIds: yotoos.getIds() });
 
-				// // for yotooedUsers
-				// var users;
-				// // users = this.createCollection("user");
-				// switch (e.provider && e.provider.toLowerCase()) {
-				// 	case "twitter":
-				// 		users = Alloy.createCollection("twitterUser");
-				// 		users.externalApi = userIdentity.externalApi;
-				//
-				// 		users.on("add change", function(user){
-				// 			// yotooed users should be saved
-				// 			user.save();
-				// 		});
-				// 		yotoos.on("add", function(model, collection, options){
-				// 			users.addByIds({ userIds: yotoos.getIds() });
-				// 		});
-				// 		yotoos.on("change:hided", function(yotoo){
-				// 		});
-				// 		break;
-				// }
-				// // users.addByIds({ userIds: yotoos.getIds() });
-				// this.set("yotooedUsers", users);
+				yotooedUsers.on("add change", function(user){
+					// yotooed users should be saved (sqlite)
+					user.save();
+				});
+				yotoos.on("add", function(model, collection, options){
+					yotooedUsers.addByIds({ userIds: yotoos.getIds() });
+				});
+				yotoos.on("change:hided", function(yotoo){
+				});
+				this.yotooedUsers = yotooedUsers;
 			},	// end of initialize
 			sync : function(method, model, opts){
 				// alert(opts);
@@ -183,7 +177,7 @@ exports.definition = {
 				Ti.API.info("[customer.js] .refresh() ");
 				var options = options || {},
 					model = this,
-					userIdentity = this.get("userIdentity");
+					userIdentity = this.userIdentity;
 
 				this.fetch({
 					// "urlparams" : {
@@ -209,11 +203,11 @@ exports.definition = {
 					name = this.get("provider") + "User";
 				}
 				var collection = Alloy.createCollection(name, options);
-				collection.externalApi = this.get("userIdentity").externalApi;
+				collection.externalApi = this.userIdentity.externalApi;
 				return collection;
 			},
 
-			// deprecated: use .get("yotoos")
+			// deprecated: use .yotoos
 			getYotoos: function(){
 				Ti.API.info("[customer.js] .getYootoos()");
 				if( this.yotoos ){

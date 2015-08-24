@@ -51,7 +51,7 @@ exports.init = function(options) {
 
 	if(options.customer){
 		customer = options.customer;
-		yotoos = options.customer.get("yotoos");
+		yotoos = options.customer.yotoos;
 		yotoos.on('change:unyotooed change:completed', function(yotoo){
 			var changedUser = users.where({'id_str': yotoo.get('target_id_str')}).pop();
 			if( !changedUser ){

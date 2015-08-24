@@ -6,7 +6,7 @@ var customer = args.customer;
 
 $.profileImage.image = customer.get('profile_picture');
 $.screenName.text = customer.get('profile_username');
-$.name.text = customer.get('userIdentity').get("screen_name");
+$.name.text = customer.userIdentity.get("screen_name");
 
 
 // swipe for delete
