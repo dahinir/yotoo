@@ -29,7 +29,7 @@ customers.map(function(customer){
 		Ti.API.debug("[customerWindow.js] change current customer to : " + customer.get('id'));
 		// change current account
 		// Alloy.Globals.accounts.changeCurrentAccount( account );
-		AG.setting.set("currentCustomerId", customer.get('id'));
+		AG.setting.set("currentCustomerId", customer.id);
 		AG.setting.save();
 	});
 

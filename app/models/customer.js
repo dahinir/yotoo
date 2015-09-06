@@ -176,7 +176,7 @@ exports.definition = {
 			refresh: function(options){
 				Ti.API.info("[customer.js] .refresh() ");
 				var options = options || {},
-					model = this,
+					self = this,
 					userIdentity = this.userIdentity;
 
 				this.fetch({
@@ -184,7 +184,7 @@ exports.definition = {
           //   filter : JSON.stringify({ include:["identities"] })
 	        // },
 					"success": function(){
-						model.save(undefined, {localOnly:true});
+						self.save(undefined, {localOnly:true});
 					}
 				});
 
@@ -306,7 +306,7 @@ exports.definition = {
 						});
 						AG.customers.add( newCustomer );
 
-						AG.setting.set("currentCustomerId", newCustomer.get('id'));
+						AG.setting.set("currentCustomerId", newCustomer.id);
 						AG.setting.save();
 
 						if(_.isFunction(callback)){

@@ -60,8 +60,8 @@ customers.on('remove', function(customer){	// how about 'destroy'
 		setting.set('currentCustomerId', "THERE_IS_NO_CUSTOMER");
 		setting.save();
 		openWelcomeWindow();
-	}else if( customer.get('id') == setting.get('currentCustomerId')){
-		setting.set('currentCustomerId', customers.at(0).get('id'));
+	}else if( customer.id == setting.get('currentCustomerId')){
+		setting.set('currentCustomerId', customers.at(0).id);
 		setting.save();
 	}
 });
