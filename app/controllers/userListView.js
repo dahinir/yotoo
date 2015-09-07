@@ -11,65 +11,70 @@ exports.init = function(options) {
 	options = options || {};
 
 	if(users){
-		Ti.API.debug("[userListView.js] only call .init() once")
+		Ti.API.error("[userListView.js] only call .init() once")
 		return;
 	}
+	if(!options.customer || !options.users){
+		Ti.API.error("[userListView.init] customer and users are needed.");
+	}
 
-	if(options.users){
-		users = options.users;
-		users.on('remove', function(deletedUser){
-			var index = _getIndexByItemId( deletedUser.get('id_str') );
-			section.deleteItemsAt( index, 1 );
+	users = options.users;
+	customer = options.customer;
+	yotoos = options.customer.yotoos;
+
+	if(users.length){
+		var listDataItems = users.map(function(mo){
+			return _settingData(mo);
 		});
-		users.on('reset', function(collection, options){
-			Ti.API.info("[userListView.js] users reset event");
-			var listDataItems = [];
-			collection.each(function(mo){
-				listDataItems.push(_settingData(mo));
-			})
-			section.setItems(listDataItems, {'animated': false});
+		section.setItems(listDataItems, {'animated': false});
+	}
+
+	// users events
+	users.on('remove', function(deletedUser){
+		Ti.API.info("[userListView.js] users remove event ");
+		var index = _getIndexByItemId( deletedUser.get('id_str') );
+		section.deleteItemsAt( index, 1 );
+	});
+	users.on('reset', function(collection, options){
+		Ti.API.info("[userListView.js] users reset event");
+		var listDataItems = [];
+		collection.each(function(mo){
+			listDataItems.push(_settingData(mo));
+		})
+		section.setItems(listDataItems, {'animated': false});
+	});
+	users.on('change', function(changedUser){
+		Ti.API.info("[userListView.js] users change event ");
+		var index = _getIndexByItemId(changedUser.get('id_str'));
+		var listDataItem = _settingData( changedUser );
+		section.updateItemAt(index, listDataItem, {'animated': true});
+	});
+	users.on('add', function(addedUser, collection, options){
+		Ti.API.info("[userListView.js] users add event ");
+		addRows({
+			'addedUsers': addedUser,
+			'reset': false
 		});
-		users.on('change', function(changedUser){
-			var index = _getIndexByItemId(changedUser.get('id_str'));
-			var listDataItem = _settingData( changedUser );
-			section.updateItemAt(index, listDataItem, {'animated': true});
-		});
-		users.on('add', function(addedUser, collection, options){
-			Ti.API.info("[userListView.js] users add event");
-			addRows({
-				'addedUsers': addedUser,
-				'reset': false
-			});
-		});
-		if(users.length){
-			users.map(function(mo){
-				return _settingData(mo);
-			});
-			section.setItems(listDataItems, {'animated': false});
+	});
+
+	// yotoos events
+	yotoos.on('change:unyotooed change:completed', function(yotoo){
+		var changedUser = users.where({'id_str': yotoo.get('target_id_str')}).pop();
+		if( !changedUser ){
+			return;
 		}
-	}
+		var index = _getIndexByItemId(changedUser.get('id_str'));
+		var data = section.getItemAt(index);
 
-	if(options.customer){
-		customer = options.customer;
-		yotoos = options.customer.yotoos;
-		yotoos.on('change:unyotooed change:completed', function(yotoo){
-			var changedUser = users.where({'id_str': yotoo.get('target_id_str')}).pop();
-			if( !changedUser ){
-				return;
-			}
-			var index = _getIndexByItemId(changedUser.get('id_str'));
-			var data = section.getItemAt(index);
-
-			if( yotoo.get('completed') ){
-				data.template = 'completed';
-			}else if( yotoo.get('unyotooed') ){
-				data.template = 'unyotooed';
-			}else{
-				data.template = 'plain';
-			}
-			section.updateItemAt(index, data, {'animated': true});
-		});
-	}
+		if( yotoo.get('completed') ){
+			data.template = 'completed';
+		}else if( yotoo.get('unyotooed') ){
+			data.template = 'unyotooed';
+		}else{
+			data.template = 'plain';
+		}
+		section.updateItemAt(index, data, {'animated': true});
+	});
 };
 
 
@@ -390,7 +395,7 @@ var _getIndexByItemId = function(itemId){
 		}
 	}
 	if( index === listDataItems.length){
-		alert("[userListView.js] there is no matched itemId");
+		Ti.API.error("[userListView.js] there is no matched itemId");
 	}
 	return index;
 };

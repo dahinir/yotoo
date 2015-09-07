@@ -4,35 +4,36 @@ var customer, // = args.ownerCustomer || AG.customers.getCurrentCustomer();
 	yotoos;
 
 exports.init = function( options ) {
-	if( options.customer){
-		customer = options.customer;
-		users = customer.createCollection("user");
-		yotoos = customer.yotoos;
-
-		// sort this users by order of yotoo id
-		users.comparator = function(user) {
-			console.log(customer.get("provider"));
-			console.log("user.id: "+ user.id);
-			console.log(user);
-			return yotoos.where({
-				"provider": customer.get("provider"),
-				"receiverId": user.id
-		 	}).pop().get("created");
-		};
-		users.on("add change", function(user){
-			// this users is yotooed users that means important
-			user.save();
-		});
-
-
-		$.userList.init({
-			customer: customer,
-			users: users
-		});
-// fetchYotooUsers(yotoos);
-
-		AG.cus = customer;AG.usrs = users;AG.yts = yotoos;
+	if(!options.customer){
+		Ti.API.debug("[favoriteView.init] customer is needed ");
+		return;
 	}
+	customer = options.customer;
+	users = customer.yotooedUsers;
+	yotoos = customer.yotoos;
+
+/*
+	// sort this users by order of yotoo id
+	users.comparator = function(user) {
+		console.log(customer.get("provider"));
+		console.log("user.id: "+ user.id);
+		console.log(user);
+		return yotoos.where({
+			"provider": customer.get("provider"),
+			"receiverId": user.id
+	 	}).pop().get("created");
+	};
+	users.on("add change", function(user){
+		// this users is yotooed users that means important
+		user.save();
+	});
+*/
+
+	$.userList.init({
+		customer: customer,
+		users: users
+	});
+// fetchYotooUsers(yotoos);
 };
 
 $.userList.getView().addEventListener("rightButtonClick", function(e){

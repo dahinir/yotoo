@@ -143,6 +143,15 @@ exports.definition = {
 
 				// for yotooedUsers
 				var yotooedUsers = Alloy.createCollection(self.get("provider") + "User");
+				// sort this users by order of yotoo id
+				yotooedUsers.comparator = function(user) {
+					var yt = yotoos.where({
+						"provider": self.get("provider"),
+						"receiverId": user.id
+				 	}).pop();
+					var date = yt.get("modified") || yt.get("created");
+					return -(new Date(date)).getTime();
+				};
 				yotooedUsers.externalApi = userIdentity.externalApi;
 				yotooedUsers.addByIds({ userIds: yotoos.getIds() });
 
