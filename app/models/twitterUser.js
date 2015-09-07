@@ -8,6 +8,9 @@ exports.definition = {
 			"screen_name":"string",
 			"profile_image_url_https":"string",
 			"profile_background_image_url": "string",
+			"friends_count": "string",
+			"followers_count": "string",
+			"following": "boolean",
 
 			// for ACS
 			// "acs_id":"string"

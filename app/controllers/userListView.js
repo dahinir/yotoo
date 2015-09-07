@@ -43,11 +43,11 @@ exports.init = function(options) {
 		})
 		section.setItems(listDataItems, {'animated': false});
 	});
-	users.on('change', function(changedUser){
-		Ti.API.info("[userListView.js] users change event ");
-		var index = _getIndexByItemId(changedUser.get('id_str'));
-		var listDataItem = _settingData( changedUser );
-		section.updateItemAt(index, listDataItem, {'animated': true});
+	users.on("change:profile_image_url_https change:name change:screen_name change:friends_count change:followers_count", function(changedUser){
+			Ti.API.info("[userListView.js] users change event. ");
+			var index = _getIndexByItemId(changedUser.get('id_str'));
+			var listDataItem = _settingData( changedUser );
+			section.updateItemAt(index, listDataItem, {'animated': true});
 	});
 	users.on('add', function(addedUser, collection, options){
 		Ti.API.info("[userListView.js] users add event ");

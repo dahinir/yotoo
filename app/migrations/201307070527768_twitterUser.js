@@ -7,6 +7,9 @@ migration.up = function(db) {
 			"screen_name":"TEXT",
 			"profile_image_url_https":"TEXT",
 			"profile_background_image_url": "TEXT",
+			"friends_count":"INTEGER",
+			"followers_count":"INTEGER",
+			"following":"INTEGER",
 
 			// "acs_id":"TEXT",
 			"cached_at":"INTEGER"
