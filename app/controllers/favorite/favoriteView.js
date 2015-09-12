@@ -38,14 +38,25 @@ $.userList.getView().addEventListener("rightButtonClick", function(e){
 		}).pop();
 
 		if( e.index === 0){
-			yt.unyotoo({
-				'success': function(){
-					alert("suss");
-				},
-				'error': function(){
-					alert("errrrr");
-				}
-			});
+			if(yt.get("unyotooed")){
+				yt.reyotoo({
+					'success': function(){
+						alert(L("yotoo_reyotoo_success"));
+					},
+					'error': function(){
+						alert(L("yotoo_reyotoo_success"));
+					}
+				});
+			}else{
+				yt.unyotoo({
+					'success': function(){
+						alert(L("yotoo_unyotoo_success"));
+					},
+					'error': function(){
+						alert(L("yotoo_unyotoo_success"));
+					}
+				});
+			}
 			// yotoos.where({'target_id_str':  e.itemId}).pop().destroy();
 		}else if( e.index === 1){
 			yotoos.addNewYotoo({

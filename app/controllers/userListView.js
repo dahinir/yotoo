@@ -59,6 +59,7 @@ exports.init = function(options) {
 
 	// yotoos events
 	yotoos.on('change:unyotooed change:completed', function(yotoo){
+		Ti.API.debug("[userListView.js] yotoo change event");
 		var changedUser = users.where({'id_str': yotoo.get('target_id_str')}).pop();
 		if( !changedUser ){
 			return;

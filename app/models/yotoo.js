@@ -87,6 +87,11 @@ exports.definition = {
 					unyotooed: 1	// true
 				}, options);
 			},
+			reyotoo: function(options){
+				this.save({
+					unyotooed: 0
+				}, options);
+			},
 			'complete': function( options ){
 				var mainAgent = options.mainAgent;
 
