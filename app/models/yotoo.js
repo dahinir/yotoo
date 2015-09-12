@@ -78,6 +78,15 @@ exports.definition = {
 				// return Backbone.sync(method, model, opts);
 				return require("alloy/sync/"+this.config.adapter.type).sync.call(this, method, model, opts);
 			},
+			unyotoo: function(options){
+				var success = options.success,
+					error = options.error;
+
+				// save remote and local
+				this.save({
+					unyotooed: 1	// true
+				}, options);
+			},
 			'complete': function( options ){
 				var mainAgent = options.mainAgent;
 
@@ -108,7 +117,7 @@ exports.definition = {
 					}
 				});
 			},
-			'unyotoo': function( options ){
+			'unyotoo_': function( options ){
 				var mainAgent = options.mainAgent;
 
 				var thisModel = this;
@@ -355,7 +364,7 @@ exports.definition = {
 						error: function(){
 							error && error();
 						}
-					})
+					});
 
 					/*
 					this.cloudApi.excuteWithLogin({

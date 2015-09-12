@@ -12,23 +12,6 @@ exports.init = function( options ) {
 	users = customer.yotooedUsers;
 	yotoos = customer.yotoos;
 
-/*
-	// sort this users by order of yotoo id
-	users.comparator = function(user) {
-		console.log(customer.get("provider"));
-		console.log("user.id: "+ user.id);
-		console.log(user);
-		return yotoos.where({
-			"provider": customer.get("provider"),
-			"receiverId": user.id
-	 	}).pop().get("created");
-	};
-	users.on("add change", function(user){
-		// this users is yotooed users that means important
-		user.save();
-	});
-*/
-
 	$.userList.init({
 		customer: customer,
 		users: users
@@ -48,17 +31,19 @@ $.userList.getView().addEventListener("rightButtonClick", function(e){
 	});
 
 	optionDialog.addEventListener('click', function(e){
-		// var yt = yotoos.where({'target_id_str':  id_str}).pop();
-		// var targetUser = users.where({
-		// 	'id_str': id_str
-		// }).pop();
+		var yt = yotoos.where({
+			"provider": customer.get("provider"),
+			"senderId": customer.get("provider_id"),
+			"receiverId": userId
+		}).pop();
 
 		if( e.index === 0){
 			yt.unyotoo({
-				'mainAgent': ownerCustomer,
 				'success': function(){
+					alert("suss");
 				},
 				'error': function(){
+					alert("errrrr");
 				}
 			});
 			// yotoos.where({'target_id_str':  e.itemId}).pop().destroy();
@@ -79,11 +64,13 @@ $.userList.getView().addEventListener("rightButtonClick", function(e){
 			});
 		}else if( e.index === 3){
 			var chatWindow = Alloy.createController('chatWindow', {
-				'targetUser': targetUser
+				'targetUser': users.where({
+					'id_str': id_str
+				}).pop()
 			});
 			chatWindow.getView().open();
 		}
-	});
+	});	// optionDialog.addEventListener
 
 	optionDialog.show();
 });
