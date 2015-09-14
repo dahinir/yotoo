@@ -84,12 +84,13 @@ exports.definition = {
 
 				// save remote and local
 				this.save({
-					unyotooed: 1	// true
+					unyotooed: true	// true
 				}, options);
 			},
 			reyotoo: function(options){
+				Ti.API.info("[yotoo.reyotoo] ");
 				this.save({
-					unyotooed: 0
+					unyotooed: false
 				}, options);
 			},
 			'complete': function( options ){

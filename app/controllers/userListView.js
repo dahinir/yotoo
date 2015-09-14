@@ -11,7 +11,7 @@ exports.init = function(options) {
 	options = options || {};
 
 	if(users){
-		Ti.API.error("[userListView.js] only call .init() once")
+		Ti.API.error("[userListView.js] only call .init() once ")
 		return;
 	}
 	if(!options.customer || !options.users){
@@ -60,11 +60,15 @@ exports.init = function(options) {
 	// yotoos events
 	yotoos.on('change:unyotooed change:completed', function(yotoo){
 		Ti.API.debug("[userListView.js] yotoo change event");
-		var changedUser = users.where({'id_str': yotoo.get('target_id_str')}).pop();
+		Ti.API.debug(yotoo.get("unyotooed"));
+
+		// var changedUser = users.where({'id_str': yotoo.get('target_id_str')}).pop();
+		var changedUser = users.get(yotoo.get("receiverId"));
 		if( !changedUser ){
 			return;
 		}
-		var index = _getIndexByItemId(changedUser.get('id_str'));
+		// alert(yotoo.get("receiverId") +": "+ yotoo.get("unyotooed"));
+		var index = _getIndexByItemId(changedUser.id);
 		var data = section.getItemAt(index);
 
 		if( yotoo.get('completed') ){
@@ -338,14 +342,17 @@ function _settingData(user) {
 	// alert(user.get('id_str') +", "+ yotoos.where({'target_id_str': user.get('id_str')}).pop().get('completed') );
 
 	// template select
-	var itsYotoo = yotoos.where({'target_id_str': user.get('id_str')}).pop();
-	if( user.get('id_str') === customer.get('id_str')){
-		data.template = 'self';
-	}else if( itsYotoo && itsYotoo.get('completed') ){
-		data.template = 'completed';
+	var itsYotoo = yotoos.where({
+		"receiverId": user.id,
+		"provider": customer.get("provider")
+	}).pop();
+	if(user.id == customer.get("provider_id")){
+		data.template = "self";
+	}else if( itsYotoo && itsYotoo.get("completed") ){
+		data.template = "completed";
 	// }else if( user.get('unyotooed') ){
-	}else if( itsYotoo && itsYotoo.get('unyotooed') ){
-		data.template = 'unyotooed';
+	}else if( itsYotoo && itsYotoo.get("unyotooed") ){
+		data.template = "unyotooed";
 	}
 
 	if (OS_ANDROID) {
