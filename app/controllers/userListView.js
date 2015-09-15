@@ -1,13 +1,11 @@
 // var args = arguments[0] || {};
-var customer,
-		users,
-		yotoos;
+var customer,	users, yotoos;
 
 /**
 * customer, users
 */
 exports.init = function(options) {
-	Ti.API.info("[userListView.js] .init()");
+	Ti.API.debug("[userListView.js] .init()");
 	options = options || {};
 
 	if(users){
@@ -22,7 +20,7 @@ exports.init = function(options) {
 	customer = options.customer;
 	yotoos = options.customer.yotoos;
 
-	if(users.length){
+	if(users && users.length){
 		var listDataItems = users.map(function(mo){
 			return _settingData(mo);
 		});
@@ -31,12 +29,12 @@ exports.init = function(options) {
 
 	// users events
 	users.on('remove', function(deletedUser){
-		Ti.API.info("[userListView.js] users remove event ");
+		Ti.API.debug("[userListView.js] users remove event ");
 		var index = _getIndexByItemId( deletedUser.get('id_str') );
 		section.deleteItemsAt( index, 1 );
 	});
 	users.on('reset', function(collection, options){
-		Ti.API.info("[userListView.js] users reset event");
+		Ti.API.debug("[userListView.js] users reset event");
 		var listDataItems = [];
 		collection.each(function(mo){
 			listDataItems.push(_settingData(mo));
@@ -44,13 +42,13 @@ exports.init = function(options) {
 		section.setItems(listDataItems, {'animated': false});
 	});
 	users.on("change:profile_image_url_https change:name change:screen_name change:friends_count change:followers_count", function(changedUser){
-			Ti.API.info("[userListView.js] users change event. ");
+			Ti.API.debug("[userListView.js] users change event. ");
 			var index = _getIndexByItemId(changedUser.get('id_str'));
 			var listDataItem = _settingData( changedUser );
 			section.updateItemAt(index, listDataItem, {'animated': true});
 	});
 	users.on('add', function(addedUser, collection, options){
-		Ti.API.info("[userListView.js] users add event ");
+		Ti.API.debug("[userListView.js] users add event ");
 		addRows({
 			'addedUsers': addedUser,
 			'reset': false
@@ -59,15 +57,13 @@ exports.init = function(options) {
 
 	// yotoos events
 	yotoos.on('change:unyotooed change:completed', function(yotoo){
-		Ti.API.debug("[userListView.js] yotoo change event");
-		Ti.API.debug(yotoo.get("unyotooed"));
+		Ti.API.debug("[userListView.js] yotoo change event. "+ yotoo.get("unyotooed"));
 
-		// var changedUser = users.where({'id_str': yotoo.get('target_id_str')}).pop();
 		var changedUser = users.get(yotoo.get("receiverId"));
 		if( !changedUser ){
 			return;
 		}
-		// alert(yotoo.get("receiverId") +": "+ yotoo.get("unyotooed"));
+
 		var index = _getIndexByItemId(changedUser.id);
 		var data = section.getItemAt(index);
 
@@ -409,7 +405,7 @@ var _getIndexByItemId = function(itemId){
 };
 
 function onRightButtonClick(e){
-	Ti.API.info("[userListView.onRightButtonClick] "+e.itemId + e.bubbles);
+	Ti.API.debug("[userListView.onRightButtonClick] "+e.itemId + e.bubbles);
 	e.userId = e.itemId;
 	$.userListView.fireEvent("rightButtonClick", e);
 };
