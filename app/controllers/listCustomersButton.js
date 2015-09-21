@@ -1,17 +1,17 @@
 var args = arguments[0] || {};
-var customer = args.ownerCustomer || AG.customers.getCurrentCustomer();
+var customer;// = args.ownerCustomer || AG.customers.getCurrentCustomer();
 // var getCurrentCustomer = AG.customers.getCurrentCustomer;
+
 exports.init = function( options ) {
 	if( options.customer){
 		customer = options.customer;
 		customer.on("change:profile_picture", updateData);
-		// alert("init:"+ customer.get('profile_username'));
 		updateData();
 	}
 };
 
 function updateData(){
-	// alert(customer.get("profile_picture"));
+	Ti.API.debug("[listCustomersButton.updateData] "+ customer.get("profile_picture"));
 	$.listCustomersButton.setBackgroundImage(customer.get("profile_picture"));
 }
 

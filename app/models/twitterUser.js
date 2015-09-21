@@ -216,14 +216,17 @@ exports.definition = {
 				});
 			},
 			addByIds: function(options){
-				Ti.API.info("[twitterUser.js] .addByids() called");
+				Ti.API.info("[twitterUser.addByIds] .addByids() called");
 
 				var options = options || {};
 				var userIds = options.userIds,	// Array!
 						self = this;
 
 				if(!userIds){
-					Ti.API.warn("[twitterUser.lookup] where is userIds?");
+					Ti.API.warn("[twitterUser.addByIds] where is userIds?");
+					return;
+				}else if(userIds.length == 0){
+					Ti.API.info("[twitterUser.addByIds] empty userIds");
 					return;
 				}
 
