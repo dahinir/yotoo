@@ -1,4 +1,4 @@
-exports = {
+_.extend(exports,{
 	/*
 	 *  ios7 colors
 	 */
@@ -47,4 +47,4 @@ exports = {
 
 	// etcs
 	facebookBlue: '#4063A7'
-};
+});
