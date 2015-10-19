@@ -5,7 +5,7 @@ var customer,	users, yotoos;
 * customer, users
 */
 exports.init = function(options) {
-	Ti.API.debug("[userListView.js] .init()");
+	Ti.API.debug("[userListView.js] .init() ");
 	options = options || {};
 
 	if(users){

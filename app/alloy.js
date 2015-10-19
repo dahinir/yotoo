@@ -90,8 +90,8 @@ AG.setting.fetch({
 });
 
 AG.customers.fetch({
-	localOnly:true,
-	add:true	// must set "add" sqlrest.js가 add를 셋팅해야 쓸모없는 모델이 생성 안한다.
+	add: true,	// must set "add" sqlrest.js가 add를 셋팅해야 쓸모없는 모델이 생성 안한다. 대신 customers.length 숫자가 이상해짐.. don't believe customers.length..
+	localOnly: true
 });
 
 // AG.accounts.fetch();
@@ -132,96 +132,18 @@ AG.chats.map(function( chat ){
 });
 */
 
-// push notification
-if( OS_IOS ){
-	// Ti.UI.iPhone.setAppBadge( 11 );
-	Ti.Network.registerForPushNotifications({
-		'types': [
-			Ti.Network.NOTIFICATION_TYPE_ALERT,
-			Ti.Network.NOTIFICATION_TYPE_BADGE,
-			Ti.Network.NOTIFICATION_TYPE_SOUND
-		],
-		'callback': function(e){
-			/*
-			 * Connection 탭의 activity history를 보여줄까?
-			 */
-// 이제 상대방이 수동 burn 했을때 날린 noti를 처리 해야 한다.
-Ti.API.info("e.data:  "+ JSON.stringify(e.data));
-			var recipientCustomer = AG.customers.where({'id_str': e.data.t}).pop();
-			if( !recipientCustomer ){
-				//예전에 로긴 했던 유저.. 어카운트 지울때 unsubscribe를 해야 겠구만!
-				return;
-			}
-			var relevantYotoo = recipientCustomer.getYotoos().where({
-				'source_id_str': e.data.t,
-				'target_id_str': e.data.f
-			}).pop();
-			/* 상황에 맞게 상대에게 유투 노티피케이션을 보낸다. */
-			if( e.data.sound === 'yotoo1' ){
-				// 유투 알람 완료를 acs에서 따로 관리 할까..
-				Alloy.Globals.yotoos.sendYotooNotification({
-					'sourceUser': recipientCustomer,
-					'targetUser': Alloy.Globals.users.where({'id_str':e.data.f}).pop(),
-					'sound': 'yotoo2',
-					'success': function(){},
-					'error': function(){}
-				});
-			}
-			if( e.data.sound === 'yotoo1' || e.data.sound === 'yotoo2'){
-				relevantYotoo.complete({
-					'mainAgent': recipientCustomer,
-					'success': function(){
-						// need to save?
-					},
-					'error': function(){}
-				});
-			}
 
-			// case of background
-			if( e.inBackground ) {
-				// e.data.t
-				if( !recipientCustomer ){
-					// 당신이 사용 정지한 receiverCustomer와 e.data.f가 서로 유투 했으니
-					// 로긴만 하면 시크릿 채팅을 할 수 있어용..
-					alert(L('you must loggin'));
-					return;
-				}
-				var chatWindow = Alloy.createController('chatWindow', {
-					'ownerCustomer': recipientCustomer,	// must setted!
-					'targetUser': Alloy.Globals.users.where({'id_str':e.data.f}).pop()
-				});
-				chatWindow.getView().open();
-			// case of running
-			}else {
-				Ti.App.fireEvent("app:newChat:" + e.data.f);
-				// case of chatting with Notified user
-				if( recipientCustomer.currentChatTarget === e.data.f ){
-				// case of chatting with other user or do not chat
-				}else{
-					// alert("running:"+JSON.stringify(e.data));
-				}
-			}
-			// e.data.alert: hi hehe
-			// e.data.badge: 7
-			// e.data.sound:
-
-			// e.data.aps.alert: asdf
-			// e.data.aps.badge: 1
-			// e.data.aps.sound: default
-		},
-		'error': function(e){
-			// alert("err");
-			Ti.API.info("error " + e.code + ", " + e.error );
-		},
-		'success': function(e){
-			// alert("su");
-			Ti.API.info("code:" + e.code + "deviceToken: " + e.deviceToken );
-		}
-	});
-}
+// singleton Controller;
+AG.allowPushController = Alloy.createController("allowPushAlertDialog");
+// AG.loginController =  Alloy.createController('login');
+// AG.notifyController = Alloy.createController('notifyView');
+// AG.allowPushController = Alloy.createController("allowPushDialogWindow");
 
 
-// Alloy.builtins.moment 로 대체하자
+
+
+
+// use Alloy.builtins.moment!
 /**
  * Returns a description of this past date in relative terms.
  * Takes an optional parameter (default: 0) setting the threshold in ms which

@@ -1,0 +1,4 @@
+<Alloy>
+    <AlertDialog onClick="onClick">
+    </AlertDialog>
+</Alloy>

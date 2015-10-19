@@ -12,7 +12,7 @@ function openWelcomeWindow(){
 }
 function openMainTabGroup(customer){
 	if(!customer){
-		Ti.API.warn("[index.js] .openMainTabGroup() customer is undefined");
+		Ti.API.warn("[index.js] .openMainTabGroup() customer is undefined ");
 		return;
 	}
 	if(customer.mainTabGroup){
@@ -42,7 +42,7 @@ function closeMainTabGroup(customer){
 /* Backbone events */
 // on changed current customers, reponse UI, create mainTabGroup is only in this.
 setting.on('change:currentCustomerId', function(setting ){
-	Ti.API.info("[index.js] was:  " + setting.previous('currentCustomerId'));
+	Ti.API.debug("[index.js] was:  " + setting.previous('currentCustomerId'));
 	// previousCustomer
 	closeMainTabGroup(customers.get(setting.previous('currentCustomerId')));
 	// currentCustomer
@@ -52,31 +52,31 @@ customers.on('add', function(customer){
 	// create mainTabGroup is only in customers.on('change:active', funtion(e)){}
 	Ti.API.info("[index.js] BackboneEvent(customer added):" + customer.get('id') );
 });
-customers.on('remove', function(customer){	// how about 'destroy'
-	Ti.API.info("[index.js] BackboneEvent(removed):" + customer.get('id') );
+customers.on("remove", function(customer){	// how about 'destroy'
+	// !!! `customer.id` IS NULL!! USE `customer.get('id')`
+	Ti.API.info("[index.js] BackboneEvent(removed):" + customer.get("id") +", current id is" + setting.get('currentCustomerId'));
 	closeMainTabGroup(customer);
 
-	if( customers.length == 0 ){
-		setting.set('currentCustomerId', "THERE_IS_NO_CUSTOMER");
+	if( customers.at(0) == undefined ){
+		Ti.API.debug("[index.js] customers.at(0) is empty" );
+		setting.set("currentCustomerId", "THERE_IS_NO_CUSTOMER");
 		setting.save();
 		openWelcomeWindow();
-	}else if( customer.id == setting.get('currentCustomerId')){
-		setting.set('currentCustomerId', customers.at(0).id);
+	}else if( customer.get("id") == setting.get("currentCustomerId")){
+		Ti.API.debug("[index.js] customers.length is not 0, change currentCustomer to "+ customers.at(0).get("id") );
+		setting.set("currentCustomerId", customers.at(0).get("id"));
 		setting.save();
 	}
 });
 
-if( customers.length > 0){
+// Welcome Window
+if( customers.at(0) ){
 // if( setting.get("currentCustomerId") ){
-	// alert("이게 두번 호출되면 안됨 index.js" + setting.get("currentCustomerId"));
-	// Ti.API.info("이게 두번 호출되면 안됨 index.js");
 	openMainTabGroup( AG.customers.getCurrentCustomer() );
 }else{
 	// very first using this app, maybe //
-	// alert(L('when_first_run'));
 	openWelcomeWindow();
 }
-
 
 
 // telegrams from server!

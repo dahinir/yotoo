@@ -5,7 +5,7 @@ var customer, // = args.ownerCustomer || AG.customers.getCurrentCustomer();
 
 exports.init = function( options ) {
 	if(!options.customer){
-		Ti.API.debug("[favoriteView.init] customer is needed ");
+		Ti.API.debug("[favoriteView.init] customer is needed   ");
 		return;
 	}
 	customer = options.customer;
