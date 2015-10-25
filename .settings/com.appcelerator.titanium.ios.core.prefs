@@ -1,11 +1,12 @@
 eclipse.preferences.version=1
 iosLaunchConfigurationAttributes/ATTR_MINIFY=true
 iosLaunchConfigurationAttributes/ATTR_PROJECT_NAME=yotoo
+iosLaunchConfigurationAttributes/ATTR_UPLOAD_DEBUG_SYMBOLS=false
 iosLaunchConfigurationAttributes/appid=com.dasolute.yotoo
 iosLaunchConfigurationAttributes/certificate=Daehyeon Shin (B83FVSE449)
 iosLaunchConfigurationAttributes/keychain=
-iosLaunchConfigurationAttributes/sdk_version=7.0.3
-iosLaunchConfigurationAttributes/uuid=726681BF-21F0-40D6-B9AE-425B629E6D3E
+iosLaunchConfigurationAttributes/sdk_version=9.0
+iosLaunchConfigurationAttributes/uuid=6ba5eaf5-75fa-4322-9ec4-87f9aed9a8e6
 provisioning_profiles/development/10455500-6E71-426B-BD42-5F12485E8CBA/appid=com.dasolute.rty
 provisioning_profiles/development/10455500-6E71-426B-BD42-5F12485E8CBA/name=iOS Team Provisioning Profile\: com.dasolute.rty
 provisioning_profiles/development/10455500-6E71-426B-BD42-5F12485E8CBA/uuid=10455500-6E71-426B-BD42-5F12485E8CBA
