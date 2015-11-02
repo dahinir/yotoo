@@ -62,7 +62,7 @@ function onClick(e){
   }
 };
 
-function tryRegistring(opts){
+exports.tryRegistring = function(opts){
   options = opts || {};
 
   if(!Ti.Network.remoteNotificationsEnabled){
@@ -83,4 +83,3 @@ function tryRegistring(opts){
     // already enable push norification~
   }
 };
-exports.tryRegistring = tryRegistring;
