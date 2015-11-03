@@ -24,14 +24,14 @@ exports.init = function(options) {
 		var listDataItems = users.map(function(mo){
 			return _settingData(mo);
 		});
-		section.setItems(listDataItems, {'animated': false});
+		$.section.setItems(listDataItems, {'animated': false});
 	}
 
 	// users events
 	users.on('remove', function(deletedUser){
 		Ti.API.debug("[userListView.js] users remove event ");
 		var index = _getIndexByItemId( deletedUser.get('id_str') );
-		section.deleteItemsAt( index, 1 );
+		$.section.deleteItemsAt( index, 1 );
 	});
 	users.on('reset', function(collection, options){
 		Ti.API.debug("[userListView.js] users reset event");
@@ -39,13 +39,13 @@ exports.init = function(options) {
 		collection.each(function(mo){
 			listDataItems.push(_settingData(mo));
 		})
-		section.setItems(listDataItems, {'animated': false});
+		$.section.setItems(listDataItems, {'animated': false});
 	});
 	users.on("change:profile_image_url_https change:name change:screen_name change:friends_count change:followers_count", function(changedUser){
 			Ti.API.debug("[userListView.js] users change event. ");
 			var index = _getIndexByItemId(changedUser.get('id_str'));
 			var listDataItem = _settingData( changedUser );
-			section.updateItemAt(index, listDataItem, {'animated': true});
+			$.section.updateItemAt(index, listDataItem, {'animated': true});
 	});
 	users.on('add', function(addedUser, collection, options){
 		Ti.API.debug("[userListView.js] users add event ");
@@ -65,7 +65,7 @@ exports.init = function(options) {
 		}
 
 		var index = _getIndexByItemId(changedUser.id);
-		var data = section.getItemAt(index);
+		var data = $.section.getItemAt(index);
 
 		if( yotoo.get('completed') ){
 			data.template = 'completed';
@@ -74,7 +74,7 @@ exports.init = function(options) {
 		}else{
 			data.template = 'plain';
 		}
-		section.updateItemAt(index, data, {'animated': true});
+		$.section.updateItemAt(index, data, {'animated': true});
 	});
 };
 
@@ -86,6 +86,8 @@ exports.init = function(options) {
 // var _HIDED = 5;
 // var _BURNED = 6;
 /*
+var section = $.section;
+var listView = $.userListView;
 var getTemplate = function(type){
 	var plainTemplates = [{
 		type: 'Ti.UI.View',
@@ -303,8 +305,7 @@ var section = Ti.UI.createListSection();
 */
 
 
-var section = $.section;
-var listView = $.userListView;
+
 function _settingData(user) {
 	data = {
 		profileImage : {
@@ -375,24 +376,24 @@ var addRows = function(options){
 	}
 
 	if( reset ){
-		// listView.deleteSectionAt(0);
-		section.setItems(dataArray, {'animated': true});
+		// $.userListView.deleteSectionAt(0);
+		$.section.setItems(dataArray, {'animated': true});
 	}else{
-		section.appendItems(dataArray, {'animated': true});
+		$.section.appendItems(dataArray, {'animated': true});
 	}
 
-	if (listView.getSectionCount() === 0) {
-		listView.setSections([section]);
+	if ($.userListView.getSectionCount() === 0) {
+		$.userListView.setSections([$.section]);
 	} else {
-		listView.replaceSectionAt(0, section, {'animated': true});
+		$.userListView.replaceSectionAt(0, $.section, {'animated': true});
 		//, {animated: true, position: Ti.UI.iPhone.ListViewScrollPosition.TOP});
 	}
-	listView.scrollToItem(0, 0);
+	$.userListView.scrollToItem(0, 0);
 };
 
 var _getIndexByItemId = function(itemId){
 	var index;
-	var listDataItems = section.getItems();
+	var listDataItems = $.section.getItems();
 	for ( index = 0; index < listDataItems.length; index++) {
 		if (listDataItems[index].properties.itemId === itemId) {
 			break;
@@ -411,5 +412,7 @@ function onRightButtonClick(e){
 };
 // $.trigger('rightButtonClick');
 
-// listView.addEventListener('itemclick', function(e){
-// });
+$.userListView.addEventListener('itemclick', function(e){
+	Ti.API.debug("[userListView] itemclick event fired.");
+	Ti.API.debug(e);
+});
