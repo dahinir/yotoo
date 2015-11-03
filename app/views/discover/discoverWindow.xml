@@ -1,13 +1,18 @@
 <Alloy>
 	<Window id="discoverWindow" class="tapWindow" >
+		<LeftNavButton platform="ios">
+			<Require id="listCustomersButton" src="listCustomersButton" class="leftNavButton" />
+		</LeftNavButton>
+		<!--
 		<View id="navBarView" >
-			<Require id="listAccountsButton" src="listAccountsButton" class="leftNavButton" />
+			<Require id="listCustomersButton" src="listCustomersButton" class="leftNavButton" />
 			<View id="titleView">
 				<ImageView id="titleImageView" />
 				<Label id="titleLabel" />
 			</View>
 			<Require id="newTweetButton" src="newTweetButton" class="rightNavButton" />
 		</View>
+		-->
 		<!-- <Require id="localView" src="discover/localView" /> -->
 		<Require id="globalView" src="discover/globalView" />
 	</Window>

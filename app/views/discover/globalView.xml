@@ -1,6 +1,7 @@
 <Alloy>
 	<View id="globalView">
-		<SearchBar id="searchBar" showCancel="false" />
-		<View id="dummyScreen" zIndex="1" visible="false" />
+		<SearchBar id="searchBar">
+		</SearchBar>
+		<Require id="userList" src="userListView" />
 	</View>
 </Alloy>

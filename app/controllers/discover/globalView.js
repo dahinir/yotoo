@@ -1,67 +1,81 @@
-var args = arguments[0] || {};
+// var args = arguments[0] || {};
+var customer; // = args.ownerCustomer || AG.customers.getCurrentCustomer();
+var yotoos, users;
 
-var ownerAccount = args.ownerAccount || Alloy.Globals.accounts.getCurrentAccount();
-// Ti.API.info("[globalView.js] currentAccount\'s screen_name: " + ownerAccount.get('screen_name'));
-var users = ownerAccount.createCollection('user');
-var yotoos = ownerAccount.getYotoos();
-
-var autoComplete = function(){
+exports.init = function(options) {
+	if(options.customer) {
+		customer = options.customer;
+		users = customer.createCollection("user");
+		yotoos = customer.yotoos;
+		$.userList.init({
+			customer: customer,
+			users: users
+		});
+	}
 };
 
-var userListView = Alloy.createController('userListView',{
-	'users': users
+$.userList.getView().addEventListener("scrollstart", function(){
+	$.searchBar.blur();
 });
-userListView.getView().addEventListener('rightButtonClick', function(e){
-	var id_str = e.id_str;
+
+$.userList.getView().addEventListener("itemclick", function(e){
+	Ti.API.debug("[globalView] itemclick event fired.");
+	Ti.API.debug(e);
+});
+// AG.yts = yotoos;
+$.userList.getView().addEventListener("rightButtonClick", function(e){
+	var userId = e.userId;
+	Ti.API.debug("[globalView.js] rightButtonClick event fired with userId: "+ userId);
 	var dialogOptions = {
-	  'title': 'hello?',
-	  'options': [L('unyotoo'), L('yotoo'), L('cancel')],
-	  'cancel': 2,
-	  'selectedIndex': 1,
-	  'destructive': 0
+	  title: 'hello?',
+	  options: [L('unyotoo'), L('yotoo'), L('cancel')],
+	  cancel: 2,
+	  selectedIndex: 1,
+	  destructive: 0
 	};
 	var optionDialog = Ti.UI.createOptionDialog(dialogOptions);
 	optionDialog.show();
 	optionDialog.addEventListener('click', function(e){
 		if( e.index === 0){
 			alert(L('unyotoo_effect'));
-			var yt = yotoos.where({'target_id_str':  id_str}).pop();
+			var yt = yotoos.where({'target_id_str':  userId}).pop();
 			yt.unyotoo({
-				'mainAgent': ownerAccount,
+				'mainAgent': customer,
 				'success': function(){
 				},
 				'error': function(){
 				}
 			});
 		}else if( e.index === 1 ){
-			alert(L('yotoo_effect'));
-			
-			var targetUser = users.where({
-				'id_str' : id_str
-			}).pop();
-			
+			// alert(L("yotoo_effect"));
+			// var receiverUser = users.where({'id_str': userId}).pop();
 			yotoos.addNewYotoo({
-				'sourceUser' : ownerAccount,
-				'targetUser' : targetUser,
-				'success' : function() {
+				senderUser: customer.userIdentity,
+				receiverUser: users.get(userId),
+				success: function() {
+					alert(L("yotoo_save_success"));
 				},
-				'error' : function() {
+				error: function() {
+					alert(L("yotoo_save_error"));
 				}
-			}); 			
+			});
 		}
 	});
 });
 
-userListView.getView().setTop( $.searchBar.getHeight() );
-$.globalView.add( userListView.getView() );
 
 var lastSearchQuery;
 function fetchUsers(query){
+	Ti.API.info("fetch");
+
 	if(lastSearchQuery === query){
 		return;
 	}else{
 		lastSearchQuery = query;
 	}
+
+	users.search({"query":query});
+	return;
 	users.fetchFromServer({
 		'purpose': 'searchUsers',
 		'params': {
@@ -78,12 +92,13 @@ function fetchUsers(query){
 	});
 }
 
-$.dummyScreen.addEventListener('touchstart', function(){
-	$.searchBar.blur();
-});
+
+
+
 Ti.App.addEventListener('app:buttonClick', function(){
 	$.searchBar.blur();
 });
+
 
 /* SearchBar */
 $.searchBar.setHintText( L('search_twitter_users') );
@@ -96,20 +111,19 @@ $.searchBar.addEventListener('cancel', function(){
 	$.searchBar.blur();
 });
 $.searchBar.addEventListener('focus', function(){
-	$.dummyScreen.show();
+	// $.dummyScreen.show();
 });
 $.searchBar.addEventListener('blur', function(){
-	$.dummyScreen.hide();
+	// $.dummyScreen.hide();
 });
-var typeDelayTimerId;
+var timerId;
 $.searchBar.addEventListener('change', function(e){
-	if( typeDelayTimerId ){
-		clearTimeout( typeDelayTimerId );
+	if( timerId ){
+		clearTimeout( timerId );
 	}
-	typeDelayTimerId = setTimeout(function(){
+	timerId = setTimeout(function(){
 		fetchUsers( e.value );
-	}, 1000);
+	}, 700);
 });
 
 $.searchBar.focus();
-

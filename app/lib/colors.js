@@ -1,4 +1,4 @@
-exports = {
+_.extend(exports,{
 	/*
 	 *  ios7 colors
 	 */
@@ -25,11 +25,11 @@ exports = {
 		black : [ { color: '#4a4a4a', offset: 0.0}, { color: '#2b2b2b', offset: 1.0 } ],
 		silver : [ { color: '#dbddde', offset: 0.0}, { color: '#898c90', offset: 1.0 } ],
 		white : [ { color: '#FcFEFE', offset: 0.0}, { color: '#FEFEFE', offset: 1.0 } ],
-		
+
 		lickyRed: [ { color: '#E01410', offset: 0.0}, {color: '#FD3848', offset:0.85},{color: '#FD3259', offset: 1.0}]
 		// lickyRed: [ { color: 'black', offset: 0.0}, {color: '#FD3259', offset: 1.0}]
 	},
-	
+
 	/*
 	 * for Licky
 	 */
@@ -38,13 +38,13 @@ exports = {
 	lightGray: '#f7f7f7',
 	lightWarmGray: '#EFEFEE',	// sub background
 	duff: '#E1C56B',
-	
-	// for foreground 
+
+	// for foreground
 	darkGray: '#525252',	// deactivate
 	// lickyOrange: '#EB7436',	// main point
 	lickyOrange: '#FD4526',	// main point
 	lickyRed: '#FD3D39',	// sub point
-	
+
 	// etcs
 	facebookBlue: '#4063A7'
-};
+});

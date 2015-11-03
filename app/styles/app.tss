@@ -1,31 +1,45 @@
-//Besides, JSON values and Titanium SDK constants, 
-//the TSS can handle the localization function Ti.Locale.getString() 
+//Besides, JSON values and Titanium SDK constants,
+//the TSS can handle the localization function Ti.Locale.getString()
 //and its shorthand L() as well as
 //expr(), which can contain any valid JavaScript, executed at runtime.
 
 // density == Ti.Platform.DisplayCaps.density
-// pixel == dp * ( density / 160 ) 
+// pixel == dp * ( density / 160 )
 
+"TabGroup":{
+	tabsBackgroundColor : "white"
+}
+"TabGroup[platform=ios]":{
+	//pullBackgroundColor : "yellow",
+	tintColor : "orange"
+}
 "Window": {
-	navBarHidden: true,
+	// navBarHidden: true,
 	backgroundColor: "white"
 	// backgroundImage:'images/back.png',
 	// softInputMode:(Ti.UI.Android) ? Ti.UI.Android.SOFT_INPUT_ADJUST_RESIZE : ''
 }
 "Window[platform=ios]": {
+	barColor: "white",
+	tintColor: "green",
+	// navTintColor: "yellow"
 	// statusBarStyle: Ti.UI.iPhone.StatusBar.LIGHT_CONTENT,
 	// statusBarStyle: Ti.UI.iPhone.StatusBar.GRAY,
-	// includeOpaqueBars: true,
-	// translucent: false,
-
-	// extendEdges : [Ti.UI.EXTEND_EDGE_TOP, Ti.UI.EXTEND_EDGE_BOTTOM],
-	// autoAdjustScrollViewInsets : true
+	/*
+	titleAttributes:{
+		color: Alloy.Globals.COLORS.red,
+		font: {fontFamily:'AppleSDGothicNeo', fontSize:17},
+		left : 0,
+		right : 0
+	},
+	*/
+	/*includeOpaqueBars: true,*/
+	/*translucent: false,*/
+	/*autoAdjustScrollViewInsets : true,*/
+	/*extendEdges : [Ti.UI.EXTEND_EDGE_TOP, Ti.UI.EXTEND_EDGE_BOTTOM]*/
 }
 "Window[platform=android]": {
-    softInputMode: Ti.UI.Android.SOFT_INPUT_ADJUST_RESIZE 
-}
-".appWindow": {
-	layout: "vertical"
+    softInputMode: Ti.UI.Android.SOFT_INPUT_ADJUST_RESIZE
 }
 ".tapWindow":{
 	layout: "vertical"
@@ -82,8 +96,31 @@
 	width: Ti.UI.SIZE
 }
 "SearchBar": {
-	barColor: '#666',
+	showCancel: false,
+	barColor: Alloy.Globals.COLORS.lightWarmGray,
 	height: 43
+}
+
+// yeah!
+".profileImage":{
+	height : 36.5, // 73/2 is 36.5
+	width : 36.5,
+	defaultImage: 'images/defaultImageView.png',
+	borderWidth : 0.5,
+	borderRadius : 9,
+	borderColor : Alloy.Globals.COLORS.midGray
+}
+// window nav
+".leftNavButton": {
+	top: 28,
+	left: 8
+}
+".rightNavButton": {
+	top: 28,
+	right: 8
+}
+".closeButton": {
+	title: L("close")
 }
 
 // navigation bar :will be remove
@@ -92,26 +129,26 @@
 	width: "100%",
 	height: 64,	// ios7's navBar height
 	// borderRadius: "3dp",
-	// backgroundColor: "#333",
+	backgroundColor: "#FAFAFA",
 	/*
     backgroundGradient: {
         type: 'linear',
         startPoint: { x: 0, y: '0%' },
         endPoint: { x: 0, y: '100%' },
-        colors: [ { color: '#CCC', offset: 0.0 }, 
+        colors: [ { color: '#CCC', offset: 0.0 },
         		{ color: '#666', offset: 0.05 },
-        		{ color: '#222', offset: 0.95 }, 
+        		{ color: '#222', offset: 0.95 },
         		{ color: '#000', offset: 1.0 } ]
     },
     */
     zIndex: 10
 }
 "#titleView":{
-	width: Ti.UI.SIZE,
 	// borderWidth : 1,
 	// borderRadius : 3,
 	// borderColor : 'red',
-	layout: 'horizontal'
+	width: Ti.UI.SIZE
+	// layout: 'horizontal'
 }
 "#titleImageView":{
 	// visible: false,
@@ -134,14 +171,6 @@
 		fontWeight: 'bold'
 	}
 }
-".leftNavButton": {
-	top: 28,
-	left: 8
-}
-".rightNavButton": {
-	top: 28,
-	right: 8
-}
 // navigation bar end
 
 
@@ -163,5 +192,3 @@
 	},
 	height:'auto'
 }
-
-

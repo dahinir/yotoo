@@ -1,16 +1,17 @@
+
 var args = arguments[0] || {};
-var ownerAccount = args.ownerAccount|| Alloy.Globals.accounts.getCurrentAccount();;
+var ownerCustomer = args.ownerCustomer || AG.customers.getCurrentCustomer();
 
 exports.init = function(args) {
-	if(args.ownerAccount != undefined ){
-		ownerAccount = args.ownerAccount;
+	if(args.ownerCustomer != undefined ){
+		ownerCustomer = args.ownerCustomer;
 	}
 };
 
 $.newTweetButton.addEventListener('click', function(e) {
-	if(ownerAccount != undefined){
+	if(ownerCustomer != undefined){
 		var composeWindow = Alloy.createController('composeTweetWindow', {
-			"ownerAccount" : ownerAccount
+			"ownerCustomer" : ownerCustomer
 		}).getView();
 		composeWindow.open();
 		// alert("hi"+ Alloy.globals.myVal);

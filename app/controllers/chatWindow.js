@@ -5,7 +5,7 @@ var yotoo = ownerAccount.getYotoos().where({'target_id_str': targetUser.get('id_
 // var chats = ownerAccount.getChats();	// all chats that relevant ownerAccount
 // Alloy.Globals.chats.fetch();
 var chats = Alloy.createCollection('chat', Alloy.Globals.chats.where({
-	'chat_group_id' : yotoo.get('chat_group_id')
+	'chat_group_id': yotoo.get('chat_group_id')
 }));
 
 var YOTOO_CONVERSATION_LIMIT = 100;
@@ -45,7 +45,7 @@ var addChatTableRow = function(chat, collection, options){
 		yotoo.set('chat_group_id', chat.get('chat_group_id') );
 		yotoo.save();
 	}
-	
+
 	var newRow = Alloy.createController('chatTableViewRow', {
 		'ownerAccount': ownerAccount,
 		'chat': chat,
@@ -53,7 +53,7 @@ var addChatTableRow = function(chat, collection, options){
 	}).getView();
 	conversationCount++;
 	newRows.push( newRow );
-		
+
 	if( options.index === chats.length - 1 && newRows.length > 0){
 		$.chatTableView.appendRow(newRows);
 		$.remainCountToBurn.setText( YOTOO_CONVERSATION_LIMIT - conversationCount);
@@ -101,9 +101,9 @@ $.closeButton.addEventListener('click', function(e){
 $.burnButton.addEventListener('click', function(e){
 	// 심각하게 다시 한번 불어 본 뒤 번!
 	yotoo.burn({
-		'mainAgent' : ownerAccount,
+		'mainAgent': ownerAccount,
 		'withNotification': true
-	}); 
+	});
 	$.chatWindow.close();
 });
 
@@ -174,9 +174,3 @@ $.chatWindow.addEventListener('close', function(){
 	$.destroy();
 	// yotoo.off('change:chat_group_id', resetChatTable);
 });
-
-
-
-
-
-

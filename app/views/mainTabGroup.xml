@@ -1,6 +1,6 @@
 <Alloy>
 	<!-- <Collection src="user" /> -->
-	<TabGroup id="mainTabGroup">
+	<TabGroup>
 		<!-- Explicit Window declaration -->
 <!--
 		<Tab id="timelineTab">
@@ -13,7 +13,7 @@
 		<Tab id="discoverTab">
 			<Require id="discoverWindow" src="discover/discoverWindow" />
 		</Tab>
-		
+
 		<Tab id="favoriteTab">
 			<Require id="favoriteWindow" src="favorite/favoriteWindow" />
 		</Tab>

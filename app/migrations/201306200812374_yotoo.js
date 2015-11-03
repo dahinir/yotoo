@@ -1,15 +1,15 @@
 migration.up = function(db) {
-	// db.dropTable("yotoo");
+	db.dropTable("yotoo");
 	db.createTable({
 		"columns": {
 			"id": "TEXT PRIMARY KEY",
-			"platform": "TEXT",	// like twitter, facebook..
-		    "source_id_str": "TEXT",
-		    "target_id_str": "TEXT",
+			"provider": "TEXT",	// like twitter, facebook..
+		    "senderId": "TEXT",
+		    "receiverId": "TEXT",
 
-		    "chat_group_id": "TEXT",
-		    "created_at": "TEXT",
-		    "burned_at": "TEXT",
+		    // "chat_group_id": "TEXT",
+		    "created": "TEXT",
+		    // "burned_at": "TEXT",
 		    
 		    "hided": "INTEGER",
 		    "unyotooed": "INTEGER",

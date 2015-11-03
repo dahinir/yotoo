@@ -1,8 +1,10 @@
 var args = arguments[0] || {};
+var title = args.title;
 
 // var ownerAccount = args.ownerAccount || Alloy.Globals.accounts.getCurrentAccount();
 // var url = args.url;
-$.titleLabel.setText( L('web') );
+
+
 // exports.addEventListener = function(a, b ){
 	// $.webView.addEventListener(a, b);
 // };
@@ -13,7 +15,7 @@ $.titleLabel.setText( L('web') );
 		// fullscreen: true,
 		navBarHidden: true,
 		modal: true
-	});
+	}); 
 
 	var webView = Ti.UI.createWebView({
 		// scalesPageToFit: true,
@@ -30,13 +32,17 @@ $.titleLabel.setText( L('web') );
 // exports.stopLoading = function(){
 	// $.webView.stopLoading();
 // };
-$.webView.addEventListener('load', function(e){
-	var titleText = e.url;
-	if(titleText.length > 27){
-		titleText = titleText.substring(0, 25) + "..";
-	}
-	$.titleLabel.setText(titleText);
-});
+if( title ){
+	$.titleLabel.setText( title );
+}else{
+	$.webView.addEventListener('load', function(e){
+		var titleText = e.url;
+		if(titleText.length > 27){
+			titleText = titleText.substring(0, 25) + "..";
+		}
+		$.titleLabel.setText(titleText);
+	});
+}
 $.closeButton.addEventListener('click', function(e){
 	$.webWindow.close();
 });

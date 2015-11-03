@@ -1,0 +1,9 @@
+<Alloy>
+	<Window id="customersWindow">
+		<View id="backgroundView" />
+		<View id="customersView" >
+			<TableView id="customersTable" />
+			<Button id="addCustomerButton">add</Button>
+		</View>
+	</Window>
+</Alloy>

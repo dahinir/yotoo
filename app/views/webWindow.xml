@@ -1,12 +1,12 @@
 <Alloy>
 	<Window id="webWindow" >
 		<View id="navBarView" >
-			<Button id="closeButton" class="leftNavButton" />
+			<Button id="closeButton" class="leftNavButton closeButton" />
 			<View id="titleView">
 				<Label id="titleLabel" />
 			</View>
+			<!-- <Button class="rightNavButton" /> -->
 		</View>
 		<WebView id="webView" />
 	</Window>
 </Alloy>
-

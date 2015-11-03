@@ -1,6 +1,6 @@
 <Alloy>
-	<View id="userListView" >
-		<ListView id="listView" defaultItemTemplate="plain" >
+
+		<ListView  defaultItemTemplate="plain" >
 
 			<Templates>
 				<ItemTemplate name="plain" >
@@ -48,9 +48,10 @@
 					<Button id="rightActionButton" class="completed" bindId="rightActionButton" onClick="onRightButtonClick" />
 				</ItemTemplate>
 			</Templates>
-			
+
 			<ListSection id="section">
+				<ListItem id="dummyListItem19255" />
 			</ListSection>
 		</ListView>
-	</View>
+
 </Alloy>

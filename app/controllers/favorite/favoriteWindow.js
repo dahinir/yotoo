@@ -1,6 +1,19 @@
-var args = arguments[0] || {};
+// var args = arguments[0] || {};
+var customer; // = args.customer || AG.customers.getCurrentCustomer();
 
-var ownerAccount = args.ownerAccount || Alloy.Globals.accounts.getCurrentAccount();
+exports.init = function( options ) {
+	if( options.customer){
+		customer = options.customer;
+		$.listCustomersButton.init({
+			customer: customer
+		});
+		$.favoriteView.init({
+			customer: customer
+		});
+	}
+};
+
+$.favoriteWindow.setTitle( L("favorite") );
 
 /*
 $.navBarView.init({
@@ -10,5 +23,5 @@ $.navBarView.init({
 */
 
 
-$.titleLabel.text = L('favorite');
-$.titleImageView.setImage( ownerAccount.get('profile_image_url_https') );
+// $.titleLabel.text = L('favorite');
+// $.titleImageView.setImage( ownerCustomer.get('profile_image_url_https') );
