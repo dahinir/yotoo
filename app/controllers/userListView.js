@@ -412,7 +412,9 @@ function onRightButtonClick(e){
 };
 // $.trigger('rightButtonClick');
 
-$.userListView.addEventListener('itemclick', function(e){
+$.userListView.addEventListener("itemclick", function(e){
 	Ti.API.debug("[userListView] itemclick event fired.");
 	Ti.API.debug(e);
+	var mywin = Titanium.UI.createWindow({title: "Hello"});
+	customer.mainTabGroup.activeTab.open(mywin);
 });
