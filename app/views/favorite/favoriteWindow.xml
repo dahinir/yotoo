@@ -1,5 +1,5 @@
 <Alloy>
-	<Window id="favoriteWindow" class="tapWindow" >
+	<Window class="tapWindow" >
 		<LeftNavButton platform="ios">
 			<Require id="listCustomersButton" src="listCustomersButton" class="leftNavButton" />
 		</LeftNavButton>
