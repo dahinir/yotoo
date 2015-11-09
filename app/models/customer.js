@@ -90,12 +90,12 @@ exports.definition = {
 					return;
 				}
 
-				// for yotoos
-				var yotoos = Alloy.createCollection("yotoo", {
+				// for yos
+				var yos = Alloy.createCollection("yo", {
 					customer: self
 				});
-				// yotoos.customer = self;
-				yotoos.fetch({
+				// yos.customer = self;
+				yos.fetch({
 					localOnly: true,
 					// add: true,	// I don't know but if "add" setted as true, problem
 					sql: {
@@ -113,7 +113,7 @@ exports.definition = {
 								// }
 						}
 				});
-				this.yotoos = yotoos;
+				this.yos = yos;
 
 				// for userIdentity
 				var userIdentity;
@@ -141,30 +141,31 @@ exports.definition = {
 				this.userIdentity = userIdentity;
 				// self.refresh();	// fetch from server
 
-				// for yotooedUsers
-				var yotooedUsers = Alloy.createCollection(self.get("provider") + "User");
-				// sort this users by order of yotoo id
-				yotooedUsers.comparator = function(user) {
-					var yt = yotoos.where({
+				// for yoUsers
+				var yoUsers = Alloy.createCollection(self.get("provider")+"User");
+				// sort this users by order of yo id
+				yoUsers.comparator = function(user) {
+					// `yos` is this cumstomer's yo
+					var yo = yos.where({
 						"provider": self.get("provider"),
 						"receiverId": user.id
 				 	}).pop();
-					var date = yt.get("modified") || yt.get("created");
+					var date = yo.get("modified") || yo.get("created");
 					return -(new Date(date)).getTime();
 				};
-				yotooedUsers.externalApi = userIdentity.externalApi;
-				yotooedUsers.addByIds({ userIds: yotoos.getIds() });
+				yoUsers.externalApi = userIdentity.externalApi;
+				yoUsers.addByIds({ userIds: yos.getIds() });
 
-				yotooedUsers.on("add change", function(user){
-					// yotooed users should be saved (sqlite)
+				yoUsers.on("add change", function(user){
+					// yo users should be saved (sqlite)
 					user.save();
 				});
-				yotoos.on("add", function(model, collection, options){
-					yotooedUsers.addByIds({ userIds: yotoos.getIds() });
+				yos.on("add", function(model, collection, options){
+					yoUsers.addByIds({ userIds: yos.getIds() });
 				});
-				yotoos.on("change:hided", function(yotoo){
+				yos.on("change:hided", function(yo){
 				});
-				this.yotooedUsers = yotooedUsers;
+				this.yoUsers = yoUsers;
 			},	// end of initialize
 			sync : function(method, model, opts){
 				// alert(opts);
@@ -216,39 +217,6 @@ exports.definition = {
 				return collection;
 			},
 
-			// deprecated: use .yotoos
-			getYotoos: function(){
-				Ti.API.info("[customer.js] .getYootoos()");
-				if( this.yotoos ){
-					// alert("exist yotoos: " + this.yotoos.length);
-				}else{
-					// this.yotoos = Alloy.createCollection('yotoo').fetch({
-						// query: "SELECT * FROM yotoo WHERE source_id = "+ this.get('id')
-					// });
-					this.yotoos = Alloy.createCollection('yotoo');
-					this.yotoos.ownerCustomer = this;
-					this.yotoos.fetch({
-						localOnly: true,
-						sql: {
-					        where: {
-					            senderId: this.get('id')
-					        }
-					        // wherenot: {
-					            // title: "Hello World"
-					        // },
-					        // orderBy:"title",
-					        // offset:20,
-					        // limit:20,
-					        // like: {
-					            // description: "search query"
-					        // }
-					    }
-					});
-					// var relevantYotoos = AG.yotoos.where({'source_id': this.get('id')});
-					// this.yotoos = Alloy.createCollection('yotoo', relevantYotoos);
-				}
-				return this.yotoos;
-			}
 		});
 		return Model;
 	},
@@ -289,7 +257,6 @@ exports.definition = {
 					if( accessToken ){
 						Ti.API.info("[customer.js] there is access token!");
 						// AG.tt =  e.source.evalJS('user;');
-						// alert( yotooAccessToken);
 						var customerId = e.source.evalJS('document.getElementById("yt:id").getAttribute("content");');
 						var	newCustomer = AG.customers.get(customerId);
 						var	customerObj = {

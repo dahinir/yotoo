@@ -8,7 +8,7 @@
 "#userScrollableView" :{
 	backgroundColor: "transparent",
 	height: 160,
-	width: 320, 
+	width: 320,
 	left: 0,
 	top: 0
 },
@@ -39,7 +39,7 @@
 	height: 10,
 	width: 10
 },
-"#nameAndYotooButton": {
+"#nameAndYoButton": {
 	top: 65,
 	layout: "horizontal",
 	borderWidth: 1,
@@ -65,7 +65,7 @@
 	height: 22,
 	width: 55
 },
-"#yotooButton": {
+"#yoButton": {
 	height: 22,
 	width: 54,
 	top: 2,
@@ -107,6 +107,3 @@
 	opacity: 0.5,
 	color: "#eee"
 }
-
-
-

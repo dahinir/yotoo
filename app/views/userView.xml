@@ -6,10 +6,10 @@
 		<ScrollableView id="userScrollableView" showPagingControl="true">
 			<View id="mainProfileView">
 				<ImageView id="profileImage" />
-				<View id="nameAndYotooButton" >
+				<View id="nameAndYoButton" >
 					<Button id="dummyButton" visible="false" />
 					<Label id="name" />
-					<Button id="yotooButton" visible="false">yotoo?</Button>
+					<Button id="yoButton" visible="false">yo</Button>
 				</View>
 				<ImageView id="verified" image="/images/twitter_verifiedAccountIcon.png" visible="false" />
 				<Label id="screenName" />
@@ -18,10 +18,10 @@
 				<Label id="description" />
 			</View>
 		</ScrollableView>
-		
+
 		<Label id="relationshipIndicator" visible="false" />
 		<Label id="relationshipIndicatorShadow" > </Label>
-		
+
 		<View id="temporally" layout="vertical" top="160" >
 			<Label id="followersCount" />
 			<Label id="followingCount" />

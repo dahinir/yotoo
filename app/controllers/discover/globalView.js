@@ -1,12 +1,12 @@
 // var args = arguments[0] || {};
 var customer; // = args.ownerCustomer || AG.customers.getCurrentCustomer();
-var yotoos, users;
+var yos, users;
 
 exports.init = function(options) {
 	if(options.customer) {
 		customer = options.customer;
 		users = customer.createCollection("user");
-		yotoos = customer.yotoos;
+		yos = customer.yos;
 		$.userList.init({
 			customer: customer,
 			users: users
@@ -28,7 +28,7 @@ $.userList.getView().addEventListener("rightButtonClick", function(e){
 	Ti.API.debug("[globalView.js] rightButtonClick event fired with userId: "+ userId);
 	var dialogOptions = {
 	  title: 'hello?',
-	  options: [L('unyotoo'), L('yotoo'), L('cancel')],
+	  options: [L('unyo'), L('yo'), L('cancel')],
 	  cancel: 2,
 	  selectedIndex: 1,
 	  destructive: 0
@@ -37,9 +37,9 @@ $.userList.getView().addEventListener("rightButtonClick", function(e){
 	optionDialog.show();
 	optionDialog.addEventListener('click', function(e){
 		if( e.index === 0){
-			alert(L('unyotoo_effect'));
-			var yt = yotoos.where({'target_id_str':  userId}).pop();
-			yt.unyotoo({
+			alert(L('unyo_effect'));
+			var yo = yos.where({'receiverId':  userId}).pop();
+			yo.unyo({
 				'mainAgent': customer,
 				'success': function(){
 				},
@@ -47,16 +47,16 @@ $.userList.getView().addEventListener("rightButtonClick", function(e){
 				}
 			});
 		}else if( e.index === 1 ){
-			// alert(L("yotoo_effect"));
+			// alert(L("yo_effect"));
 			// var receiverUser = users.where({'id_str': userId}).pop();
-			yotoos.addNewYotoo({
+			yos.addNewYo({
 				senderUser: customer.userIdentity,
 				receiverUser: users.get(userId),
 				success: function() {
-					alert(L("yotoo_save_success"));
+					alert(L("yo_save_success"));
 				},
 				error: function() {
-					alert(L("yotoo_save_error"));
+					alert(L("yo_save_error"));
 				}
 			});
 		}

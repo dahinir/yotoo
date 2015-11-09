@@ -1,5 +1,5 @@
 migration.up = function(db) {
-	db.dropTable("yotoo");
+	db.dropTable("yo");
 	db.createTable({
 		"columns": {
 			"id": "TEXT PRIMARY KEY",
@@ -10,20 +10,20 @@ migration.up = function(db) {
 		    // "chat_group_id": "TEXT",
 		    "created": "TEXT",
 		    // "burned_at": "TEXT",
-		    
-		    "hided": "INTEGER",
-		    "unyotooed": "INTEGER",
-		    "completed": "INTEGER",
-		    "burned": "INTEGER"
+
+		    "hide": "INTEGER",
+		    "unyo": "INTEGER",
+		    "complete": "INTEGER",
+		    "burn": "INTEGER"
 		},
 		"adapter": {
 			'idAttribute': "id",
 			"type": "sql",
-			"collection_name": "yotoo"
+			"collection_name": "yo"
 		}
 	});
 };
 
 migration.down = function(db) {
-	db.dropTable("yotoo");
+	db.dropTable("yo");
 };

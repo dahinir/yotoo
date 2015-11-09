@@ -24,7 +24,7 @@
 					<Label id="followers" bindId="followers" />
 					<Label id="description_" bindId="description_" /> <!-- 'description' is keyword -->
 				</ItemTemplate>
-				<ItemTemplate name="unyotooed" >
+				<ItemTemplate name="unyo" >
 					<View id="relationshipIndicator" bindId="relationshipIndicator" />
 					<ImageView id="profileImage" bindId="profileImage" />
 					<ImageView id="verifiedAccountIcon" bindId="verifiedAccountIcon" />
@@ -36,7 +36,7 @@
 					<Button id="rightActionButton" bindId="rightActionButton" onClick="onRightButtonClick" />
 					<View id="blackoutScreen" bindId="blackoutScreen" />
 				</ItemTemplate>
-				<ItemTemplate id="completed" name="completed" >
+				<ItemTemplate id="complete" name="completed" >
 					<View id="relationshipIndicator" bindId="relationshipIndicator" />
 					<ImageView id="profileImage" bindId="profileImage" />
 					<ImageView id="verifiedAccountIcon" bindId="verifiedAccountIcon" />

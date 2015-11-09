@@ -45,7 +45,7 @@ var addUserTabGroup = function(){
 			'ownerAccount': ownerAccount,
 			'user': user,
 			'parentView': $.userView
-		}).getView(); 
+		}).getView();
 	$.userView.add(userTabGroup);
 	Ti.API.info("[userView.js] addUserTabGroup");
 };
@@ -57,12 +57,12 @@ $.userView.addEventListener('postlayout', addUserTabGroup);
 
 
 /*  */
-$.yotooButton.addEventListener('click', function(){
-	alert( L('yotoo_effect') );
-	
-	
+$.yoButton.addEventListener('click', function(){
+	alert( L('yo_effect') );
+
+
 	// sourceAccount, targetAccount
-	require('cloudProxy').getCloud().yotooRequest(ownerAccount, user);
+	require('cloudProxy').getCloud().yoRequest(ownerAccount, user);
 });
 
 
@@ -70,13 +70,13 @@ var setUser = function( userId ){
 	if(ownerAccount.get('id_str') === userId){
 		purpose = "profile";
 	}
-	
-	// userId = "881373588";	// 안철수 
+
+	// userId = "881373588";	// 안철수
 	var params = {};
 	if( userId ){
 		params.user_id = userId;
 	}
-	
+
 	user.fetchFromServer({
 		'purpose': purpose,
 		'params': params,
@@ -90,19 +90,19 @@ var setUser = function( userId ){
 			$.description.text = user.get('description');
 			$.followersCount.text = L('followers') + " " + String.formatDecimal( user.get('followers_count') );
 			$.followingCount.text = L('following') + " " + String.formatDecimal( user.get('friends_count') );
-			
+
 			// if name is too long
 			if( user.get('name').length > 13){
-				$.nameAndYotooButton.remove($.dummyButton);
+				$.nameAndYoButton.remove($.dummyButton);
 			}
 			if( user.get('name').length > 17 ){
-				$.nameAndYotooButton.remove($.yotooButton);
-				$.mainProfileView.add($.yotooButton);
-				$.yotooButton.left = $.profileImage.rect.width + $.profileImage.rect.x + 6;
-				$.yotooButton.top = $.profileImage.rect.height + $.profileImage.rect.y - 22;
+				$.nameAndYoButton.remove($.yoButton);
+				$.mainProfileView.add($.yoButton);
+				$.yoButton.left = $.profileImage.rect.width + $.profileImage.rect.x + 6;
+				$.yoButton.top = $.profileImage.rect.height + $.profileImage.rect.y - 22;
 			}
 			if( purpose !== 'profile' ){
-				$.yotooButton.visible = true;
+				$.yoButton.visible = true;
 			}
 
 			if(purpose === 'userView'){
@@ -110,9 +110,9 @@ var setUser = function( userId ){
 				if( user.get('following') ){
 					$.followingButton.title = L('following');
 					$.followingButton.color = "#1D87F7";
-					
+
 					moreTaskOptions.options = [L('manage_list_memberships'), L('turn_on_notifications'), L('enable_retweets'), L('mute'), L('unfollow'), L('cancel')];
-	
+
 					moreTaskOptions.destructive = 4;
 					moreTaskOptions.cancel = 5;
 					moreTaskOptions.selectedIndex = 5;
@@ -121,20 +121,20 @@ var setUser = function( userId ){
 					$.followingButton.color = "#1C86F6";
 				}else{
 					$.followingButton.title = L('follow');
-					
+
 					moreTaskOptions.options = [L('manage_list_memberships'), L('mute'), L('follow'), L('cancel')];
 					moreTaskOptions.cancel = 3;
 					moreTaskOptions.selectedIndex = 3;
 				}
 				$.moreTaskButton.addEventListener('click', function(e) {
 					var dialog = Ti.UI.createOptionDialog(moreTaskOptions).show();
-				}); 
+				});
 				$.followingButton.visible = true;
 				$.moreTaskButton.visible = true;
 
 				$.relationshipIndicator.visible = true;
-				
-				
+
+
 				//* 상대가 날 팔로하는지에 대한 15 limit 해결책이 나지 않으면,
 				// * 상대에게 내용없는 디엠을 보내고 받은 에러메세지 종류로 판별한다.
 				//* 릴레이션쉽 리퀘스트는 moreTask버튼을 눌렀을때 보내는걸로 수정한다.
@@ -166,7 +166,7 @@ var setUser = function( userId ){
 					},
 					'error': function(){
 						Ti.API.debug("[userView] fetchFromServer(for relationship) failure");
-					}				
+					}
 				});
 
 			} // end of if(purpose == "userView" )
@@ -197,12 +197,7 @@ var setUser = function( userId ){
 			}else{
 				Ti.API.debug("[userView] fetchFromServer(for profileBanner) failure");
 			}
-		}		
+		}
 	});
 
 }; // end of setUser()
-
-
-
-
-

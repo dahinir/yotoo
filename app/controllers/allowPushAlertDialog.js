@@ -74,7 +74,7 @@ exports.tryRegistring = function(opts){
         cancel: 1,
         // A maximum of 3 buttons is supported on Android.
         buttonNames: [L("pleasePush"), L("cancel")],
-        message: L("youNeedPushNotificationForYotoo") || options.message,
+        message: L("youNeedPushNotificationForYo") || options.message,
         title: L("doYouWantPushNotification") || options.title
       });
       $.getView().show();

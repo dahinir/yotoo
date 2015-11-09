@@ -73,7 +73,7 @@ _.extend(AG ,{
 	// 각 커스토머마다 생성되어야 한다.
 	// users: Alloy.Collections.instance('twitterUser'),	// only important user
 	// users: Alloy.createCollection('user', {temp:"hehe"}),	// only important user
-	// yotoos: Alloy.Collections.instance('yotoo'),
+	// yos: Alloy.Collections.instance('yo'),
 	chats: Alloy.Collections.instance('chat')
 });
 
@@ -96,12 +96,12 @@ AG.customers.fetch({
 
 // AG.accounts.fetch();
 // AG.users.fetch();
-// AG.yotoos.fetch();
+// AG.yos.fetch();
 // AG.chats.fetch();
 /*
 Ti.API.info("[alloy.js] " + AG.customers.length + " loged in customers loaded");
 Ti.API.info("[alloy.js] " + AG.users.length + " users loaded");
-Ti.API.info("[alloy.js] " + AG.yotoos.length + " yotoos");
+Ti.API.info("[alloy.js] " + AG.yos.length + " yos");
 Ti.API.info("[alloy.js] " + AG.chats.length + " chats");
 
 AG.customers.map(function(customer){
@@ -118,12 +118,11 @@ AG.users.map(function(user){
 	+", "+user.get('id_str')+", " +user.get('acs_id'));
 });
 
-AG.yotoos.map(function( yotoo){
-	Ti.API.info("[alloy.js] yotoo: " + yotoo.get('id')
-		+ " " + yotoo.get('created_at') + " " + yotoo.get('burned_at')
-		+ " " + yotoo.get('chat_group_id') + " " + yotoo.get('source_id_str')
-		+ " " + yotoo.get('target_id_str') + " " + yotoo.get('unyotooed')
-		+ " " + yotoo.get('completed'));
+AG.yos.map(function( yo){
+	Ti.API.info("[alloy.js] yo: " + yo.get('id')
+		+ " " + yo.get('created_at') + " " + yo.get('burned_at')
+		+ " " + yo.get('chat_group_id') + " " + yo.get('source_id_str')
+		+ " " + yo.get('target_id_str') );
 });
 
 AG.chats.map(function( chat ){

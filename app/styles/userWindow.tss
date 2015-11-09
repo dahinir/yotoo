@@ -2,7 +2,7 @@
 	modal: true
 }
 
-// "#yotooButton": {
+// "#yoButton": {
 	// borderWidth: 0.5,
 	// borderRadius: 8,
 	// borderColor: "green",
@@ -55,7 +55,7 @@
 	height: 10,
 	width: 10
 },
-"#nameAndYotooButton": {
+"#nameAndYoButton": {
 	top: 65,
 	layout: "horizontal",
 	borderWidth: 1,
@@ -81,7 +81,7 @@
 	height: 22,
 	width: 55
 },
-"#yotooButton": {
+"#yoButton": {
 	height: 22,
 	width: 54,
 	top: 2,

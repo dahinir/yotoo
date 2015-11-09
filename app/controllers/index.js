@@ -4,7 +4,7 @@
  *
  */
 var customers = AG.customers;
-var yotoos = AG.yotoos;
+var yos = AG.yos;
 var setting = AG.setting;
 
 function openWelcomeWindow(){

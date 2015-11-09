@@ -1,5 +1,5 @@
 // var args = arguments[0] || {};
-var customer,	users, yotoos;
+var customer,	users, yos;
 
 /**
 * customer, users
@@ -18,7 +18,7 @@ exports.init = function(options) {
 
 	users = options.users;
 	customer = options.customer;
-	yotoos = options.customer.yotoos;
+	yos = options.customer.yos;
 
 	if(users && users.length){
 		var listDataItems = users.map(function(mo){
@@ -55,11 +55,11 @@ exports.init = function(options) {
 		});
 	});
 
-	// yotoos events
-	yotoos.on('change:unyotooed change:completed', function(yotoo){
-		Ti.API.debug("[userListView.js] yotoo change event. "+ yotoo.get("unyotooed"));
+	// yos events
+	yos.on('change:unyo change:complete', function(yo){
+		Ti.API.debug("[userListView.js] yo change event. "+ yo.get("unyo"));
 
-		var changedUser = users.get(yotoo.get("receiverId"));
+		var changedUser = users.get(yo.get("receiverId"));
 		if( !changedUser ){
 			return;
 		}
@@ -67,244 +67,16 @@ exports.init = function(options) {
 		var index = _getIndexByItemId(changedUser.id);
 		var data = $.section.getItemAt(index);
 
-		if( yotoo.get('completed') ){
-			data.template = 'completed';
-		}else if( yotoo.get('unyotooed') ){
-			data.template = 'unyotooed';
+		if( yo.get('complete') ){
+			data.template = 'complete';
+		}else if( yo.get('unyo') ){
+			data.template = 'unyo';
 		}else{
 			data.template = 'plain';
 		}
 		$.section.updateItemAt(index, data, {'animated': true});
 	});
 };
-
-
-// var _PLAIN = 1;
-// var _SELF = 2;
-// var _UNYOTOOED = 3;
-// var _COMPLETED = 4;
-// var _HIDED = 5;
-// var _BURNED = 6;
-/*
-var section = $.section;
-var listView = $.userListView;
-var getTemplate = function(type){
-	var plainTemplates = [{
-		type: 'Ti.UI.View',
-		bindId: 'relationshipIndicator',
-		properties: {
-			visible: false,
-			top: 0,
-			left: 0,
-			height: 10,
-			widht: 100,
-			backgroundColor: "#000",
-			opacity: 0.5
-		}
-		,childTemplates : [{
-			type: 'Ti.UI.View',
-			bindId: 'ttfased',
-			properties:{
-				top:0,
-				left:0,
-				width:10,
-				backgroundColor: "#222"
-			},
-			events: {
-				click: function(){
-					$.userListView.fireEvent('wow');
-				}
-			}
-		}]
-	}, {
-		type : 'Ti.UI.ImageView',
-		bindId : 'profileImage',
-		properties : {
-			defaultImage : 'images/defaultImageView.png',
-			borderWidth : 0.5,
-			borderRadius : 3,
-			borderColor : '#030303',
-			height : 48, // 73/2 is 36.5 but it's too small
-			width : 48,
-			top : 10,
-			left : 10
-		},
-		events : {
-			click: openUserView
-		}
-	}, {
-		type : 'Ti.UI.ImageView',
-		bindId : 'verifiedAccountIcon',
-		properties : {
-			visible : false,
-			image : 'images/twitter_verifiedAccountIcon.png',
-			height : 11.5,
-			width : 11.5,
-			top : 5,
-			left : 5
-		}
-	}, {
-		type : 'Ti.UI.Label',
-		bindId : 'name',
-		properties : {
-			color : '#070707',
-			font : {
-				fontFamily : 'Arial',
-				fontSize : 16,
-				fontWeight : 'bold'
-			},
-			top : 6,
-			left : 67
-		},
-		events: {
-			// postlayout: function(e){ alert(e.source.rect.width);}
-		}
-	}, {
-		type : 'Ti.UI.Label',
-		bindId : 'screenName', // @id
-		properties : {
-			color : '#445044',
-			font : {
-				// fontFamily: 'monospace',
-				fontSize : 14,
-				fontWeight : 'normal'
-			},
-			top : 19,
-			left : 72
-		}
-	}, {
-		type : 'Ti.UI.Label',
-		bindId : 'following',
-		properties : {
-			color : '#333',
-			font : {
-				fontSize : 12
-			},
-			top : 37,
-			left : 67
-		}
-	}, {
-		type : 'Ti.UI.Label',
-		bindId : 'followers',
-		properties : {
-			color : '#333',
-			font : {
-				fontSize : 12
-			},
-			top : 48,
-			left : 67
-		}
-	}, {
-		type : 'Ti.UI.Label',
-		bindId : 'description_', // 'description' is keyword
-		properties : {
-			color : '#444',
-			font : {
-				fontFamily : 'Arial',
-				fontSize : 12,
-				fontStyle : 'italic', // only iOS
-				fontWeight : 'normal'
-			},
-			verticalAlign : Ti.UI.TEXT_VERTICAL_ALIGNMENT_TOP,
-			borderWidth : 1,
-			borderColor : '#DDD',
-			width : 210,
-			height : Ti.UI.SIZE,
-			top : 34,
-			left : 55
-		}
-	}, {
-		type : 'Ti.UI.Button',
-		bindId : 'rightActionButton',
-		properties : {
-			width : 90,
-			height : 30,
-			right : 10,
-			zIndex: 10,
-			title: 'action'
-		},
-		events : {
-			click : rightButtonAction
-		}
-	}];
-
-	var listItemProps = {
-		// accessoryType: Ti.UI.LIST_ACCESSORY_TYPE_NONE,
-		// backgroundColor: '#0F0',
-		height : 80,
-		selectionStyle : Ti.UI.iPhone.ListViewCellSelectionStyle.NONE	// only iOS
-	};
-	var rightActionButtonIndex = 8;
-
-	// if (rightActionButton) {
-		// plainTemplates[rightActionButttonIndex] = rightActionButton;
-	// }
-	plainTemplates[rightActionButtonIndex].properties.zIndex = 10;
-
-	if( type === 'self'){
-		delete plainTemplates[rightActionButtonIndex];
-	}else if( type === 'unyotooed'){
-		 plainTemplates.push({
-			type: 'Ti.UI.View',
-			bindId: 'blackoutScreen',
-			properties: {
-				zIndex: 1,
-				visible: true,
-				top: 0,
-				left: 0,
-				backgroundColor: "#000",
-				opacity: 0.5
-			}
-		});
-	}else if( type === 'completed'){
-		listItemProps.backgroundColor = '#AFA';
-		// plainTemplates[rightActionButtonIndex].properties.width = 80;
-		// plainTemplates[rightActionButtonIndex].properties.borderWidth = 1;
-		// plainTemplates[rightActionButtonIndex].properties.borderRadius = 2;
-		// plainTemplates[rightActionButtonIndex].properties.borderColor = '#0F0';
-		// plainTemplates[rightActionButtonIndex].properties.title = 'completed';
-	}
-
-	return {
-		'childTemplates': plainTemplates,
-		'events': {
-			'swipe': function(e){
-				alert( JSON.stringify(e) + e.itemIndex + ": " + e.itemId );
-			}
-		},
-		'properties' : listItemProps
-	};
-};
-function rightButtonAction(e) {
-	$.userListView.fireEvent('rightButtonClick', {
-		'id_str': e.itemId
-	});
-}
-function openUserView(e) {
-	alert("openUserView");
-	// Ti.API.info(e.source.rect.x + ", " + e.source.rect.y);
-	// Ti.API.info("dpi: " + Titanium.Platform.displayCaps.dpi);
-}
-
-var listView = Ti.UI.createListView({
-	'templates' : {
-		'plain' : getTemplate(),
-		'self': getTemplate('self'),
-		'unyotooed': getTemplate('unyotooed'),
-		'completed': getTemplate('completed')
-	},
-	'defaultItemTemplate' : 'plain'
-});
-$.userListView.add(listView);
-
-// listView.setTop( $.searchBar.getHeight() );
-// $.userListView.addEventListener('swipe', function(e){
-	// alert(e);
-// });
-var section = Ti.UI.createListSection();
-*/
-
-
 
 function _settingData(user) {
 	data = {
@@ -336,20 +108,20 @@ function _settingData(user) {
 		};
 	}
 
-	// alert(user.get('id_str') +", "+ yotoos.where({'target_id_str': user.get('id_str')}).pop().get('completed') );
+	// alert(user.get('id_str') +", "+ yos.where({'target_id_str': user.get('id_str')}).pop().get('completed') );
 
 	// template select
-	var itsYotoo = yotoos.where({
+	var itsYo = yos.where({
 		"receiverId": user.id,
 		"provider": customer.get("provider")
 	}).pop();
 	if(user.id == customer.get("provider_id")){
 		data.template = "self";
-	}else if( itsYotoo && itsYotoo.get("completed") ){
+	}else if( itsYo && itsYo.get("completed") ){
 		data.template = "completed";
-	// }else if( user.get('unyotooed') ){
-	}else if( itsYotoo && itsYotoo.get("unyotooed") ){
-		data.template = "unyotooed";
+	// }else if( user.get('unyo') ){
+	}else if( itsYo && itsYo.get("unyo") ){
+		data.template = "unyo";
 	}
 
 	if (OS_ANDROID) {

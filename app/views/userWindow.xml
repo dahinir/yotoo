@@ -13,10 +13,10 @@
 			<ScrollableView id="userScrollableView" showPagingControl="true">
 				<View id="mainProfileView">
 					<ImageView id="profileImage" ></ImageView>
-					<View id="nameAndYotooButton" >
+					<View id="nameAndYoButton" >
 						<Button id="dummyButton" visible="false" ></Button>
 						<Label id="name" />
-						<Button id="yotooButton">yo!</Button>
+						<Button id="yoButton">yo!</Button>
 					</View>
 					<ImageView id="verified" image="/images/twitter_verifiedAccountIcon.png" visible="false" />
 					<Label id="screenName" />
