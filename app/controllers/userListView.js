@@ -412,7 +412,16 @@ function onRightButtonClick(e){
 };
 // $.trigger('rightButtonClick');
 
-$.userListView.addEventListener('itemclick', function(e){
-	Ti.API.debug("[userListView] itemclick event fired.");
+$.userListView.addEventListener("itemclick", function(e){
+	Ti.API.debug("[userListView]  itemclick event fired.");
 	Ti.API.debug(e);
+	AG.uus = users;
+
+	// var userWindow = Titanium.UI.createWindow({title: "Hello",backgroundColor:"yellow"});
+	var userController = Alloy.createController("userWindow");
+	userController.init({
+		customer: customer,
+		user: users.get(e.itemId)
+	});
+	customer.mainTabGroup.activeTab.open(userController.getView());
 });

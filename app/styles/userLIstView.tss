@@ -94,7 +94,7 @@
 	height : 30,
 	right : 10,
 	zIndex: 10,
-	title: 'action'
+	title: L("action")
 },
 "#blackoutScreen": {
 	zIndex: 1,

@@ -16,7 +16,7 @@ function openMainTabGroup(customer){
 		return;
 	}
 	if(customer.mainTabGroup){
-		Ti.API.info("[index.js] mainTabGroup is defined, call maintabGroup.open()");
+		Ti.API.info("[index.js] mainTabGroup is defined, call mainTabGroup.open()");
 		// account.mainTabGroup.show();
 		customer.mainTabGroup.open();
 	}else{
@@ -33,7 +33,7 @@ function closeMainTabGroup(customer){
 		return;
 	}
 	if(customer.mainTabGroup){
-		Ti.API.info("[index.js] previous maintabGroup.close()");
+		Ti.API.info("[index.js] previous mainTabGroup.close()");
 		// customer.mainTabGroup.hide();
 		customer.mainTabGroup.close();
 	}
