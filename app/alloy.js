@@ -139,7 +139,7 @@ AG.allowPushController = Alloy.createController("allowPushAlertDialog");
 // AG.notifyController = Alloy.createController('notifyView');
 // AG.allowPushController = Alloy.createController("allowPushDialogWindow");
 
-
+Alloy.Globals.asdf = 100;
 
 
 

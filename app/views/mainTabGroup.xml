@@ -13,14 +13,11 @@
 		<Tab id="discoverTab">
 			<Require id="discoverWindow" src="discover/discoverWindow" />
 		</Tab>
-
 		<Tab id="favoriteTab">
 			<Require id="favoriteWindow" src="favorite/favoriteWindow" />
 		</Tab>
-<!--
 		<Tab id="profileTab">
-			<Require id="profileWindow" src="profileWindow" />
+			<Require id="userWindow" src="userWindow" />
 		</Tab>
--->
 	</TabGroup>
 </Alloy>

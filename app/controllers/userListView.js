@@ -413,8 +413,15 @@ function onRightButtonClick(e){
 // $.trigger('rightButtonClick');
 
 $.userListView.addEventListener("itemclick", function(e){
-	Ti.API.debug("[userListView] itemclick event fired.");
+	Ti.API.debug("[userListView]  itemclick event fired.");
 	Ti.API.debug(e);
-	var mywin = Titanium.UI.createWindow({title: "Hello"});
-	customer.mainTabGroup.activeTab.open(mywin);
+	AG.uus = users;
+
+	// var userWindow = Titanium.UI.createWindow({title: "Hello",backgroundColor:"yellow"});
+	var userController = Alloy.createController("userWindow");
+	userController.init({
+		customer: customer,
+		user: users.get(e.itemId)
+	});
+	customer.mainTabGroup.activeTab.open(userController.getView());
 });

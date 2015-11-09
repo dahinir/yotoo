@@ -22,7 +22,7 @@ $.userList.getView().addEventListener("itemclick", function(e){
 	Ti.API.debug("[globalView] itemclick event fired.");
 	Ti.API.debug(e);
 });
-// AG.yts = yotoos;
+
 $.userList.getView().addEventListener("rightButtonClick", function(e){
 	var userId = e.userId;
 	Ti.API.debug("[globalView.js] rightButtonClick event fired with userId: "+ userId);

@@ -4,7 +4,7 @@
 var args = arguments[0] || {};
 var customer = args.customer;	// no mercy!
 
-Ti.API.debug("[mainTabGroup.js] called");
+Ti.API.debug("[mainTabGroup.js] called.");
 
 $.mainTabGroup.setActiveTab(customer.get('status_activeTabIndex'));
 
@@ -27,5 +27,8 @@ $.discoverWindow.init({
 	customer: customer
 });
 $.favoriteWindow.init({
+	customer: customer
+});
+$.userWindow.init({
 	customer: customer
 });
