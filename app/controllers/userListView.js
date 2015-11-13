@@ -23,7 +23,7 @@ exports.init = function(options) {
 
 	if(users && users.length){
 		var listDataItems = users.map(function(mo){
-			return _settingData(mo);
+			return settingData(mo);
 		});
 		$.section.setItems(listDataItems, {'animated': false});
 	}
@@ -38,14 +38,14 @@ exports.init = function(options) {
 		Ti.API.debug("[userListView.js] users reset event");
 		var listDataItems = [];
 		collection.each(function(mo){
-			listDataItems.push(_settingData(mo));
+			listDataItems.push(settingData(mo));
 		})
 		$.section.setItems(listDataItems, {'animated': false});
 	});
 	users.on("change:profile_image_url_https change:name change:screen_name change:friends_count change:followers_count", function(changedUser){
 			Ti.API.debug("[userListView.js] users change event. ");
 			var index = _getIndexByItemId(changedUser.get('id_str'));
-			var listDataItem = _settingData( changedUser );
+			var listDataItem = settingData( changedUser );
 			$.section.updateItemAt(index, listDataItem, {'animated': true});
 	});
 	users.on('add', function(addedUser, collection, options){
@@ -68,21 +68,27 @@ exports.init = function(options) {
 		var index = _getIndexByItemId(changedUser.id);
 		var data = $.section.getItemAt(index);
 
-		// template select
-		if( yo.get('complete') ){
-			data.template = 'complete';
-		}else if( yo.get('unyo') ){
-			data.template = 'unyo';
-		}else if( yo ){
-			data.template = "yo";
-		}else{
-			data.template = defaultTemplate;
-		}
+		data.template = chooseItemTemplate(changedUser, yo);
 		$.section.updateItemAt(index, data, {'animated': true});
 	});
-};
+};	// end of .init()
 
-function _settingData(user) {
+function chooseItemTemplate(user, yo){
+	var template;
+	if(user.id == customer.get("provider_id")){
+		template = "self";
+	}else if(yo && yo.get("complete") ){
+		template = "complete";
+	}else if(yo && yo.get("unyo")){
+		template = "unyo";
+	}else if(yo){
+		template = "yo";
+	}else {
+		template = defaultTemplate;
+	}
+	return template;
+}
+function settingData(user) {
 	data = {
 		profileImage : {
 			image : user.get('profile_image_url_https').replace(/_normal\./g, '_bigger.')
@@ -117,18 +123,7 @@ function _settingData(user) {
 		"receiverId": user.id,
 		"provider": customer.get("provider")
 	}).pop();
-	if(user.id == customer.get("provider_id")){
-		data.template = "self";
-	}else if( itsYo && itsYo.get("complete") ){
-		data.template = "complete";
-	// }else if( user.get('unyo') ){
-	}else if( itsYo && itsYo.get("unyo") ){
-		data.template = "unyo";
-	}else if(itsYo){
-		data.template = "yo";
-	}else {
-		data.template = defaultTemplate;
-	}
+	data.template = chooseItemTemplate(user, itsYo);
 
 	if (OS_ANDROID) {
 		data.description_ = {
@@ -147,10 +142,10 @@ var addRows = function(options){
 
 	if( addedUsers.map ){
 		for(var i = 0; i < addedUsers.length; i++){
-			dataArray.push( _settingData( addedUsers.at(i) ) );
+			dataArray.push( settingData( addedUsers.at(i) ) );
 		}
 	}else{
-		dataArray.push( _settingData( addedUsers ) );
+		dataArray.push( settingData( addedUsers ) );
 	}
 
 	if( reset ){
