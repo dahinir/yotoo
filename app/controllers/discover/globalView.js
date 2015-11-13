@@ -26,6 +26,7 @@ $.userList.getView().addEventListener("itemclick", function(e){
 $.userList.getView().addEventListener("rightButtonClick", function(e){
 	var userId = e.userId;
 	Ti.API.debug("[globalView.js] rightButtonClick event fired with userId: "+ userId);
+	return;
 	var dialogOptions = {
 	  title: 'hello?',
 	  options: [L('unyo'), L('yo'), L('cancel')],

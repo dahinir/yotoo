@@ -1,6 +1,6 @@
 // var args = arguments[0] || {};
 var customer,	users, yos;
-
+var defaultTemplate;
 /**
 * customer, users
 */
@@ -19,6 +19,7 @@ exports.init = function(options) {
 	users = options.users;
 	customer = options.customer;
 	yos = options.customer.yos;
+	defaultTemplate = options.defaultTemplate || "plain";
 
 	if(users && users.length){
 		var listDataItems = users.map(function(mo){
@@ -72,7 +73,7 @@ exports.init = function(options) {
 		}else if( yo.get('unyo') ){
 			data.template = 'unyo';
 		}else{
-			data.template = 'plain';
+			data.template = defaultTemplate;
 		}
 		$.section.updateItemAt(index, data, {'animated': true});
 	});
@@ -117,11 +118,13 @@ function _settingData(user) {
 	}).pop();
 	if(user.id == customer.get("provider_id")){
 		data.template = "self";
-	}else if( itsYo && itsYo.get("completed") ){
-		data.template = "completed";
+	}else if( itsYo && itsYo.get("complete") ){
+		data.template = "complete";
 	// }else if( user.get('unyo') ){
 	}else if( itsYo && itsYo.get("unyo") ){
 		data.template = "unyo";
+	}else {
+		data.template = defaultTemplate;
 	}
 
 	if (OS_ANDROID) {
@@ -184,10 +187,13 @@ function onRightButtonClick(e){
 };
 // $.trigger('rightButtonClick');
 
+function onYoButtonClick(e){
+	Ti.API.debug("[userListView.onYoClick] "+e.itemId + e.bubbles);
+}
+
 $.userListView.addEventListener("itemclick", function(e){
 	Ti.API.debug("[userListView]  itemclick event fired.");
 	Ti.API.debug(e);
-	AG.uus = users;
 
 	// var userWindow = Titanium.UI.createWindow({title: "Hello",backgroundColor:"yellow"});
 	var userController = Alloy.createController("userWindow");
