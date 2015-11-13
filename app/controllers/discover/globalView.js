@@ -19,55 +19,16 @@ $.userList.getView().addEventListener("scrollstart", function(){
 });
 
 $.userList.getView().addEventListener("itemclick", function(e){
-	Ti.API.debug("[globalView] itemclick event fired.");
-	Ti.API.debug(e);
+	// Ti.API.debug("[globalView] itemclick event fired.");
+	// Ti.API.debug(e);
 });
-
 $.userList.getView().addEventListener("rightButtonClick", function(e){
-	var userId = e.userId;
-	Ti.API.debug("[globalView.js] rightButtonClick event fired with userId: "+ userId);
-	return;
-	var dialogOptions = {
-	  title: 'hello?',
-	  options: [L('unyo'), L('yo'), L('cancel')],
-	  cancel: 2,
-	  selectedIndex: 1,
-	  destructive: 0
-	};
-	var optionDialog = Ti.UI.createOptionDialog(dialogOptions);
-	optionDialog.show();
-	optionDialog.addEventListener('click', function(e){
-		if( e.index === 0){
-			alert(L('unyo_effect'));
-			var yo = yos.where({'receiverId':  userId}).pop();
-			yo.unyo({
-				'mainAgent': customer,
-				'success': function(){
-				},
-				'error': function(){
-				}
-			});
-		}else if( e.index === 1 ){
-			// alert(L("yo_effect"));
-			// var receiverUser = users.where({'id_str': userId}).pop();
-			yos.addNewYo({
-				senderUser: customer.userIdentity,
-				receiverUser: users.get(userId),
-				success: function() {
-					alert(L("yo_save_success"));
-				},
-				error: function() {
-					alert(L("yo_save_error"));
-				}
-			});
-		}
-	});
+	// Ti.API.debug("[globalView.js] rightButtonClick event fired with userId: "+ userId);
 });
-
 
 var lastSearchQuery;
 function fetchUsers(query){
-	Ti.API.info("fetch");
+	Ti.API.debug("[globalView.fetchUsers]");
 
 	if(lastSearchQuery === query){
 		return;
@@ -77,29 +38,12 @@ function fetchUsers(query){
 
 	users.search({"query":query});
 	return;
-	users.fetchFromServer({
-		'purpose': 'searchUsers',
-		'params': {
-			'count': 20, // maxium 20
-			'q': query
-		},
-		'reset': true,
-		'success': function(){
-			Ti.API.debug("[globalView.js] success");
-		},
-		'error': function(){
-			Ti.API.debug("[globalView.js] error");
-		}
-	});
 }
-
-
 
 
 Ti.App.addEventListener('app:buttonClick', function(){
 	$.searchBar.blur();
 });
-
 
 /* SearchBar */
 $.searchBar.setHintText( L('search_twitter_users') );

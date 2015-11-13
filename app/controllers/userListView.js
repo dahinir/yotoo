@@ -68,6 +68,7 @@ exports.init = function(options) {
 		var index = _getIndexByItemId(changedUser.id);
 		var data = $.section.getItemAt(index);
 
+		// template select
 		if( yo.get('complete') ){
 			data.template = 'complete';
 		}else if( yo.get('unyo') ){
@@ -108,8 +109,6 @@ function _settingData(user) {
 			visible : true
 		};
 	}
-
-	// alert(user.get('id_str') +", "+ yos.where({'target_id_str': user.get('id_str')}).pop().get('completed') );
 
 	// template select
 	var itsYo = yos.where({
@@ -189,6 +188,43 @@ function onRightButtonClick(e){
 
 function onYoButtonClick(e){
 	Ti.API.debug("[userListView.onYoClick] "+e.itemId + e.bubbles);
+
+	var userId = e.itemId;
+	var dialogOptions = {
+	  title: 'hello?',
+	  options: [L('unyo'), L('yo'), L('cancel')],
+	  cancel: 2,
+	  selectedIndex: 1,
+	  destructive: 0
+	};
+	var optionDialog = Ti.UI.createOptionDialog(dialogOptions);
+	optionDialog.show();
+	optionDialog.addEventListener('click', function(e){
+		if( e.index === 0){
+			alert(L('unyo_effect'));
+			var yo = yos.where({'receiverId':  userId}).pop();
+			yo.unyo({
+				'mainAgent': customer,
+				'success': function(){
+				},
+				'error': function(){
+				}
+			});
+		}else if( e.index === 1 ){
+			// alert(L("yo_effect"));
+			// var receiverUser = users.where({'id_str': userId}).pop();
+			yos.addNewYo({
+				senderUser: customer.userIdentity,
+				receiverUser: users.get(userId),
+				success: function() {
+					alert(L("yo_save_success"));
+				},
+				error: function() {
+					alert(L("yo_save_error"));
+				}
+			});
+		}
+	});
 }
 
 $.userListView.addEventListener("itemclick", function(e){
