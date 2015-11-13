@@ -103,6 +103,13 @@
 	zIndex: 10,
 	title: L("yo")
 },
+"#unyoButton": {
+	width : 90,
+	height : 30,
+	right : 10,
+	zIndex: 10,
+	title: L("unyo")
+},
 "#blackoutScreen": {
 	zIndex: 1,
 	visible: true,

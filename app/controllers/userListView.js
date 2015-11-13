@@ -73,6 +73,8 @@ exports.init = function(options) {
 			data.template = 'complete';
 		}else if( yo.get('unyo') ){
 			data.template = 'unyo';
+		}else if( yo ){
+			data.template = "yo";
 		}else{
 			data.template = defaultTemplate;
 		}
@@ -122,6 +124,8 @@ function _settingData(user) {
 	// }else if( user.get('unyo') ){
 	}else if( itsYo && itsYo.get("unyo") ){
 		data.template = "unyo";
+	}else if(itsYo){
+		data.template = "yo";
 	}else {
 		data.template = defaultTemplate;
 	}
@@ -134,7 +138,7 @@ function _settingData(user) {
 		// not support on iOS
 	}
 	return data;
-};
+}
 
 var addRows = function(options){
 	var addedUsers = options.addedUsers;
@@ -183,9 +187,11 @@ function onRightButtonClick(e){
 	Ti.API.debug("[userListView.onRightButtonClick] "+e.itemId + e.bubbles);
 	e.userId = e.itemId;
 	$.userListView.fireEvent("rightButtonClick", e);
-};
+}
 // $.trigger('rightButtonClick');
-
+function onUnyoButton(e){
+	Ti.API.debug("[userListView.onUnyoButton] "+e.itemId + e.bubbles);
+}
 function onYoButtonClick(e){
 	Ti.API.debug("[userListView.onYoClick] "+e.itemId + e.bubbles);
 

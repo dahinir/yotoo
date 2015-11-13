@@ -13,9 +13,9 @@ exports.init = function( options ) {
 	yos = customer.yos;
 
 	$.userList.init({
+		// defaultTemplate: "withRightButton",
 		customer: customer,
-		users: users,
-		defaultTemplate: "withRightButton"
+		users: users 		
 	});
 };
 
