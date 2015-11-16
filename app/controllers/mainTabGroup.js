@@ -29,6 +29,6 @@ $.discoverWindow.init({
 $.favoriteWindow.init({
 	customer: customer
 });
-$.userWindow.init({
-	customer: customer
-});
+// $.userWindow.init({
+// 	customer: customer
+// });

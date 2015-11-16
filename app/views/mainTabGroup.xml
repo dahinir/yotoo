@@ -16,8 +16,10 @@
 		<Tab id="favoriteTab">
 			<Require id="favoriteWindow" src="favorite/favoriteWindow" />
 		</Tab>
+<!--
 		<Tab id="profileTab">
 			<Require id="userWindow" src="userWindow" />
 		</Tab>
+-->
 	</TabGroup>
 </Alloy>

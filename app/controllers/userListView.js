@@ -197,15 +197,15 @@ function onUnyoButton(e){
 		cancel: 1
 	});
 
-	optionDialog.addEventListener('click', function(e){
+	optionDialog.addEventListener("click", function(e){
 		var yo = yos.where({"receiverId": userId}).pop();
 		if( e.index === 0){
 			yo.unyo({
-				'success': function(){
-					alert(L("yo_unyo_success"));
+				success: function(){
+					// alert(L("yo_unyo_success"));
 				},
-				'error': function(){
-					alert(L("yo_unyo_success"));
+				error: function(){
+					alert(L("yo_unyo_error"));
 				}
 			});
 		}
