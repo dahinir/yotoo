@@ -45,7 +45,7 @@
 					<Label id="following" bindId="following" />
 					<Label id="followers" bindId="followers" />
 					<Label id="description_" bindId="description_" /> <!-- 'description' is keyword -->
-					<Button id="rightButton" bindId="rightButton" onClick="onRightButtonClick" />
+					<Button id="yoButton" bindId="yoButton" onClick="onYoButtonClick" />
 					<View id="blackoutScreen" bindId="blackoutScreen" />
 				</ItemTemplate>
 				<ItemTemplate id="complete" name="completed" >
