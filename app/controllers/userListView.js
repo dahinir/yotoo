@@ -198,13 +198,9 @@ function onUnyoButton(e){
 	});
 
 	optionDialog.addEventListener('click', function(e){
-		var yt = yos.where({
-			"provider": customer.get("provider"),
-			"senderId": customer.get("provider_id"),
-			"receiverId": userId
-		}).pop();
+		var yo = yos.where({"receiverId": userId}).pop();
 		if( e.index === 0){
-			yt.unyo({
+			yo.unyo({
 				'success': function(){
 					alert(L("yo_unyo_success"));
 				},
@@ -222,41 +218,39 @@ function onYoButtonClick(e){
 	Ti.API.debug("[userListView.onYoClick] "+e.itemId + e.bubbles);
 
 	var userId = e.itemId;
-	var dialogOptions = {
-	  title: 'hello?',
-	  options: [L('unyo'), L('yo'), L('cancel')],
-	  cancel: 2,
-	  selectedIndex: 1,
-	  destructive: 0
-	};
-	var optionDialog = Ti.UI.createOptionDialog(dialogOptions);
-	optionDialog.show();
-	optionDialog.addEventListener('click', function(e){
-		if( e.index === 0){
-			alert(L('unyo_effect'));
-			var yo = yos.where({'receiverId':  userId}).pop();
-			yo.unyo({
-				'mainAgent': customer,
-				'success': function(){
-				},
-				'error': function(){
-				}
-			});
-		}else if( e.index === 1 ){
-			// alert(L("yo_effect"));
-			// var receiverUser = users.where({'id_str': userId}).pop();
-			yos.addNewYo({
-				senderUser: customer.userIdentity,
-				receiverUser: users.get(userId),
-				success: function() {
-					alert(L("yo_save_success"));
-				},
-				error: function() {
-					alert(L("yo_save_error"));
-				}
-			});
+	var optionDialog = Ti.UI.createOptionDialog({
+		title: L("yo_effect"),
+		options: [L("yo"), L("cancel")],
+		persistent: false,
+		cancel: 1
+	});
+	optionDialog.addEventListener("click", function(e){
+		var yo = yos.where({"receiverId": userId}).pop();
+		if(e.index === 0){
+			if(yo && yo.get("unyo")){
+				yo.reyo({
+					success: function(){
+						// alert(L("yo_reyo_success"));
+					},
+					error: function(){
+						alert(L("yo_reyo_error"));
+					}
+				});
+			}else{
+				yos.addNewYo({
+					senderUser: customer.userIdentity,
+					receiverUser: users.get(userId),
+					success: function() {
+						// alert(L("yo_save_success"));
+					},
+					error: function() {
+						alert(L("yo_save_error"));
+					}
+				});
+			}
 		}
 	});
+	optionDialog.show();
 }
 
 $.userListView.addEventListener("itemclick", function(e){
