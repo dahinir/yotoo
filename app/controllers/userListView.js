@@ -186,7 +186,38 @@ function onRightButtonClick(e){
 // $.trigger('rightButtonClick');
 function onUnyoButton(e){
 	Ti.API.debug("[userListView.onUnyoButton] "+e.itemId + e.bubbles);
-}
+	var userId = e.itemId;
+
+	var optionDialog = Ti.UI.createOptionDialog({
+		title: L("unyo_effect"),
+		options: [L("unyo"), L("cancel")],
+		// selectedIndex: 1,	// android only
+		// destructive: 0,	// red type by ios
+		persistent: false,
+		cancel: 1
+	});
+
+	optionDialog.addEventListener('click', function(e){
+		var yt = yos.where({
+			"provider": customer.get("provider"),
+			"senderId": customer.get("provider_id"),
+			"receiverId": userId
+		}).pop();
+		if( e.index === 0){
+			yt.unyo({
+				'success': function(){
+					alert(L("yo_unyo_success"));
+				},
+				'error': function(){
+					alert(L("yo_unyo_success"));
+				}
+			});
+		}
+	});
+
+	optionDialog.show();
+}	// .onUnyoButton()
+
 function onYoButtonClick(e){
 	Ti.API.debug("[userListView.onYoClick] "+e.itemId + e.bubbles);
 
