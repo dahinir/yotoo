@@ -10,10 +10,10 @@
 			<Require id="connectWindow" src="connectWindow" />
 		</Tab>
 -->
-		<Tab id="discoverTab">
+		<Tab id="discoverTab" title="L('pushHistoryTabTitle')" icon=Titanium.UI.iPhone.SystemIcon.SEARCH >
 			<Require id="discoverWindow" src="discover/discoverWindow" />
 		</Tab>
-		<Tab id="favoriteTab">
+		<Tab id="favoriteTab" title="asdf" icon=Ti.UI.iPhone.SystemIcon.FAVORITES >
 			<Require id="favoriteWindow" src="favorite/favoriteWindow" />
 		</Tab>
 <!--
