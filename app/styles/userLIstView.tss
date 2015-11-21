@@ -89,12 +89,26 @@
 	top : 34,
 	left : 55
 },
-"#rightActionButton": {
+"#rightButton": {
 	width : 90,
 	height : 30,
 	right : 10,
 	zIndex: 10,
-	title: L("action")
+	title: L("rButton")
+},
+"#yoButton": {
+	width : 90,
+	height : 30,
+	right : 10,
+	zIndex: 10,
+	title: L("yo")
+},
+"#unyoButton": {
+	width : 90,
+	height : 30,
+	right : 10,
+	zIndex: 10,
+	title: L("unyo")
 },
 "#blackoutScreen": {
 	zIndex: 1,

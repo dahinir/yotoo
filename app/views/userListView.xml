@@ -1,6 +1,6 @@
 <Alloy>
 
-		<ListView  defaultItemTemplate="plain" >
+		<ListView defaultItemTemplate="plain" >
 
 			<Templates>
 				<ItemTemplate name="plain" >
@@ -12,9 +12,9 @@
 					<Label id="following" bindId="following" />
 					<Label id="followers" bindId="followers" />
 					<Label id="description_" bindId="description_" /> <!-- 'description' is keyword -->
-					<Button id="rightActionButton" bindId="rightActionButton" onClick="onRightButtonClick" />
+					<Button id="yoButton" bindId="yoButton" onClick="onYoButtonClick" />
 				</ItemTemplate>
-				<ItemTemplate name="self" >
+				<ItemTemplate name="yo" >
 					<View id="relationshipIndicator" bindId="relationshipIndicator" />
 					<ImageView id="profileImage" bindId="profileImage" />
 					<ImageView id="verifiedAccountIcon" bindId="verifiedAccountIcon" />
@@ -23,7 +23,19 @@
 					<Label id="following" bindId="following" />
 					<Label id="followers" bindId="followers" />
 					<Label id="description_" bindId="description_" /> <!-- 'description' is keyword -->
+					<Button id="unyoButton" bindId="unyButton" onClick="onUnyoButton" />
 				</ItemTemplate>
+				<!-- <ItemTemplate name="withRightButton" >
+					<View id="relationshipIndicator" bindId="relationshipIndicator" />
+					<ImageView id="profileImage" bindId="profileImage" />
+					<ImageView id="verifiedAccountIcon" bindId="verifiedAccountIcon" />
+					<Label id="name" bindId="name" />
+					<Label id="screenName" bindId="screenName" />
+					<Label id="following" bindId="following" />
+					<Label id="followers" bindId="followers" />
+					<Label id="description_" bindId="description_" />
+					<Button id="rightButton" bindId="rightButton" onClick="onRightButtonClick" />
+				</ItemTemplate> -->
 				<ItemTemplate name="unyo" >
 					<View id="relationshipIndicator" bindId="relationshipIndicator" />
 					<ImageView id="profileImage" bindId="profileImage" />
@@ -33,7 +45,7 @@
 					<Label id="following" bindId="following" />
 					<Label id="followers" bindId="followers" />
 					<Label id="description_" bindId="description_" /> <!-- 'description' is keyword -->
-					<Button id="rightActionButton" bindId="rightActionButton" onClick="onRightButtonClick" />
+					<Button id="yoButton" bindId="yoButton" onClick="onYoButtonClick" />
 					<View id="blackoutScreen" bindId="blackoutScreen" />
 				</ItemTemplate>
 				<ItemTemplate id="complete" name="completed" >
@@ -45,7 +57,17 @@
 					<Label id="following" bindId="following" />
 					<Label id="followers" bindId="followers" />
 					<Label id="description_" bindId="description_" /> <!-- 'description' is keyword -->
-					<Button id="rightActionButton" class="completed" bindId="rightActionButton" onClick="onRightButtonClick" />
+					<Button id="rightButton" class="completed" bindId="rightButton" onClick="onRightButtonClick" />
+				</ItemTemplate>
+				<ItemTemplate name="self" >
+					<View id="relationshipIndicator" bindId="relationshipIndicator" />
+					<ImageView id="profileImage" bindId="profileImage" />
+					<ImageView id="verifiedAccountIcon" bindId="verifiedAccountIcon" />
+					<Label id="name" bindId="name" />
+					<Label id="screenName" bindId="screenName" />
+					<Label id="following" bindId="following" />
+					<Label id="followers" bindId="followers" />
+					<Label id="description_" bindId="description_" /> <!-- 'description' is keyword -->
 				</ItemTemplate>
 			</Templates>
 
