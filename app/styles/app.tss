@@ -10,8 +10,8 @@
 	tabsBackgroundColor : "white"
 }
 "TabGroup[platform=ios]":{
-	//pullBackgroundColor : "yellow",
-	tintColor : "orange"
+	// pullBackgroundColor : "yellow",
+	// tintColor : "orange"
 }
 "Window": {
 	// navBarHidden: true,
