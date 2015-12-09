@@ -101,7 +101,7 @@ exports.definition = {
 			initialize: function(e, e2) {
 				// Ti.API.info(arguments);
 				// Ti.API.info(e2);
-				this.customer = e.customer;
+				// this.customer = e.customer;
 			},
 			sync: function(method, model, opts){
 				Ti.API.info("[yo.js] .sync() called ");

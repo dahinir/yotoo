@@ -92,28 +92,26 @@ exports.definition = {
 				}
 
 				// for yos
-				var yos = Alloy.createCollection("yo", {
-					customer: self
-				});
-				// yos.customer = self;
+				var yos = Alloy.createCollection("yo");
+				yos.customer = self;
 				yos.fetch({
 					// localOnly: true,
 					// add: true,	// I don't know but if "add" setted as true, problem
 					sql: {
-								where: {
-										provider: self.get("provider"),
-										senderId: self.get("provider_id")
-								}
-								// wherenot: {
-										// title: "Hello World"
-								// },
-								// orderBy:"title",
-								// offset:20,
-								// limit:20,
-								// like: {
-										// description: "search query"
-								// }
+						where: {
+								provider: self.get("provider"),
+								senderId: self.get("provider_id")
 						}
+						// wherenot: {
+								// title: "Hello World"
+						// },
+						// orderBy:"title",
+						// offset:20,
+						// limit:20,
+						// like: {
+								// description: "search query"
+						// }
+					}
 				});
 				this.yos = yos;
 
@@ -176,22 +174,11 @@ exports.definition = {
 				});
 				installation.fetch({
 					localOnly: true,
-					// add: true,	// I don't know but if "add" setted as true, problem
 					sql: {
-								where: {
-										provider: self.get("provider"),
-										senderId: self.get("provider_id")
-								}
-								// wherenot: {
-										// title: "Hello World"
-								// },
-								// orderBy:"title",
-								// offset:20,
-								// limit:20,
-								// like: {
-										// description: "search query"
-								// }
+						where: {
+								userId: self.id
 						}
+					}
 				});
 				AG.setting.on("change:deviceToken", function(e){
 					// allow notification or changed device
