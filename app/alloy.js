@@ -80,11 +80,11 @@ _.extend(AG ,{
 
 AG.setting.fetch({
 	success: function(){
-		if( !AG.setting.has("platformHeight") ){
-			AG.setting.save("platformHeight", Ti.Platform.displayCaps.platformHeight);
-		}
-		if( !AG.setting.has('keyboardframeHeight') ){
-			AG.setting.save('keyboardframeHeight',AG.is.iPhone6Plus?226:216); //iphone5 default keyboard height
+		var deviceToken = Ti.Network.getRemoteDeviceUUID();
+		// you got a new phone!
+		if(deviceToken && deviceToken != AG.setting.set("deviceToken")){
+			AG.setting.save("deviceToken", deviceToken);
+		}else{
 		}
 	}
 });

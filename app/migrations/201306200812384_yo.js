@@ -15,12 +15,13 @@ migration.up = function(db) {
 		    "unyo": "INTEGER",
 		    "complete": "INTEGER",
 		    "burn": "INTEGER"
-		},
-		"adapter": {
-			'idAttribute': "id",
-			"type": "sql",
-			"collection_name": "yo"
 		}
+		// ,
+		// "adapter": {
+		// 	'idAttribute': "id",
+		// 	"type": "sql",
+		// 	"collection_name": "yo"
+		// }
 	});
 };
 

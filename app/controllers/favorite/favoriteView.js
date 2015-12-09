@@ -19,26 +19,26 @@ exports.init = function( options ) {
 	});
 };
 
-function fetchYoUsers(newYos) {
-	if( !newYos || newYos.length == 0 ){
-		return;
-	}
-	var userIds = [];
-	newYos.map(function(yo){
-		if( yo.get("hided") ){
-			return;
-		}
-		userIds.push(yo.get("receiverId"));
-	});
-	// userIds = userIds.replace( /^,/g , '');
-
-	users.addByIds({
-		userIds: userIds,
-		success: function(){
-			Ti.API.info("[peopleView.fetchUsersBy] success ");
-		},
-		error: function(){
-			Ti.API.info("[peopleView.fetchUsersBy] failure ");
-		}
-	});
-}
+// function fetchYoUsers(newYos) {
+// 	if( !newYos || newYos.length == 0 ){
+// 		return;
+// 	}
+// 	var userIds = [];
+// 	newYos.map(function(yo){
+// 		if( yo.get("hided") ){
+// 			return;
+// 		}
+// 		userIds.push(yo.get("receiverId"));
+// 	});
+// 	// userIds = userIds.replace( /^,/g , '');
+//
+// 	users.addByIds({
+// 		userIds: userIds,
+// 		success: function(){
+// 			Ti.API.info("[peopleView.fetchUsersBy] success ");
+// 		},
+// 		error: function(){
+// 			Ti.API.info("[peopleView.fetchUsersBy] failure ");
+// 		}
+// 	});
+// }
