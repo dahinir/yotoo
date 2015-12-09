@@ -71,6 +71,26 @@ exports.init = function(options) {
 		data.template = chooseItemTemplate(changedUser, yo);
 		$.section.updateItemAt(index, data, {'animated': true});
 	});
+
+	// refresh controll
+	if(_.isFunction(options.refresh)){
+		var refreshControl = Ti.UI.createRefreshControl({
+		    // tintColor:'red'
+		});
+		refreshControl.addEventListener("refreshstart",function(e){
+		  e.callback = function(){
+				refreshControl.endRefreshing();
+			};
+			options.refresh(e);
+			// $.userListView.fireEvent("refreshstart", e);
+			// setTimeout(function(){
+			//     Ti.API.debug('Timeout');
+			//     $.refreshControl.endRefreshing();
+			// }, 20000);
+			// $.refreshControl.endRefreshing();
+		});
+		$.userListView.setRefreshControl(refreshControl);
+	}
 };	// end of .init()
 
 function chooseItemTemplate(user, yo){

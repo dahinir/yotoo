@@ -15,7 +15,16 @@ exports.init = function( options ) {
 	$.userList.init({
 		// defaultTemplate: "withRightButton",
 		customer: customer,
-		users: users
+		users: users,
+		refresh: function(e){
+			var refreshCallback = e.callback;
+			yos.fetch({
+				success: function(){
+					// e.refreshControl.endRefreshing();
+					refreshCallback();
+				}
+			});
+		}
 	});
 };
 

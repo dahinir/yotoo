@@ -97,7 +97,7 @@ exports.definition = {
 				});
 				// yos.customer = self;
 				yos.fetch({
-					localOnly: true,
+					// localOnly: true,
 					// add: true,	// I don't know but if "add" setted as true, problem
 					sql: {
 								where: {
