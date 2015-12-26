@@ -188,6 +188,9 @@ exports.definition = {
 				});
 				if((installation.get("deviceToken") != installationData.deviceToken)	// changed device
 					|| (!installation.id) ){ // did not saved at server
+					if(!installationData.deviceToken){
+						return;
+					}
 					installation.save(installationData, {
 						returnErrorResponse: true,
 						error: function(model, response){
@@ -205,6 +208,9 @@ exports.definition = {
 				AG.setting.on("change:deviceToken", function(e){
 					Ti.API.debug("[customer.js] setting.deviceToken changed.");
 					// Ti.API.debug(e);
+					if(!AG.setting.get("deviceToken")){
+						return;
+					}
 					installation.save({deviceToken: AG.setting.get("deviceToken")});
 				})
 				this.on("destroy", function(e){

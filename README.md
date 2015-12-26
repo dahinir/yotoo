@@ -109,11 +109,5 @@ for heavy user, specialized relationship
 	:번 된 이후 yotoo 정책 명확히.
 		:unyotoo 상태로 만들까?
 	: 100 conversation 일때
-* time to sync Installation:
-  :add new customer
-  :destroy customer
-  :updated deviceToken
-    :allow notification
-    :change device and backup(customer.initialize()에서 등록)
 
 * yotoo 추가 프로필사진(숨겨진 기능 정도로: 플픽사진 크게 봤을때 다음장 볼수 있는 화살표가 나오게)
