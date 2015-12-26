@@ -203,14 +203,14 @@ exports.definition = {
 				installation.set(installationData);
 
 				AG.setting.on("change:deviceToken", function(e){
-					// allow notification or changed device
 					Ti.API.debug("[customer.js] setting.deviceToken changed.");
-					Ti.API.debug(e);
-					// installation = {inst:"haha"};
+					// Ti.API.debug(e);
+					installation.save({deviceToken: AG.setting.get("deviceToken")});
 				})
 				this.on("destroy", function(e){
 					Ti.API.debug("[customer.js] destroy event fired.");
-					Ti.API.debug(e);
+					// Ti.API.debug(e);
+					installation.destroy({disableSaveDataLocallyOnServerError: false});
 				});
 				this.installation = installation;
 			},	// end of initialize

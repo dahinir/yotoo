@@ -70,7 +70,7 @@ exports.definition = {
 			sync: function(method, model, opts){
 				opts = opts || {};
 				opts.headers = _.extend( opts.headers || {},
-					this.getCustomer().getHeaders()
+					this.getCustomer()?this.getCustomer().getHeaders():{}
 				);
 				// return Backbone.sync(method, model, opts);
 				return require("alloy/sync/"+this.config.adapter.type).sync.call(this, method, model, opts);
