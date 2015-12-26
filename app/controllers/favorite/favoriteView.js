@@ -21,7 +21,7 @@ exports.init = function( options ) {
 			yos.fetch({
 				success: function(){
 					// e.refreshControl.endRefreshing();
-					refreshCallback();
+					_.isFunction(refreshCallback)?refreshCallback():undefined;
 				}
 			});
 		}

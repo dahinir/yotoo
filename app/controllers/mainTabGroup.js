@@ -8,8 +8,8 @@ Ti.API.debug("[mainTabGroup.js] called.");
 
 $.mainTabGroup.setActiveTab(customer.get('status_activeTabIndex'));
 
-$.mainTabGroup.addEventListener('focus', function(e){
-	// Ti.API.debug("[mainTabGroup] focused, index:" + e.index);
+$.mainTabGroup.addEventListener('selected', function(e){
+	Ti.API.debug("[mainTabGroup] selected, index:" + e.index);
 	customer.set('status_activeTabIndex', e.index);
 	customer.save(undefined, {
 		localOnly:true

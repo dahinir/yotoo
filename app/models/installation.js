@@ -9,20 +9,20 @@ exports.definition = {
 	config: {
 		columns: {
 			// for And server
-			"id": "string",
+			id: "string",
 
-			"appId": "string",
-	    "appVersion": "string",
-	    "badge": "int",
-	    "deviceToken": "string",	// required
-	    "deviceType": "string",	// required
+			appId: "string",
+	    appVersion: "string",
+	    badge: "int",
+	    deviceToken: "string",	// required
+	    deviceType: "string",	// required
 			// "created": "datetime",
 	    // "modified": "datetime",
-	    "userId": "string" // required
+	    userId: "string" // required
 		},
-    // 'defaults': {
-    	// 'burned': 0	// false
-    // },
+    defaults: {
+    	appId: AG.platform.appId
+    },
 		adapter: {
 			// 'migration': ,
 			idAttribute: "id",	// default is alloy_id

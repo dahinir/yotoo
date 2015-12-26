@@ -33,7 +33,7 @@ if (typeof Object.create !== 'function'){
 		return new F();
 	};
 }else{
-	Ti.API.info("[alloy.js] already defined Object.create() ");
+	Ti.API.info("[alloy.js] already defined Object.create()");
 }
 
 // global variable
@@ -82,7 +82,7 @@ AG.setting.fetch({
 	success: function(){
 		var deviceToken = Ti.Network.getRemoteDeviceUUID();
 		// you got a new phone!
-		if(deviceToken && deviceToken != AG.setting.set("deviceToken")){
+		if(deviceToken && (deviceToken != AG.setting.set("deviceToken"))){
 			AG.setting.save("deviceToken", deviceToken);
 		}else{
 		}
@@ -137,9 +137,6 @@ AG.allowPushController = Alloy.createController("allowPushAlertDialog");
 // AG.loginController =  Alloy.createController('login');
 // AG.notifyController = Alloy.createController('notifyView');
 // AG.allowPushController = Alloy.createController("allowPushDialogWindow");
-
-Alloy.Globals.asdf = 100;
-
 
 
 // use Alloy.builtins.moment!

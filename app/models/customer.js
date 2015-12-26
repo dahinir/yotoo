@@ -36,7 +36,7 @@ exports.definition = {
 		// URL: "https://api.parse.com/1/users",
 		disableSaveDataLocallyOnServerError: true,
 		// initFetchWithLocalData: true,
-		// returnErrorResponse: true,
+		// returnErrorResponse: true,	// default is false
     deleteAllOnFetch: false,
         // headers: {
         	// "access_token": function(){
@@ -169,17 +169,39 @@ exports.definition = {
 				this.yoUsers = yoUsers;
 
 				// Installation for push notification
-				var installation = Alloy.createModel("installation", {
-					customer: self
-				});
+				var installation = Alloy.createModel("installation");
+				var installationData = _.extend({
+					userId: self.id,
+					deviceToken: AG.setting.get("deviceToken"),
+					deviceType: OS_IOS?"ios":(OS_ANDROID?"android":undefined),
+				}, AG.platform);
+
+				installation.customer = this;
 				installation.fetch({
 					localOnly: true,
 					sql: {
+						limit: 1,
 						where: {
 								userId: self.id
 						}
 					}
 				});
+				if((installation.get("deviceToken") != installationData.deviceToken)	// changed device
+					|| (!installation.id) ){ // did not saved at server
+					installation.save(installationData, {
+						returnErrorResponse: true,
+						error: function(model, response){
+							// maybe server data deleted, so use POST then PUT by unset "id"
+							if(response && response.code == 404){
+								installation.destroy({localOnly: true});	// destroy only local sql, not memory
+								installation.unset("id");
+								installation.save(installationData);
+							}
+						}
+					});
+				}
+				installation.set(installationData);
+
 				AG.setting.on("change:deviceToken", function(e){
 					// allow notification or changed device
 					Ti.API.debug("[customer.js] setting.deviceToken changed.");
