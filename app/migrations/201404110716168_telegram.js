@@ -4,12 +4,13 @@ migration.up = function(db) {
 			"id": "TEXT PRIMARY KEY",
 			"data": "TEXT",
 			"viewed": "INTEGER"
-		},
-		"adapter": {
-			"idAttribute": "id",
-			"type": "sqlrest",
-			"collection_name": "telegram"
 		}
+		// ,
+		// "adapter": {
+		// 	"idAttribute": "id",
+		// 	"type": "sqlrest",
+		// 	"collection_name": "telegram"
+		// }
 	});
 };
 

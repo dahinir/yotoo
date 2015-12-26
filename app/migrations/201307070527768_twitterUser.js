@@ -13,12 +13,13 @@ migration.up = function(db) {
 
 			// "acs_id":"TEXT",
 			"cached_at":"INTEGER"
-		},
-		"adapter": {
-			"idAttribute": "id_str",
-			"type": "sql",
-			"collection_name": "twitterUser"
 		}
+		// ,
+		// "adapter": {
+		// 	"idAttribute": "id_str",
+		// 	"type": "sql",
+		// 	"collection_name": "twitterUser"
+		// }
 	});
 };
 

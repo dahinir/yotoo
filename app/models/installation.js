@@ -9,33 +9,28 @@ exports.definition = {
 	config: {
 		columns: {
 			// for And server
-			"id": "string",
+			id: "string",
 
-			"provider": "string",	// like twitter, facebook..
-	    "senderId": "string",
-	    "receiverId": "string",
-
-	    // "chat_group_id": "string",	// acs chat group id
-	    "created": "datetime",
-	    // "burned_at": "datetime",	// for last burned_at
-
-	    // status //
-	    "hide": "boolean",		// 1:true, 0:false
-	    "unyo": "boolean",
-	    "complete": "boolean",
-	    "burn": "boolean"
+			appId: "string",
+	    appVersion: "string",
+	    badge: "int",
+	    deviceToken: "string",	// required
+	    deviceType: "string",	// required
+			// "created": "datetime",
+	    // "modified": "datetime",
+	    userId: "string" // required
 		},
-    // 'defaults': {
-    	// 'burned': 0	// false
-    // },
+    defaults: {
+    	appId: AG.platform.appId
+    },
 		adapter: {
 			// 'migration': ,
-			'idAttribute': "id",	// default is alloy_id
-			'type': "sqlrest",
-			'collection_name': "yo"
+			idAttribute: "id",	// default is alloy_id
+			type: "sqlrest",
+			collection_name: "installation"
 		},
 		debug: 1,
-		URL: baseUrl + "/api/Yos",
+		URL: baseUrl + "/api/Installations",
 		initFetchWithLocalData: true,
     deleteAllOnFetch: false,
 		disableSaveDataLocallyOnServerError: true,	// important!!
@@ -56,6 +51,8 @@ exports.definition = {
       	// 'burned': 0	// false
       // },
 			initialize: function(e, e2){
+				this.customer = e.customer;
+				this.asdf = {asdf:"asdf"};
 				// alert("init2" + JSON.stringify(e2));
 				// this.cloudApi = require('cloudProxy').getCloud();
 			},
@@ -65,7 +62,7 @@ exports.definition = {
 				}else if( this.collection ){
 					return this.collection.customer;
 				}else{
-					Ti.API.error("[yo.js] getCustomer(): there is no owner customer");
+					Ti.API.error("[installation.js] getCustomer(): there is no owner customer");
 				}
 			},
 			test: function(){
@@ -73,7 +70,7 @@ exports.definition = {
 			sync: function(method, model, opts){
 				opts = opts || {};
 				opts.headers = _.extend( opts.headers || {},
-					this.getCustomer().getHeaders()
+					this.getCustomer()?this.getCustomer().getHeaders():{}
 				);
 				// return Backbone.sync(method, model, opts);
 				return require("alloy/sync/"+this.config.adapter.type).sync.call(this, method, model, opts);
@@ -101,7 +98,7 @@ exports.definition = {
 			initialize: function(e, e2) {
 				// Ti.API.info(arguments);
 				// Ti.API.info(e2);
-				// this.customer = e.customer;
+				this.customer = e.customer;
 			},
 			sync: function(method, model, opts){
 				Ti.API.info("[yo.js] .sync() called ");

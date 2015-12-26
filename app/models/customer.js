@@ -36,7 +36,7 @@ exports.definition = {
 		// URL: "https://api.parse.com/1/users",
 		disableSaveDataLocallyOnServerError: true,
 		// initFetchWithLocalData: true,
-		// returnErrorResponse: true,
+		// returnErrorResponse: true,	// default is false
     deleteAllOnFetch: false,
         // headers: {
         	// "access_token": function(){
@@ -85,33 +85,33 @@ exports.definition = {
 				// 	console.log("[customer.js] customer changed");
 				// });
 
-				if(!self.get("provider") || !self.get("provider_id")){
-					Ti.API.error("[customer.js] init error");
-					return;
+				if (!self.get("provider") || !self.get("provider_id") || !self.get("provider_accessToken") || !self.get("provider_accessTokenSecret")) {
+				  Ti.API.error("[customer.js] init error");
+				  alert("[customer.js] init error");
+				  return;
 				}
 
 				// for yos
-				var yos = Alloy.createCollection("yo", {
-					customer: self
-				});
-				// yos.customer = self;
+				var yos = Alloy.createCollection("yo");
+				yos.customer = self;
 				yos.fetch({
-					localOnly: true,
+					// localOnly: true,
 					// add: true,	// I don't know but if "add" setted as true, problem
 					sql: {
-								where: {
-										senderId: self.get("provider_id")
-								}
-								// wherenot: {
-										// title: "Hello World"
-								// },
-								// orderBy:"title",
-								// offset:20,
-								// limit:20,
-								// like: {
-										// description: "search query"
-								// }
+						where: {
+								provider: self.get("provider"),
+								senderId: self.get("provider_id")
 						}
+						// wherenot: {
+								// title: "Hello World"
+						// },
+						// orderBy:"title",
+						// offset:20,
+						// limit:20,
+						// like: {
+								// description: "search query"
+						// }
+					}
 				});
 				this.yos = yos;
 
@@ -135,7 +135,7 @@ exports.definition = {
 						});
 						break;
 					default:
-						console.log("[customer.js] there is no proper provider");
+						console.log("[customer.js] there is no proper provider.");
 				}
 				userIdentity.refresh();
 				this.userIdentity = userIdentity;
@@ -160,12 +160,65 @@ exports.definition = {
 					// yo users should be saved (sqlite)
 					user.save();
 				});
-				yos.on("add", function(model, collection, options){
+				yos.on("add reset", function(model, collection, options){
+					// alert("[customer.js] yos add event fired.");
 					yoUsers.addByIds({ userIds: yos.getIds() });
 				});
 				yos.on("change:hided", function(yo){
 				});
 				this.yoUsers = yoUsers;
+
+				// Installation for push notification
+				var installation = Alloy.createModel("installation");
+				var installationData = _.extend({
+					userId: self.id,
+					deviceToken: AG.setting.get("deviceToken"),
+					deviceType: OS_IOS?"ios":(OS_ANDROID?"android":undefined),
+				}, AG.platform);
+
+				installation.customer = this;
+				installation.fetch({
+					localOnly: true,
+					sql: {
+						limit: 1,
+						where: {
+								userId: self.id
+						}
+					}
+				});
+				if((installation.get("deviceToken") != installationData.deviceToken)	// changed device
+					|| (!installation.id) ){ // did not saved at server
+					if(!installationData.deviceToken){
+						return;
+					}
+					installation.save(installationData, {
+						returnErrorResponse: true,
+						error: function(model, response){
+							// maybe server data deleted, so use POST then PUT by unset "id"
+							if(response && response.code == 404){
+								installation.destroy({localOnly: true});	// destroy only local sql, not memory
+								installation.unset("id");
+								installation.save(installationData);
+							}
+						}
+					});
+				}
+				installation.set(installationData);
+
+				AG.setting.on("change:deviceToken", function(e){
+					Ti.API.debug("[customer.js] setting.deviceToken changed.");
+					// Ti.API.debug(e);
+					if(!AG.setting.get("deviceToken")){
+						return;
+					}
+					installation.save({deviceToken: AG.setting.get("deviceToken")});
+				})
+				this.on("destroy", function(e){
+					Ti.API.debug("[customer.js] destroy event fired.");
+					// Ti.API.debug(e);
+					installation.destroy({disableSaveDataLocallyOnServerError: false});
+				});
+				this.installation = installation;
 			},	// end of initialize
 			sync : function(method, model, opts){
 				// alert(opts);
