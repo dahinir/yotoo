@@ -102,12 +102,11 @@ for heavy user, specialized relationship
 * yotoo 완료 사운드! Eazy-E -Niggaz My Height Don't Fight: 40s "yotoo"
 * twitter공홈에서 yotoo앱 사용 정지 한 이후 다시 로긴 해 보자
 * 반드시 성공 해야 하는 함수를 queue
-
-## right now!
 * yotoo.burn() 하면 노티 날려서 상대방도 burn 되게.
 	:번 된 이후 채팅 실험
 	:번 된 이후 yotoo 정책 명확히.
 		:unyotoo 상태로 만들까?
 	: 100 conversation 일때
-
 * yotoo 추가 프로필사진(숨겨진 기능 정도로: 플픽사진 크게 봤을때 다음장 볼수 있는 화살표가 나오게)
+
+## right now!

@@ -37,7 +37,7 @@ exports.definition = {
 		debug: 1,
 		URL: baseUrl + "/api/Yos",
 		initFetchWithLocalData: true,
-    deleteAllOnFetch: false,
+    deleteAllOnFetch: true,
 		disableSaveDataLocallyOnServerError: true,	// important!!
 		// headers: function(){
 			// return "asdf";
