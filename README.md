@@ -9,9 +9,10 @@ for heavy user, specialized relationship
 * * *
 
 ## Author
- * dahinir [@dahinir](https://twitter.com/dahinir)
+* dahinir [@dahinir](https://twitter.com/dahinir)
 
-
+## rules
+* unyo는 없다. deleteYo만 있을뿐.
 
 ##
 * Models: provide the business logic, containing the rules, data and state of the application.

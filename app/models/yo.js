@@ -21,7 +21,7 @@ exports.definition = {
 
 	    // status //
 	    "hide": "boolean",		// 1:true, 0:false
-	    "unyo": "boolean",
+	    "unyo": "boolean",	// don't use. just delete Yo
 	    "complete": "boolean",
 	    "burn": "boolean"
 		},
@@ -37,7 +37,7 @@ exports.definition = {
 		debug: 1,
 		URL: baseUrl + "/api/Yos",
 		initFetchWithLocalData: true,
-    deleteAllOnFetch: true,
+    deleteAllOnFetch: false,
 		disableSaveDataLocallyOnServerError: true,	// important!!
 		// headers: function(){
 			// return "asdf";
@@ -111,6 +111,29 @@ exports.definition = {
 				);
 				// return Backbone.sync.call(this, method, model, opts);
 				return require("alloy/sync/" + this.config.adapter.type).sync.call(this, method, model, opts);
+			},
+			refresh: function(){
+				var self = this;
+				self.fetch({
+					// localOnly: true,
+					// add: true,	// I don't know but if "add" setted as true, problem
+					deleteAllOnFetch: true,
+					sql: {
+						where: {
+								provider: self.customer.get("provider"),
+								senderId: self.customer.get("provider_id")
+						}
+						// wherenot: {
+								// title: "Hello World"
+						// },
+						// orderBy:"title",
+						// offset:20,
+						// limit:20,
+						// like: {
+								// description: "search query"
+						// }
+					}
+				});
 			},
 			/**
 			* @returns {Array}

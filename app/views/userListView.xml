@@ -23,7 +23,7 @@
 					<Label id="following" bindId="following" />
 					<Label id="followers" bindId="followers" />
 					<Label id="description_" bindId="description_" /> <!-- 'description' is keyword -->
-					<Button id="unyoButton" bindId="unyButton" onClick="onUnyoButton" />
+					<Button id="unyoButton" bindId="unyoButton" onClick="onUnyoButton" />
 				</ItemTemplate>
 				<!-- <ItemTemplate name="withRightButton" >
 					<View id="relationshipIndicator" bindId="relationshipIndicator" />

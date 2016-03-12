@@ -39,7 +39,7 @@ exports.init = function(options) {
 		var listDataItems = [];
 		collection.each(function(mo){
 			listDataItems.push(settingData(mo));
-		})
+		});
 		$.section.setItems(listDataItems, {'animated': false});
 	});
 	users.on("change:profile_image_url_https change:name change:screen_name change:friends_count change:followers_count", function(changedUser){
@@ -205,14 +205,14 @@ function onRightButtonClick(e){
 }
 // $.trigger('rightButtonClick');
 function onUnyoButton(e){
-	Ti.API.debug("[userListView.onUnyoButton] "+e.itemId + e.bubbles);
+	Ti.API.debug("[userListView.onUnyooButton] "+e.itemId + e.bubbles);
 	var userId = e.itemId;
 
 	var optionDialog = Ti.UI.createOptionDialog({
 		title: L("unyo_effect"),
 		options: [L("unyo"), L("cancel")],
 		// selectedIndex: 1,	// android only
-		// destructive: 0,	// red type by ios
+		destructive: 0,	// red type by ios
 		persistent: false,
 		cancel: 1
 	});
@@ -220,8 +220,9 @@ function onUnyoButton(e){
 	optionDialog.addEventListener("click", function(e){
 		var yo = yos.where({"receiverId": userId}).pop();
 		if( e.index === 0){
-			yo.unyo({
+			yo.destroy({
 				success: function(){
+					// yos.remove(yo);	// don't need: Backbone Optimistically removes the model from its collection, if it has one
 					// alert(L("yo_unyo_success"));
 				},
 				error: function(){
@@ -230,9 +231,8 @@ function onUnyoButton(e){
 			});
 		}
 	});
-
 	optionDialog.show();
-}	// .onUnyoButton()
+}
 
 function onYoButtonClick(e){
 	Ti.API.debug("[userListView.onYoClick] "+e.itemId + e.bubbles);

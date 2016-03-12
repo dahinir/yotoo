@@ -94,25 +94,7 @@ exports.definition = {
 				// for yos
 				var yos = Alloy.createCollection("yo");
 				yos.customer = self;
-				yos.fetch({
-					// localOnly: true,
-					// add: true,	// I don't know but if "add" setted as true, problem
-					sql: {
-						where: {
-								provider: self.get("provider"),
-								senderId: self.get("provider_id")
-						}
-						// wherenot: {
-								// title: "Hello World"
-						// },
-						// orderBy:"title",
-						// offset:20,
-						// limit:20,
-						// like: {
-								// description: "search query"
-						// }
-					}
-				});
+				yos.refresh();
 				this.yos = yos;
 
 				// for userIdentity
@@ -150,21 +132,30 @@ exports.definition = {
 						"provider": self.get("provider"),
 						"receiverId": user.id
 				 	}).pop();
+					if(!yo){
+						return -1;
+					}
 					var date = yo.get("modified") || yo.get("created");
 					return -(new Date(date)).getTime();
 				};
 				yoUsers.externalApi = userIdentity.externalApi;
 				yoUsers.addByIds({ userIds: yos.getIds() });
-
 				yoUsers.on("add change", function(user){
-					// yo users should be saved (sqlite)
+					// save persist (sqlite)
 					user.save();
 				});
+
 				yos.on("add reset", function(model, collection, options){
 					// alert("[customer.js] yos add event fired.");
 					yoUsers.addByIds({ userIds: yos.getIds() });
 				});
 				yos.on("change:hided", function(yo){
+				});
+				yos.on("remove", function(yo){
+					// link with yoUsers
+					Ti.API.debug("[customer.js] yos remove event fire! ");
+					var relevantUser = yoUsers.get(yo.get("receiverId"));
+					yoUsers.remove(relevantUser);
 				});
 				this.yoUsers = yoUsers;
 

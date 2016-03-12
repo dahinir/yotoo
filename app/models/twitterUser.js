@@ -29,8 +29,9 @@ exports.definition = {
 
 	extendModel: function(Model) {
 		_.extend(Model.prototype, {
-			// initialize: function(e, e2){
-			// },
+			initialize: function(e, e2){
+				// AG.testCount++;
+			},
 			/*
 			getUser: function(purpose, params, callback) {
 				var twitterAPI = this.ownerAccount.twitterAPI;
@@ -232,7 +233,6 @@ exports.definition = {
 
 				// fetch from local sqlite
 				var qstring = "(" + userIds.map(function(){return "?";}).join(",") + ")";
-				// add
 				self.fetch({
 					query: {
 						statement: "select * from "+self.config.adapter.collection_name+" where id_str in "+qstring,
@@ -248,7 +248,7 @@ exports.definition = {
 						"user_id": userIds.join(",")	// TODO: A comma separated list of user IDs, up to 100 are allowed in a single request. You are strongly encouraged to use a POST for larger requests.
 					},
 					success: function(resultJson){
-						Ti.API.info("[twitterUser] sucess fetch by externaApi");
+						Ti.API.info("[twitterUser] sucess fetch by externaApi ");
 						resultJson.forEach(function(json){
 							var user = self.get(json.id_str);
 							if(user){

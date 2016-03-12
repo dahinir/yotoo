@@ -77,6 +77,7 @@ _.extend(AG ,{
 	chats: Alloy.Collections.instance('chat')
 });
 
+AG.testCount = 0;
 
 AG.setting.fetch({
 	success: function(){
@@ -116,13 +117,6 @@ AG.users.map(function(user){
 	// customer.save({'status_active_tab_index': 12})
 	Ti.API.info("[alloy.js] user: @" + user.get('screen_name')
 	+", "+user.get('id_str')+", " +user.get('acs_id'));
-});
-
-AG.yos.map(function( yo){
-	Ti.API.info("[alloy.js] yo: " + yo.get('id')
-		+ " " + yo.get('created_at') + " " + yo.get('burned_at')
-		+ " " + yo.get('chat_group_id') + " " + yo.get('source_id_str')
-		+ " " + yo.get('target_id_str') );
 });
 
 AG.chats.map(function( chat ){
