@@ -13,7 +13,7 @@ exports.init = function(options) {
 		return;
 	}
 	if(!options.customer || !options.users){
-		Ti.API.error("[userListView.init] customer and users are needed.");
+		Ti.API.error("[userListView.init] customer and users are needed. ");
 	}
 
 	users = options.users;

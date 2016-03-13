@@ -153,7 +153,7 @@ exports.definition = {
 				});
 				yos.on("remove", function(yo){
 					// link with yoUsers
-					Ti.API.debug("[customer.js] yos remove event fire! ");
+					Ti.API.debug("[customer.js] yos remove event fire!  ");
 					var relevantUser = yoUsers.get(yo.get("receiverId"));
 					yoUsers.remove(relevantUser);
 				});

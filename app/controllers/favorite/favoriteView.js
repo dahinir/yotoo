@@ -18,7 +18,7 @@ exports.init = function( options ) {
 		users: users,
 		refresh: function(e){
 			var refreshCallback = e.callback;
-			yos.fetch({
+			yos.refresh({
 				success: function(){
 					// e.refreshControl.endRefreshing();
 					_.isFunction(refreshCallback)?refreshCallback():undefined;

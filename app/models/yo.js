@@ -112,11 +112,16 @@ exports.definition = {
 				// return Backbone.sync.call(this, method, model, opts);
 				return require("alloy/sync/" + this.config.adapter.type).sync.call(this, method, model, opts);
 			},
-			refresh: function(){
+			refresh: function(options){
+				options = options || {};
 				var self = this;
+				var success = options.success,
+					error = options.error;
 				self.fetch({
 					// localOnly: true,
 					// add: true,	// I don't know but if "add" setted as true, problem
+					success: success,
+					error: error,
 					deleteAllOnFetch: true,
 					sql: {
 						where: {
