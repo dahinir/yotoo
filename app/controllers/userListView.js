@@ -57,8 +57,8 @@ exports.init = function(options) {
 	});
 
 	// yos events
-	yos.on('change:unyo change:complete', function(yo){
-		Ti.API.debug("[userListView.js] yo change event. "+ yo.get("unyo"));
+	yos.on("add remove change:unyo change:complete", function(yo, collection, options){
+		Ti.API.debug("[userListView.js] yos change or add event. "+ JSON.stringify(yo));
 
 		var changedUser = users.get(yo.get("receiverId"));
 		if( !changedUser ){
@@ -101,7 +101,7 @@ function chooseItemTemplate(user, yo){
 		template = "complete";
 	}else if(yo && yo.get("unyo")){
 		template = "unyo";
-	}else if(yo){
+	}else if(yo && yos.get(yo.id)){
 		template = "yo";
 	}else {
 		template = defaultTemplate;
