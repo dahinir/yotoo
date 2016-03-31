@@ -9,4 +9,4 @@ tiapp.xml
 tokens.js
 
 plugins/ti.alloy/
-i18n/
+i18n/*
