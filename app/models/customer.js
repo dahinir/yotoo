@@ -302,7 +302,7 @@ exports.definition = {
 						Ti.API.info("[customer.js] there is access token!");
 						// AG.tt =  e.source.evalJS('user;');
 						var customerId = e.source.evalJS('document.getElementById("yt:id").getAttribute("content");');
-						var	newCustomer = AG.customers.get(customerId);
+						var	newCustomer = AG.customers.get(customerId);	// case of duplicated login
 						var	customerObj = {
 								"accessToken": accessToken,
 								"provider": "twitter",

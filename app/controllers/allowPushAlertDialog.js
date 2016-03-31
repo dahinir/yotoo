@@ -57,7 +57,7 @@ function onClick(e){
           Ti.Network.NOTIFICATION_TYPE_SOUND
         ]
       }, pushRegHandlers));
-      AG.settings.save("haveTriedToRegister", true);
+      AG.setting.save("haveTriedToRegister", true);
     }
   }
 };

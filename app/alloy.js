@@ -52,7 +52,7 @@ var AG = Alloy.Globals;
 _.extend(AG ,{
 	COLORS: require('colors'),
 	platform: {
-		// will be move to AG.settings
+		// will be move to AG.setting
 		platformHeight: Ti.Platform.displayCaps.platformHeight,
 		osname: Ti.Platform.osname,
 		model: Ti.Platform.model,
@@ -76,8 +76,6 @@ _.extend(AG ,{
 	// yos: Alloy.Collections.instance('yo'),
 	chats: Alloy.Collections.instance('chat')
 });
-
-AG.testCount = 0;
 
 AG.setting.fetch({
 	success: function(){
@@ -128,6 +126,7 @@ AG.chats.map(function( chat ){
 
 // singleton Controller;
 AG.allowPushController = Alloy.createController("allowPushAlertDialog");
+// AG.allowPushController.tryRegistring();
 // AG.loginController =  Alloy.createController('login');
 // AG.notifyController = Alloy.createController('notifyView');
 // AG.allowPushController = Alloy.createController("allowPushDialogWindow");
