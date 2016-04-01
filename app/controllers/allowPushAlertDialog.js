@@ -30,7 +30,7 @@ function onClick(e){
 				_.isFunction(options.success) && options.success();
 			}
 		};
-    if(AG.platform.osVersion >= 8){
+    if(require("compare-version")(AG.platform.osVersion, "8.0") >= 0){
 			/*
       function register() {
         Ti.API.debug("[allowPushAlertDialog] usernotificationsettings event!! categories:" + e.categories);
