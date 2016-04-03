@@ -314,7 +314,7 @@ exports.create = function(settings) {
 							Ti.API.debug("[twitter.js] unexpected error.");
 						}
 					}else {
-						Ti.API.debug("[twitter.js] fetch() unkwon error.");
+						Ti.API.debug("[twitter.js] fetch() unkown error.");
 					}
 					error( result );
 				}

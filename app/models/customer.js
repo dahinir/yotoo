@@ -163,9 +163,13 @@ exports.definition = {
 				var installation = Alloy.createModel("installation");
 				var installationData = _.extend({
 					userId: self.id,
-					deviceToken: AG.setting.get("deviceToken"),
-					deviceType: OS_IOS?"ios":(OS_ANDROID?"android":undefined),
-				}, AG.platform);
+					deviceToken: AG.setting.get("deviceToken")||"NONE",	// loopback-component-push's Installation.deviceToken can't be blank
+					deviceType: OS_IOS?"ios":(OS_ANDROID?"android":"unkown"),
+					osVersion: AG.platform.osVersion,
+					appId: AG.platform.appId,
+					appVersion: AG.platform.appVersion,
+					locale: AG.platform.locale
+				});
 
 				installation.customer = this;
 				installation.fetch({
@@ -175,25 +179,27 @@ exports.definition = {
 						where: {
 								userId: self.id
 						}
+					},
+					success: function(){
+						if((installation.get("deviceToken") != installationData.deviceToken)	// changed device
+							|| installation.get("osVersion") != installationData.osVersion
+							|| installation.get("appVersion") != installationData.appVersion
+							|| installation.get("locale") != installationData.locale
+							|| !installation.id ){ // did not saved at server yet
+							installation.save(installationData, {
+								returnErrorResponse: true,
+								error: function(model, response){
+									// maybe server data deleted, so use POST then PUT by unset "id"
+									if(response && response.code == 404){
+										installation.destroy({localOnly: true});	// destroy only local sql, not memory
+										installation.unset("id");
+										installation.save(installationData);
+									}
+								}
+							});
+						}
 					}
 				});
-				if((installation.get("deviceToken") != installationData.deviceToken)	// changed device
-					|| (!installation.id) ){ // did not saved at server
-					if(!installationData.deviceToken){
-						return;
-					}
-					installation.save(installationData, {
-						returnErrorResponse: true,
-						error: function(model, response){
-							// maybe server data deleted, so use POST then PUT by unset "id"
-							if(response && response.code == 404){
-								installation.destroy({localOnly: true});	// destroy only local sql, not memory
-								installation.unset("id");
-								installation.save(installationData);
-							}
-						}
-					});
-				}
 				installation.set(installationData);
 
 				AG.setting.on("change:deviceToken", function(e){
