@@ -39,6 +39,7 @@ exports.definition = {
 		initFetchWithLocalData: true,
     deleteAllOnFetch: false,
 		disableSaveDataLocallyOnServerError: true,	// important!!
+		// returnErrorResponse: true,	// for error callback call in sqlrest 0.3.5
 		// headers: function(){
 			// return "asdf";
 			// "i":"ii"
@@ -155,45 +156,28 @@ exports.definition = {
 					receiverUser = options.receiverUser,
 					success = options.success,
 					error = options.error,
-					self = this,
-					fields = {
-						"hide": 0,	// 0 for false
-						"complete": 0,
-						"unyo": 0,
-						"burn": 0
-					};
-				var existYo;
-				// = this.where({
-				// 	"senderId": receiverUser.id,
-				// 	"provider": self.customer.get("provider")
-				// }).pop();
+					self = this;
 
-				/* case of reyo */
-				if ( existYo ){
-					Ti.API.debug("[yo.js] reyo didnt implemented...");
-				/* case of new yo */
-				}else{
-					var newYo = Alloy.createModel("yo", {
-						"provider": self.customer.get("provider"),
-						"senderId": senderUser.id,
-						"receiverId": receiverUser.id
-					});
-					newYo.customer = self.customer;
+				var newYo = Alloy.createModel("yo", {
+					"provider": self.customer.get("provider"),
+					"senderId": senderUser.id,
+					"receiverId": receiverUser.id
+				});
+				newYo.customer = self.customer;
 
-					// save remote and local
-					newYo.save(undefined, {
-						success: function(){
-							// new yoed users should be saved (sqlite)
-							receiverUser.save();
-							// add only if success remote and local
-							self.add(newYo);
-							success && success();
-						},
-						error: function(){
-							error && error();
-						}
-					});
-				}
+				// save remote and local
+				newYo.save(undefined, {
+					success: function(){
+						// new yoed users should be saved (sqlite)
+						receiverUser.save();
+						// add only if success remote and local
+						self.add(newYo);
+						success && success();
+					},
+					error: function(){
+						error && error();
+					}
+				});
 				return;
 			}
 		});

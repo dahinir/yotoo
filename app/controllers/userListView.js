@@ -205,7 +205,7 @@ function onRightButtonClick(e){
 }
 // $.trigger('rightButtonClick');
 function onUnyoButton(e){
-	Ti.API.debug("[userListView.onUnyoButton] "+e.itemId + e.bubbles);
+	Ti.API.debug("[userListView.onUnyoButton]  "+e.itemId + e.bubbles);
 	var userId = e.itemId;
 
 	var optionDialog = Ti.UI.createOptionDialog({
@@ -221,9 +221,8 @@ function onUnyoButton(e){
 		var yo = yos.where({"receiverId": userId}).pop();
 		if( e.index === 0){
 			yo.destroy({
-				disableSaveDataLocallyOnServerError: false,
+				wait: true,	// MUST BE TRUE: wait for the server to respond before removing the model from the collection. `sqlrest.js` does not care the case of .destroy
 				success: function(){
-					// yos.remove(yo);	// don't need: Backbone Optimistically removes the model from its collection, if it has one
 					// alert(L("yo_unyo_success"));
 				},
 				error: function(){
@@ -246,8 +245,7 @@ function onYoButtonClick(e){
 		cancel: 1
 	});
 	optionDialog.addEventListener("click", function(e){
-		var yo = yos.where({"receiverId": userId}).pop();
-		if(e.index === 0 && yo){
+		if(e.index === 0){
 			yos.addNewYo({
 				senderUser: customer.userIdentity,
 				receiverUser: users.get(userId),
