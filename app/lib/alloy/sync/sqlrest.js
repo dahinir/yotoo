@@ -556,7 +556,13 @@ function Sync(method, model, opts) {
 			params.url = encodeData(params.urlparams, params.url);
 		}
 
-		params.data = JSON.stringify(model.toJSON());
+    // added by rapodor: loopback's update is not accept `id`
+    var modelJSON = model.toJSON();
+    delete modelJSON.id;
+    params.data = JSON.stringify(modelJSON);
+    // added by rapodor end
+
+		// params.data = JSON.stringify(model.toJSON());  //comment out by rapodor
 		logger(DEBUG, "update options", params);
 
 		apiCall(params, function(_response) {
