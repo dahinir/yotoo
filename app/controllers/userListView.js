@@ -205,7 +205,7 @@ function onRightButtonClick(e){
 }
 // $.trigger('rightButtonClick');
 function onUnyoButton(e){
-	Ti.API.debug("[userListView.onUnyooButton] "+e.itemId + e.bubbles);
+	Ti.API.debug("[userListView.onUnyoButton] "+e.itemId + e.bubbles);
 	var userId = e.itemId;
 
 	var optionDialog = Ti.UI.createOptionDialog({
@@ -221,6 +221,7 @@ function onUnyoButton(e){
 		var yo = yos.where({"receiverId": userId}).pop();
 		if( e.index === 0){
 			yo.destroy({
+				disableSaveDataLocallyOnServerError: false,
 				success: function(){
 					// yos.remove(yo);	// don't need: Backbone Optimistically removes the model from its collection, if it has one
 					// alert(L("yo_unyo_success"));
@@ -235,7 +236,7 @@ function onUnyoButton(e){
 }
 
 function onYoButtonClick(e){
-	Ti.API.debug("[userListView.onYoClick] "+e.itemId + e.bubbles);
+	Ti.API.debug("[userListView.onYoButtonClick] "+e.itemId + e.bubbles);
 
 	var userId = e.itemId;
 	var optionDialog = Ti.UI.createOptionDialog({
@@ -246,28 +247,17 @@ function onYoButtonClick(e){
 	});
 	optionDialog.addEventListener("click", function(e){
 		var yo = yos.where({"receiverId": userId}).pop();
-		if(e.index === 0){
-			if(yo && yo.get("unyo")){
-				yo.reyo({
-					success: function(){
-						// alert(L("yo_reyo_success"));
-					},
-					error: function(){
-						alert(L("yo_reyo_error"));
-					}
-				});
-			}else{
-				yos.addNewYo({
-					senderUser: customer.userIdentity,
-					receiverUser: users.get(userId),
-					success: function() {
-						// alert(L("yo_save_success"));
-					},
-					error: function() {
-						alert(L("yo_save_error"));
-					}
-				});
-			}
+		if(e.index === 0 && yo){
+			yos.addNewYo({
+				senderUser: customer.userIdentity,
+				receiverUser: users.get(userId),
+				success: function() {
+					// alert(L("yo_save_success"));
+				},
+				error: function() {
+					alert(L("yo_save_error"));
+				}
+			});
 		}
 	});
 	optionDialog.show();

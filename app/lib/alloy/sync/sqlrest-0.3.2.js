@@ -1,7 +1,7 @@
 /**
  * SQL Rest Adapter for Titanium Alloy
  * @author Mads Møller
- * @version 0.3.4
+ * @version 0.3.2
  * Copyright Napp ApS
  * www.napp.dk
  */
@@ -143,7 +143,7 @@ function apiCall(_options, _callback) {
 		var xhr = Ti.Network.createHTTPClient({
 			timeout : _options.timeout,
 			cache : _options.cache,
-			validatesSecureCertificate : _options.validatesSecureCertificate
+			validatesSecureCertificate: _options.validatesSecureCertificate
 		});
 
 		xhr.onload = function() {
@@ -210,10 +210,6 @@ function apiCall(_options, _callback) {
 			cleanup();
 		};
 
-		if (_options.beforeOpen) {
-			_options.beforeOpen(xhr);
-		}
-
 		//Prepare the request
 		xhr.open(_options.type, _options.url);
 
@@ -231,6 +227,8 @@ function apiCall(_options, _callback) {
 			var etag = getETag(_options.url);
 			etag && xhr.setRequestHeader('IF-NONE-MATCH', etag);
 		}
+
+
 
 		xhr.send(_options.data);
 	} else {
@@ -321,9 +319,9 @@ function Sync(method, model, opts) {
 		requestparams : model.config.requestparams,
 
 		// xhr settings
-		timeout : 7000,
-		cache : false,
-		validatesSecureCertificate : ENV_PRODUCTION ? true : false
+		timeout: 7000,
+		cache: false,
+		validatesSecureCertificate: ENV_PROD ? true : false
 	});
 
 	// REST API - set the type
@@ -380,14 +378,14 @@ function Sync(method, model, opts) {
 
 	// Extend the provided url params with those from the model config
 	if (_.isObject(params.urlparams) || model.config.URLPARAMS) {
-		if (_.isUndefined(params.urlparams)) {
+		if(_.isUndefined(params.urlparams)) {
 			params.urlparams = {};
 		}
 		_.extend(params.urlparams, _.isFunction(model.config.URLPARAMS) ? model.config.URLPARAMS() : model.config.URLPARAMS);
 	}
 
 	// parse url {requestparams}
-	_.each(params.requestparams, function(value, key) {
+	_.each(params.requestparams, function(value,key) {
 		params.url = params.url.replace('{' + key + '}', value ? escape(value) : '', "gi");
 	});
 
@@ -435,17 +433,17 @@ function Sync(method, model, opts) {
 
 				// save data locally when server returned an error
 				if (!_response.localOnly && params.disableSaveDataLocallyOnServerError) {
-					params.returnErrorResponse && _.isFunction(params.error) && params.error(_response);
 					logger(DEBUG, "NOTICE: The data is not being saved locally");
 				} else {
 					resp = saveData();
-					if (_.isUndefined(_response.offline)) {
-						// error
-						_.isFunction(params.error) && params.error(params.returnErrorResponse ? _response : resp);
-					} else {
-						//offline - still a data success
-						_.isFunction(params.success) && params.success(resp);
-					}
+				}
+
+				if (_.isUndefined(_response.offline)) {
+					// error
+					_.isFunction(params.error) && params.error( params.returnErrorResponse ? _response : resp);
+				} else {
+					//offline - still a data success
+					_.isFunction(params.success) && params.success(resp);
 				}
 			}
 		});
@@ -505,19 +503,12 @@ function Sync(method, model, opts) {
 					var data = parseJSON(_response, params.parentNode);
 					if (!params.localOnly) {
 						//we dont want to manipulate the data on localOnly requests
-						saveData(data, successFn);
-					} else {
-						successFn();
+						saveData(data);
 					}
-				} else {
-					successFn();
 				}
-
-				function successFn() {
-					resp = readSQL(data);
-					_.isFunction(params.success) && params.success(resp);
-					model.trigger("fetch");
-				}
+				resp = readSQL(data);
+				_.isFunction(params.success) && params.success(resp);
+				model.trigger("fetch");
 			} else {
 				//error or offline - read local data
 				if (!params.localOnly && params.initFetchWithLocalData) {
@@ -526,7 +517,7 @@ function Sync(method, model, opts) {
 				}
 				if (_.isUndefined(_response.offline)) {
 					//error
-					_.isFunction(params.error) && params.error(params.returnErrorResponse ? _response : resp);
+					_.isFunction(params.error) && params.error( params.returnErrorResponse ? _response : resp);
 				} else {
 					//offline - still a data success
 					_.isFunction(params.success) && params.success(resp);
@@ -556,7 +547,13 @@ function Sync(method, model, opts) {
 			params.url = encodeData(params.urlparams, params.url);
 		}
 
-		params.data = JSON.stringify(model.toJSON());
+    // added by rapodor: loopback's update is not accept `id`
+    var modelJSON = model.toJSON();
+    delete modelJSON.id;
+    params.data = JSON.stringify(modelJSON);
+    // added by rapodor end
+
+		// params.data = JSON.stringify(model.toJSON());  //comment out by rapodor
 		logger(DEBUG, "update options", params);
 
 		apiCall(params, function(_response) {
@@ -569,17 +566,17 @@ function Sync(method, model, opts) {
 
 				// save data locally when server returned an error
 				if (!_response.localOnly && params.disableSaveDataLocallyOnServerError) {
-					params.returnErrorResponse && _.isFunction(params.error) && params.error(_response);
 					logger(DEBUG, "NOTICE: The data is not being saved locally");
 				} else {
 					resp = saveData();
-					if (_.isUndefined(_response.offline)) {
-						// error
-						_.isFunction(params.error) && params.error(params.returnErrorResponse ? _response : resp);
-					} else {
-						//offline - still a data success
-						_.isFunction(params.success) && params.success(resp);
-					}
+				}
+
+				if (_.isUndefined(_response.offline)) {
+					//error
+					_.isFunction(params.error) && params.error( params.returnErrorResponse ? _response : resp);
+				} else {
+					//offline - still a data success
+					_.isFunction(params.success) && params.success(resp);
 				}
 			}
 		});
@@ -603,17 +600,17 @@ function Sync(method, model, opts) {
 
 				// save data locally when server returned an error
 				if (!_response.localOnly && params.disableSaveDataLocallyOnServerError) {
-					params.returnErrorResponse && _.isFunction(params.error) && params.error(_response);
 					logger(DEBUG, "NOTICE: The data is not being deleted locally");
 				} else {
 					resp = deleteSQL();
-					if (_.isUndefined(_response.offline)) {
-						// error
-						_.isFunction(params.error) && params.error(params.returnErrorResponse ? _response : resp);
-					} else {
-						//offline - still a data success
-						_.isFunction(params.success) && params.success(resp);
-					}
+				}
+
+				if (_.isUndefined(_response.offline)) {
+					//error
+					_.isFunction(params.error) && params.error( params.returnErrorResponse ? _response : resp);
+				} else {
+					//offline - still a data success
+					_.isFunction(params.success) && params.success(resp);
 				}
 			}
 		});
@@ -623,7 +620,7 @@ function Sync(method, model, opts) {
 	/////////////////////////////////////////////
 	//SQL INTERFACE
 	/////////////////////////////////////////////
-	function saveData(data, callback) {
+	function saveData(data) {
 		if (!data && !isCollection) {
 			data = model.toJSON();
 		}
@@ -644,54 +641,22 @@ function Sync(method, model, opts) {
 			}
 		} else {//its an array of models
 			var currentModels = sqlCurrentModels();
-			// Keeping App Responsive
-			if (!data || !data.length) {
-				callback && callback();
-			} else {
-				_.defer(iteration, data);
-			}
-
-			function iteration(data, i, queryList) {
-				i || (i = 0);
-				queryList = queryList || [];
-
+			for (var i in data) {
 				if (!_.isUndefined(data[i][model.deletedAttribute]) && data[i][model.deletedAttribute] == true) {
 					//delete item
-					queryList = deleteSQL(data[i][model.idAttribute], queryList);
+					deleteSQL(data[i][model.idAttribute]);
 				} else if (_.indexOf(currentModels, data[i][model.idAttribute]) != -1) {
 					//item exists - update it
-					queryList = updateSQL(data[i], queryList);
+					updateSQL(data[i]);
 				} else {
 					//write data to local sql
-					queryList = createSQL(data[i], queryList);
-				}
-
-				if(++i < data.length) {
-					_.defer(iteration, data, i, queryList);
-				} else {
-					_.defer(function() {
-						if (queryList && queryList.length) {
-							db = Ti.Database.open(dbName);
-							db.execute('BEGIN;');
-							_.each(queryList, function(query) {
-								try {
-									db.execute(query.sql, query.values);
-								} catch (e) {
-									//
-								}
-							});
-							db.execute('COMMIT;');
-							db.close();
-						}
-
-						callback && callback();
-					});
+					createSQL(data[i]);
 				}
 			}
 		}
 	}
 
-	function createSQL(data, queryList) {
+	function createSQL(data) {
 		var attrObj = {};
 		logger(DEBUG, "createSQL data:", data);
 
@@ -753,33 +718,25 @@ function Sync(method, model, opts) {
 		// Assemble create query
 		var sqlInsert = "INSERT INTO " + table + " (" + names.join(",") + ") VALUES (" + q.join(",") + ");";
 
-		if (queryList) {
-			queryList.push({
-				"sql" : sqlInsert,
-				"values" : values
-			});
-			return queryList;
-		} else {
-			// execute the query and return the response
-			db = Ti.Database.open(dbName);
-			db.execute('BEGIN;');
-			db.execute(sqlInsert, values);
+		// execute the query and return the response
+		db = Ti.Database.open(dbName);
+		db.execute('BEGIN;');
+		db.execute(sqlInsert, values);
 
-			// get the last inserted id
-			if (model.id === null) {
-				var sqlId = "SELECT last_insert_rowid();";
-				var rs = db.execute(sqlId);
-				if (rs.isValidRow()) {
-					model.id = rs.field(0);
-					attrObj[model.idAttribute] = model.id;
-				} else {
-					Ti.API.warn('Unable to get ID from database for model: ' + model.toJSON());
-				}
+		// get the last inserted id
+		if (model.id === null) {
+			var sqlId = "SELECT last_insert_rowid();";
+			var rs = db.execute(sqlId);
+			if (rs.isValidRow()) {
+				model.id = rs.field(0);
+				attrObj[model.idAttribute] = model.id;
+			} else {
+				Ti.API.warn('Unable to get ID from database for model: ' + model.toJSON());
 			}
-
-			db.execute('COMMIT;');
-			db.close();
 		}
+
+		db.execute('COMMIT;');
+		db.close();
 
 		return attrObj;
 	}
@@ -866,16 +823,14 @@ function Sync(method, model, opts) {
 		db.close();
 
 		// shape response based on whether it's a model or collection
-		if (isCollection && !params.add) {
-			model.length = len;
-		}
+		model.length = len;
 
 		logger(DEBUG, "\n******************************\n readSQL db read complete: " + len + " models \n******************************");
 		resp = len === 1 ? values[0] : values;
 		return resp;
 	}
 
-	function updateSQL(data, queryList) {
+	function updateSQL(data) {
 		var attrObj = {};
 
 		logger(DEBUG, "updateSQL data: ", data);
@@ -917,40 +872,23 @@ function Sync(method, model, opts) {
 		logger(DEBUG, "updateSQL sql query: " + sql);
 		logger(DEBUG, "updateSQL values: ", values);
 
-		if (queryList) {
-			queryList.push({
-				"sql" : sql,
-				"values" : values
-			});
-			return queryList;
-		} else {
-			// execute the update
-			db = Ti.Database.open(dbName);
-			db.execute(sql, values);
-			db.close();
-		}
+		// execute the update
+		db = Ti.Database.open(dbName);
+		db.execute(sql, values);
+
+		db.close();
 
 		return attrObj;
 	}
 
-	function deleteSQL(id, queryList) {
+	function deleteSQL(id) {
 		var sql = 'DELETE FROM ' + table + ' WHERE ' + model.idAttribute + '=?';
+		// execute the delete
+		db = Ti.Database.open(dbName);
+		db.execute(sql, id || model.id);
+		db.close();
 
-		if (queryList) {
-			queryList.push({
-				"sql" : sql,
-				"values" : id || model.id
-			});
-			return queryList;
-		} else {
-			// execute the delete
-			db = Ti.Database.open(dbName);
-			db.execute(sql, id || model.id);
-			db.close();
-
-			model.id = null;
-		}
-
+		model.id = null;
 		return model.toJSON();
 	}
 
@@ -1026,7 +964,7 @@ function Sync(method, model, opts) {
 	function parseJSON(_response, parentNode) {
 		var data = _response.responseJSON;
 		if (!_.isUndefined(parentNode)) {
-			data = _.isFunction(parentNode) ? parentNode(data, opts) : traverseProperties(data, parentNode);
+			data = _.isFunction(parentNode) ? parentNode(data) : traverseProperties(data, parentNode);
 		}
 		logger(DEBUG, "server response: ", data);
 		return data;
@@ -1152,17 +1090,7 @@ function _buildQuery(table, opts, operation) {
 		sql += ' EXCEPT ' + _buildQuery(opts.EXCEPT);
 	}
 
-	// group by, order by and limit should be in the end of the statement
-	if (opts.groupBy) {
-		var group;
-		if (_.isArray(opts.groupBy)) {
-			group = opts.groupBy.join(', ');
-		} else {
-			group = opts.groupBy;
-		}
-
-		sql += ' GROUP BY ' + group;
-	}
+	// order by and limit should be in the end of the statement
 	if (opts.orderBy) {
 		var order;
 		if (_.isArray(opts.orderBy)) {
@@ -1348,16 +1276,14 @@ function installDatabase(config) {
 
 	// set remoteBackup status for iOS
 	if (config.adapter.remoteBackup === false && OS_IOS) {
-		Ti.API.debug('iCloud "do not backup" flag set for database "' + dbFile + '"');
+		Ti.API.debug('iCloud "do not backup" flag set for database "'+ dbFile + '"');
 		db.file.setRemoteBackup(false);
 	}
 
 	// compose config.columns from table definition in database
 	var rs = db.execute('pragma table_info("' + table + '");');
-	var columns = {},
-	    cName,
-	    cType;
-	if (rs) {
+	var columns = {}, cName, cType;
+	if(rs) {
 		while (rs.isValidRow()) {
 			cName = rs.fieldByName('name');
 			cType = rs.fieldByName('type');
@@ -1380,7 +1306,7 @@ function installDatabase(config) {
 			// see if it already has the ALLOY_ID_DEFAULT
 			if (cName === ALLOY_ID_DEFAULT && !config.adapter.idAttribute) {
 				config.adapter.idAttribute = ALLOY_ID_DEFAULT;
-			} else if (k === config.adapter.idAttribute) {
+			} else if(k === config.adapter.idAttribute) {
 				cType += " UNIQUE";
 			}
 			columns[cName] = cType;
@@ -1391,14 +1317,15 @@ function installDatabase(config) {
 	// make sure we have a unique id field
 	if (config.adapter.idAttribute) {
 		if (!_.contains(_.keys(config.columns), config.adapter.idAttribute)) {
-			throw 'config.adapter.idAttribute "' + config.adapter.idAttribute + '" not found in list of columns for table "' + table + '"\n' + 'columns: [' + _.keys(config.columns).join(',') + ']';
+			throw 'config.adapter.idAttribute "' + config.adapter.idAttribute + '" not found in list of columns for table "' + table + '"\n' +
+				'columns: [' + _.keys(config.columns).join(',') + ']';
 		}
 	} else {
 		Ti.API.info('No config.adapter.idAttribute specified for table "' + table + '"');
 		Ti.API.info('Adding "' + ALLOY_ID_DEFAULT + '" to uniquely identify rows');
 
 		var fullStrings = [],
-		    colStrings = [];
+			colStrings = [];
 		_.each(config.columns, function(type, name) {
 			colStrings.push(name);
 			fullStrings.push(name + ' ' + type);
@@ -1428,9 +1355,7 @@ module.exports.beforeModelCreate = function(config, name) {
 	}
 
 	// install database file, if specified
-	if (config.adapter.db_file) {
-		installDatabase(config);
-	}
+	if (config.adapter.db_file) { installDatabase(config); }
 	if (!config.adapter.idAttribute) {
 		Ti.API.info('No config.adapter.idAttribute specified for table "' + config.adapter.collection_name + '"');
 		Ti.API.info('Adding "' + ALLOY_ID_DEFAULT + '" to uniquely identify rows');
