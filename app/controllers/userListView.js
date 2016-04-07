@@ -30,7 +30,7 @@ exports.init = function(options) {
 
 	// users events
 	users.on('remove', function(deletedUser){
-		Ti.API.debug("[userListView.js] users remove event ");
+		Ti.API.debug("[userListView.js] users remove event  ");
 		var index = _getIndexByItemId( deletedUser.get('id_str') );
 		$.section.deleteItemsAt( index, 1 );
 	});
@@ -56,7 +56,7 @@ exports.init = function(options) {
 		});
 	});
 
-	// yos events
+	// yos events to choose item template
 	yos.on("add remove change:unyo change:complete", function(yo, collection, options){
 		Ti.API.debug("[userListView.js] yos change or add event. "+ JSON.stringify(yo));
 
@@ -157,7 +157,7 @@ function settingData(user) {
 
 var addRows = function(options){
 	var addedUsers = options.addedUsers;
-	var reset = options.reset;
+	var reset = options.reset || false;
 	var dataArray = [];
 
 	if( addedUsers.map ){

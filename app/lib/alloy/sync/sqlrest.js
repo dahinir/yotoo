@@ -435,8 +435,7 @@ function Sync(method, model, opts) {
 
 				// save data locally when server returned an error
 				if (!_response.localOnly && params.disableSaveDataLocallyOnServerError) {
-					// params.returnErrorResponse && _.isFunction(params.error) && params.error(_response); // comment out by rapodor: error callback should be called whether `returnErrorResponse` is true or not
-          _.isFunction(params.error) && params.error(_response);  // added by rapodor
+					params.returnErrorResponse && _.isFunction(params.error) && params.error(_response);
 					logger(DEBUG, "NOTICE: The data is not being saved locally");
 				} else {
 					resp = saveData();
@@ -576,7 +575,7 @@ function Sync(method, model, opts) {
 
 				// save data locally when server returned an error
 				if (!_response.localOnly && params.disableSaveDataLocallyOnServerError) {
-					// params.returnErrorResponse && _.isFunction(params.error) && params.error(_response);  // comment out by rapodor: error callback should be called whether `returnErrorResponse` is true or not
+					params.returnErrorResponse && _.isFunction(params.error) && params.error(_response);
 					logger(DEBUG, "NOTICE: The data is not being saved locally");
 				} else {
 					resp = saveData();
@@ -610,8 +609,7 @@ function Sync(method, model, opts) {
 
 				// save data locally when server returned an error
 				if (!_response.localOnly && params.disableSaveDataLocallyOnServerError) {
-					// params.returnErrorResponse && _.isFunction(params.error) && params.error(_response);  // comment out by rapodor: error callback should be called whether `returnErrorResponse` is true or not
-          _.isFunction(params.error) && params.error(_response);
+					params.returnErrorResponse && _.isFunction(params.error) && params.error(_response);
 					logger(DEBUG, "NOTICE: The data is not being deleted locally");
 				} else {
 					resp = deleteSQL();

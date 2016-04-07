@@ -39,7 +39,7 @@ exports.definition = {
 		initFetchWithLocalData: true,
     deleteAllOnFetch: false,
 		disableSaveDataLocallyOnServerError: true,	// important!!
-		// returnErrorResponse: true,	// for error callback call in sqlrest 0.3.5
+		returnErrorResponse: true,	// for error callback call when remote has error but local is success
 		// headers: function(){
 			// return "asdf";
 			// "i":"ii"

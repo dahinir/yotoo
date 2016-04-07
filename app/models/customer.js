@@ -94,7 +94,6 @@ exports.definition = {
 				// for yos
 				var yos = Alloy.createCollection("yo");
 				yos.customer = self;
-				yos.refresh();
 				this.yos = yos;
 
 				// for userIdentity
@@ -145,8 +144,12 @@ exports.definition = {
 					user.save();
 				});
 
-				yos.on("add reset", function(model, collection, options){
-					// alert("[customer.js] yos add event fired.");
+				yos.on("reset", function(model, collection, options){
+
+					yoUsers.addByIds({ userIds: yos.getIds() });
+				});
+				yos.on("add", function(model, collection, options){
+					Ti.API.debug("[customer.js] yos add event fired.");
 					yoUsers.addByIds({ userIds: yos.getIds() });
 				});
 				yos.on("change:hided", function(yo){
@@ -158,6 +161,7 @@ exports.definition = {
 					yoUsers.remove(relevantUser);
 				});
 				this.yoUsers = yoUsers;
+				yos.refresh();
 
 				// Installation for push notification
 				var installation = Alloy.createModel("installation");

@@ -221,6 +221,7 @@ exports.definition = {
 
 				var options = options || {};
 				var userIds = options.userIds,	// Array!
+						reset = options.reset || false,
 						self = this;
 
 				if(!userIds){
@@ -249,14 +250,18 @@ exports.definition = {
 					},
 					success: function(resultJson){
 						Ti.API.info("[twitterUser] sucess fetch by externaApi ");
-						resultJson.forEach(function(json){
-							var user = self.get(json.id_str);
-							if(user){
-								user.set(json);
-							}else{
-								self.add(json);
-							}
-						});
+						if(reset){
+							self.reset(resultJson);
+						}else{
+							resultJson.forEach(function(json){
+								var user = self.get(json.id_str);
+								if(user){
+									user.set(json);
+								}else{
+									self.add(json);
+								}
+							});
+						}
 					},
 					error: function(resultJson){
 						Ti.API.info("[twitterUser.lookup] remote error ");
