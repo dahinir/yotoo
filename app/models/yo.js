@@ -116,14 +116,13 @@ exports.definition = {
 			refresh: function(options){
 				options = options || {};
 				var self = this;
-				var success = options.success,
-					error = options.error;
-				self.fetch({
+				self.fetch({	// fetch: When the model data returns from the server, the collection will reset.
 					// localOnly: true,
-					// add: true,	// I don't know but if "add" setted as true, problem
-					success: success,
-					error: error,
+					// add: true,	// if "add" setted as true, doesn't change the same id model
+					initFetchWithLocalData: (self.length==0)? true : false,	// only when collection is empty
 					deleteAllOnFetch: true,
+					success: options.success,
+					error: options.error,
 					sql: {
 						where: {
 								provider: self.customer.get("provider"),

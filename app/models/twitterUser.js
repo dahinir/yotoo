@@ -218,10 +218,9 @@ exports.definition = {
 			},
 			addByIds: function(options){
 				Ti.API.info("[twitterUser.addByIds] .addByids() called");
-
 				var options = options || {};
 				var userIds = options.userIds,	// Array!
-						reset = options.reset || false,
+						// reset = options.reset || false,	// deprecated: this method always trigger `reset` when local fetch()
 						self = this;
 
 				if(!userIds){
@@ -232,8 +231,8 @@ exports.definition = {
 					return;
 				}
 
-				// fetch from local sqlite
 				var qstring = "(" + userIds.map(function(){return "?";}).join(",") + ")";
+				// fetch from local sqlite. IT WILL ALWAYS TRIGGER `RESET` so only remain
 				self.fetch({
 					query: {
 						statement: "select * from "+self.config.adapter.collection_name+" where id_str in "+qstring,
@@ -244,26 +243,22 @@ exports.definition = {
 				this.externalApi.fetch({
 					purpose: "lookupUsers",
 					params: {
-						"include_entities": false,
-						'skip_status': true,
-						"user_id": userIds.join(",")	// TODO: A comma separated list of user IDs, up to 100 are allowed in a single request. You are strongly encouraged to use a POST for larger requests.
+						include_entities: false,
+						skip_status: true,
+						user_id: userIds.join(",")	// TODO: A comma separated list of user IDs, up to 100 are allowed in a single request. You are strongly encouraged to use a POST for larger requests.
 					},
-					success: function(resultJson){
-						Ti.API.info("[twitterUser] sucess fetch by externaApi ");
-						if(reset){
-							self.reset(resultJson);
-						}else{
-							resultJson.forEach(function(json){
-								var user = self.get(json.id_str);
-								if(user){
-									user.set(json);
-								}else{
-									self.add(json);
-								}
-							});
-						}
+					success: function(results){
+						Ti.API.info("[twitterUser.addByIds] sucess fetch by externaApi");
+						results.forEach(function(result){
+							var user = self.get(result.id_str);
+							if(user){
+								user.set(result);
+							}else{
+								self.add(result);
+							}
+						});
 					},
-					error: function(resultJson){
+					error: function(result){
 						Ti.API.info("[twitterUser.lookup] remote error ");
 					}
 				});

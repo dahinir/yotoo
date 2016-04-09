@@ -34,13 +34,20 @@ exports.init = function(options) {
 		var index = _getIndexByItemId( deletedUser.get('id_str') );
 		$.section.deleteItemsAt( index, 1 );
 	});
-	users.on('reset', function(collection, options){
+	users.on("reset", function(resetUsers, options){
 		Ti.API.debug("[userListView.js] users reset event");
-		var listDataItems = [];
-		collection.each(function(mo){
-			listDataItems.push(settingData(mo));
+		addRows({
+			addedUsers: resetUsers,
+			reset: true
 		});
-		$.section.setItems(listDataItems, {'animated': false});
+		// return;
+		//
+		// var listDataItems = [];
+		// resetUsers.each(function(mo){
+		// 	listDataItems.push(settingData(mo));
+		// });
+		// $.section.setItems(listDataItems, {'animated': false});
+		// return;
 	});
 	users.on("change:profile_image_url_https change:name change:screen_name change:friends_count change:followers_count", function(changedUser){
 			Ti.API.debug("[userListView.js] users change event. ");
@@ -48,11 +55,11 @@ exports.init = function(options) {
 			var listDataItem = settingData( changedUser );
 			$.section.updateItemAt(index, listDataItem, {'animated': true});
 	});
-	users.on('add', function(addedUser, collection, options){
+	users.on("add", function(addedUser, collection, options){
 		Ti.API.debug("[userListView.js] users add event ");
 		addRows({
-			'addedUsers': addedUser,
-			'reset': false
+			addedUsers: addedUser,
+			reset: false
 		});
 	});
 
@@ -161,9 +168,12 @@ var addRows = function(options){
 	var dataArray = [];
 
 	if( addedUsers.map ){
-		for(var i = 0; i < addedUsers.length; i++){
-			dataArray.push( settingData( addedUsers.at(i) ) );
-		}
+		addedUsers.each(function(addedUser){
+			dataArray.push(settingData(addedUser));
+		});
+		// for(var i = 0; i < addedUsers.length; i++){
+		// 	dataArray.push( settingData( addedUsers.at(i) ) );
+		// }
 	}else{
 		dataArray.push( settingData( addedUsers ) );
 	}

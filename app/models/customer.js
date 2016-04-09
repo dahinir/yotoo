@@ -139,13 +139,22 @@ exports.definition = {
 				};
 				yoUsers.externalApi = userIdentity.externalApi;
 				yoUsers.addByIds({ userIds: yos.getIds() });
-				yoUsers.on("add change", function(user){
-					// save persist (sqlite)
-					user.save();
+				yoUsers.on("add change", function(yoUser){
+					yoUser.save();	// save persist (sqlite)
+				});
+				yoUsers.on("remove", function(yoUser){
+					Ti.API.debug("[customer.js] yoUsers remove event fired. with " + yoUser.get("name"));
+					yoUser.destroy();
+				});
+				yoUsers.on("reset", function(resetYoUsers){
+					Ti.API.debug("[customer.js] yoUsers reset event fired.");
+					// give up destroy user in the sqlite..
 				});
 
+				// sync with yos and yoUsers
 				yos.on("reset", function(model, collection, options){
-
+					// may be called by `yos.refresh()`
+					Ti.API.debug("[customer.js] yos reset event fired.");
 					yoUsers.addByIds({ userIds: yos.getIds() });
 				});
 				yos.on("add", function(model, collection, options){
