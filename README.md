@@ -2,9 +2,6 @@
 [![from zazima project](http://feltman.cafe24.com/images/z.bmp)](http://zazima.com/)  
 
 
-Advanced "Hello, Fuck The World!" application using the Alloy MVC framework.
-for heavy user, specialized relationship
-
 * * *
 * * *
 
@@ -12,15 +9,13 @@ for heavy user, specialized relationship
 * dahinir [@dahinir](https://twitter.com/dahinir)
 
 ## rules
-* unyo는 없다. deleteYo만 있을뿐.
+* there is no unyo. only deleteYo
 
 ##
 * Models: provide the business logic, containing the rules, data and state of the application.
 * Views: provide the GUI components to the user, either presenting data or allowing the user to interact with the model data.
 * Controllers: provide the glue between the model and view components in the form of application logic.
 
-
-* network queue: 네트웤에 연결되지 않은 상황일때 큐에 넣고 네트웤이 활성화 되면 실행
 
 
 ## note

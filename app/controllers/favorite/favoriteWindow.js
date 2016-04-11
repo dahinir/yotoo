@@ -14,7 +14,9 @@ exports.init = function( options ) {
 };
 
 $.favoriteWindow.setTitle( L("favorite") );
-
+$.favoriteWindow.addEventListener("focus", function(){
+	Ti.UI.iPhone.setAppBadge(0);
+});
 /*
 $.navBarView.init({
 	// "ownerAccount": ownerAccount,
