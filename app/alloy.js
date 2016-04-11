@@ -93,6 +93,11 @@ AG.customers.fetch({
 	localOnly: true
 });
 
+// singleton Controller;
+AG.allowPushController = Alloy.createController("allowPushAlertDialog");
+AG.notifyController = Alloy.createController('notifyView');
+// AG.loginController =  Alloy.createController('login');
+
 // AG.accounts.fetch();
 // AG.users.fetch();
 // AG.yos.fetch();
@@ -122,14 +127,6 @@ AG.chats.map(function( chat ){
 		+ " " + chat.get('chat_group_id') + " " + chat.get('message'));
 });
 */
-
-
-// singleton Controller;
-AG.allowPushController = Alloy.createController("allowPushAlertDialog");
-// AG.allowPushController.tryRegistring();
-// AG.loginController =  Alloy.createController('login');
-// AG.notifyController = Alloy.createController('notifyView');
-// AG.allowPushController = Alloy.createController("allowPushDialogWindow");
 
 
 // use Alloy.builtins.moment!
