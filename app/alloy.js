@@ -95,8 +95,12 @@ AG.customers.fetch({
 
 // singleton Controller;
 AG.allowPushController = Alloy.createController("allowPushAlertDialog");
-AG.notifyController = Alloy.createController('notifyView');
+AG.notifyController = Alloy.createController("notifyWindow");
 // AG.loginController =  Alloy.createController('login');
+
+Ti.App.addEventListener("changeBadge", function(e){
+	Ti.UI.iPhone.setAppBadge(e.number);
+});
 
 // AG.accounts.fetch();
 // AG.users.fetch();

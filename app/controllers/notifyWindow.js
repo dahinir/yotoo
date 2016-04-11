@@ -1,34 +1,26 @@
 /**
- * notifyView.js
+ * notifyWindow.js
  *
  */
-
-
 var args = arguments[0] || {};
 
-var THIS_HEIGHT = $.notifyView.getHeight(),
+var THIS_HEIGHT = $.notifyWindow.getHeight(),
 	DURATION = 2900;
 var processing,
 	timerId,
 	queue = [],
 	nowExposing = false;
-var dummyWindow = Ti.UI.createWindow({
-	fullscreen: true,
-	top:-1,
-	height:1
-});
 
 function _hide(){
 	clearTimeout(timerId);
-	$.notifyView.animate({
+	$.notifyWindow.animate({
 		duration: 100,
 		top: -THIS_HEIGHT
 	}, function(){
-		// Ti.API.info("[notifyView] queue length: "+ queue.length);
+		// Ti.API.info("[notifyWindow] queue length: "+ queue.length);
 		if (queue.length > 0){
 			_notifies();
 		}else{
-			dummyWindow.close();
 			nowExposing = false;
 		}
 	});
@@ -43,8 +35,8 @@ function _notifies(){
 	}else{
 		// expose
 		$.message.setText(message);
-		$.notifyView.fireEvent( "notifyExpose", {ndata: processing});
-		$.notifyView.animate({
+		// $.notifyWindow.fireEvent( "notifyExpose", {ndata: processing});
+		$.notifyWindow.animate({
 			duration: 100,
 			top:0
 		});
@@ -56,8 +48,11 @@ function _notifies(){
 }
 
 function _doAction(){
-	var pushEvent = processing.pushEvent;
+	AG.customers.getCurrentCustomer().mainTabGroup.setActiveTab(1);	// index 1 is favorite
+	return;
 
+	// below was for licky..
+	var pushEvent = processing.pushEvent;
 	if( pushEvent && pushEvent.data.post_id ){
 		AG.mainTabGroup.setActiveTab(2);	// index 2 is pushHistory
 		setBadge("-1");
@@ -66,7 +61,7 @@ function _doAction(){
 		});
 	}
 }
-$.notifyView.addEventListener('click', function(){
+$.notifyWindow.addEventListener('click', function(){
 	_doAction();
 	_hide();
 });
@@ -74,22 +69,21 @@ $.notifyView.addEventListener('click', function(){
 
 // number can be integer or string like "+1" or "-2"
 function setBadge(number){
-	if( AG.isLogIn() ){
-		AG.Cloud.PushNotifications.setBadge({
-		    device_token: AG.settings.get('deviceToken'),
-		    badge_number: number
-		}, function (e) {
-		    if (e.success) {
-		        // Ti.API.info('Badge Set!');
-		    }
-		    else {
-		        // Ti.API.error(e);
-		    }
-		});
-	}
+	// if( AG.isLogIn() ){
+	// 	AG.Cloud.PushNotifications.setBadge({
+	//     device_token: AG.settings.get('deviceToken'),
+	//     badge_number: number
+	// 	}, function (e) {
+	//     if (e.success) {
+  //       Ti.API.info('Badge Set!');
+	//     }
+	//     else {
+  //       Ti.API.error(e);
+	//     }
+	// 	});
+	// }
 	if( _.isString(number) ){
 		number =  Ti.UI.iPhone.getAppBadge() + parseInt(number);
-		// alert(Ti.UI.iPhone.getAppBadge() + ", " + number);
 		number = (number<0)? 0: number;
 	}
 	Ti.App.fireEvent( "changeBadge", {"number": number});
@@ -97,8 +91,7 @@ function setBadge(number){
 exports.setBadge = setBadge;
 
 /**
- * 노티할 객체를 큐에 담아 놓고 하나씩 보여준다. message와 pushEvent 둘중 하나는 셋팅 해줘영
- * @param {options} 노티할 객체 
+ * @param {options} must be set `options.message` or `options.pushEvent`
  * @param {options.message} notibar에 보여질 메세지
  * @param {options.pushEvent} pushNotification으로 받은 이벤트 객체
  * @param {options.duration} 보여질 시간
@@ -114,6 +107,7 @@ exports.setBadge = setBadge;
  * });
  */
 function push(options){
+	Ti.API.info("push, nowExposing: "+nowExposing);
 	setBadge("+1");
 
 	// queueing
@@ -122,7 +116,7 @@ function push(options){
 		return;
 	}
 	nowExposing = true;
-	dummyWindow.open();
+  $.notifyWindow.open();
 	_notifies();
 };
 exports.push = push;

@@ -1,8 +1,8 @@
-var options;
+var options = {};
 var pushRegHandlers = {
   callback: function(e){
-    alert("data: "+JSON.stringify(e.data) +"\ninBackground:"+e.inBackground); return;
-    // 뱃지를 0으로 하는거를 무시하지 않으면 무한 반복 푸쉬 됨..
+    // alert("data: "+JSON.stringify(e.data) +"\ninBackground:"+e.inBackground); return;
+    // avoid infinite call
     if(  e.data.badge === 0 ){
       return;
     }
@@ -11,17 +11,19 @@ var pushRegHandlers = {
     });
   },
   error: function(e){
-    Ti.API.warn("[allowPushAlertDialog] register for pushnotification error ");
+    Ti.API.warn("[allowPushAlertDialog] register for pushnotification error.");
     _.isFunction(options.error) && options.error();
   },
   success: function(e){
-    Ti.API.debug("[allowPushAlertDialog] register for pushnotification success");
+    Ti.API.debug("[allowPushAlertDialog] register for pushnotification success.");
     AG.setting.save("deviceToken", e.deviceToken || Ti.Network.getRemoteDeviceUUID()  );
     // subscribePushChannel(options);
     _.isFunction(options.success) && options.success();
   }
 };
-
+if(Ti.Network.remoteNotificationsEnabled){
+  Ti.Network.registerForPushNotifications(pushRegHandlers);
+}
 function onClick(e){
   if (e.index == e.source.cancel){
     Ti.API.info("[allowPushAlertDialog] The cancel button was clicked.");
