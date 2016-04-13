@@ -33,7 +33,7 @@ social.deauthorize();
 // api http://bytespider.github.com/jsOAuth/api-reference/
 // var jsOAuth = require('jsOAuth-1.3.6');
 // var jsOAuth = require('jsOAuth');
-var jsOAuth = require('jsOAuth136');
+var jsOAuth = require("jsOAuth137");
 
 var cfg = require('tokens').twitter;
 cfg.oauthSignatureMethod = 'HMAC-SHA1';
@@ -288,7 +288,7 @@ exports.create = function(settings) {
 			var success = options.success;
 			var error = options.error;
 
-			Ti.API.debug("[twitter.js] url: "+ url);
+			Ti.API.debug("[twitter.js] will fetch for url: "+ url);
 			oauthClient.request({
 				url: url,
 				success: function(data){
