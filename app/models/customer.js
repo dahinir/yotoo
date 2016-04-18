@@ -134,7 +134,7 @@ exports.definition = {
 					if(!yo){
 						return -1;
 					}
-					var date = yo.get("modified") || yo.get("created");
+					var date = yo.get("created");
 					return -(new Date(date)).getTime();
 				};
 				yoUsers.externalApi = userIdentity.externalApi;

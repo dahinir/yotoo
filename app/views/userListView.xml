@@ -48,7 +48,7 @@
 					<Button id="yoButton" bindId="yoButton" onClick="onYoButtonClick" />
 					<View id="blackoutScreen" bindId="blackoutScreen" />
 				</ItemTemplate>
-				<ItemTemplate id="complete" name="completed" >
+				<ItemTemplate name="complete" >
 					<View id="relationshipIndicator" bindId="relationshipIndicator" />
 					<ImageView id="profileImage" bindId="profileImage" />
 					<ImageView id="verifiedAccountIcon" bindId="verifiedAccountIcon" />
@@ -57,7 +57,7 @@
 					<Label id="following" bindId="following" />
 					<Label id="followers" bindId="followers" />
 					<Label id="description_" bindId="description_" /> <!-- 'description' is keyword -->
-					<Button id="rightButton" class="completed" bindId="rightButton" onClick="onRightButtonClick" />
+					<Button id="yoButton" bindId="yoButton" onClick="onYoButtonClick" />
 				</ItemTemplate>
 				<ItemTemplate name="self" >
 					<View id="relationshipIndicator" bindId="relationshipIndicator" />
