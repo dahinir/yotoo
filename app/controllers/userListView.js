@@ -1,6 +1,6 @@
 // var args = arguments[0] || {};
 var customer,	users, yos;
-var defaultTemplate;
+var DEFAULT_TEMPLATE;
 /**
 * customer, users
 */
@@ -19,7 +19,7 @@ exports.init = function(options) {
 	users = options.users;
 	customer = options.customer;
 	yos = options.customer.yos;
-	defaultTemplate = options.defaultTemplate || "plain";
+	DEFAULT_TEMPLATE = options.defaultTemplate || "plain";
 
 	if(users && users.length){
 		var listDataItems = users.map(function(mo){
@@ -111,7 +111,10 @@ function chooseItemTemplate(user, yo){
 	}else if(yo && yos.get(yo.id)){
 		template = "yo";
 	}else {
-		template = defaultTemplate;
+		template = DEFAULT_TEMPLATE;
+	}
+	if(users.indexOf(user)>3){
+		template = "expired";
 	}
 	return template;
 }

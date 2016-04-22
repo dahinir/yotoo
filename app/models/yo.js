@@ -105,13 +105,16 @@ exports.definition = {
 				// this.customer = e.customer;
 			},
 			sync: function(method, model, opts){
-				Ti.API.info("[yo.js] .sync() called ");
+				Ti.API.info("[yo.js] .sync() called");
 				opts = opts || {};
 				opts.headers = _.extend( opts.headers || {},
 					this.customer.getHeaders()
 				);
 				// return Backbone.sync.call(this, method, model, opts);
 				return require("alloy/sync/" + this.config.adapter.type).sync.call(this, method, model, opts);
+			},
+			comparator: function(yo){
+				return -(new Date(yo.get("created"))).getTime()
 			},
 			refresh: function(options){
 				options = options || {};
