@@ -29,6 +29,15 @@
 	top : 10,
 	left : 10
 },
+"#profileImage_complete": {
+	borderWidth : 0.5,
+	borderRadius : 3,
+	borderColor : "#55ff55",
+	height : 48, // 73/2 is 36.5 but it's too small
+	width : 48,
+	top : 10,
+	left : 10
+}
 "#verifiedAccountIcon": {
 	image : 'images/twitter_verifiedAccountIcon.png',
 	visible : false,
@@ -111,6 +120,14 @@
 	title: L("unyo")
 },
 "#blackoutScreen": {
+	zIndex: 1,
+	visible: true,
+	top: 0,
+	left: 0,
+	backgroundColor: "#000",
+	opacity: 0.5
+}
+"#expiredScreen": {
 	zIndex: 1,
 	visible: true,
 	top: 0,

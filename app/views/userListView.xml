@@ -50,7 +50,7 @@
 				</ItemTemplate>
 				<ItemTemplate name="complete" >
 					<View id="relationshipIndicator" bindId="relationshipIndicator" />
-					<ImageView id="profileImage" bindId="profileImage" />
+					<ImageView id="profileImage_complete" bindId="profileImage" />
 					<ImageView id="verifiedAccountIcon" bindId="verifiedAccountIcon" />
 					<Label id="name" bindId="name" />
 					<Label id="screenName" bindId="screenName" />
@@ -68,6 +68,18 @@
 					<Label id="following" bindId="following" />
 					<Label id="followers" bindId="followers" />
 					<Label id="description_" bindId="description_" /> <!-- 'description' is keyword -->
+				</ItemTemplate>
+				<ItemTemplate name="expired" >
+					<View id="relationshipIndicator" bindId="relationshipIndicator" />
+					<ImageView id="profileImage" bindId="profileImage" />
+					<ImageView id="verifiedAccountIcon" bindId="verifiedAccountIcon" />
+					<Label id="name" bindId="name" />
+					<Label id="screenName" bindId="screenName" />
+					<Label id="following" bindId="following" />
+					<Label id="followers" bindId="followers" />
+					<Label id="description_" bindId="description_" /> <!-- 'description' is keyword -->
+					<Button id="yoButton" bindId="yoButton" onClick="onYoButtonClick" />
+					<View id="expiredScreen" bindId="expiredScreen" />
 				</ItemTemplate>
 			</Templates>
 

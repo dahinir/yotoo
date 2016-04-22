@@ -113,7 +113,7 @@ function chooseItemTemplate(user, yo){
 	}else {
 		template = DEFAULT_TEMPLATE;
 	}
-	if(users.indexOf(user)>3){
+	if(yos.indexOf(yo)>2){	// WILL BE UPGRADE CUSTOMERS'S LIMIT 
 		template = "expired";
 	}
 	return template;
