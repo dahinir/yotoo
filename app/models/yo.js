@@ -49,7 +49,7 @@ exports.definition = {
 
 		// optimise the amount of data transfer from remote server to app
     addModifedToUrl: true,
-    lastModifiedColumn: "modified"
+    lastModifiedColumn: "created"
 	},
 	extendModel: function(Model) {
 		_.extend(Model.prototype, {
@@ -167,13 +167,24 @@ exports.definition = {
 				});
 				newYo.customer = self.customer;
 
+				var oldYo = self.where({
+					"provider": self.customer.get("provider"),
+					"senderId": senderUser.id,
+					"receiverId": receiverUser.id
+				}).pop();
+
 				// save remote and local
 				newYo.save(undefined, {
 					success: function(){
 						// new yoed users should be saved (sqlite)
 						receiverUser.save();
+
+						if( oldYo){
+							self.remove(oldYo, {silent: true});	// silent!
+						}
 						// add only if success remote and local
 						self.add(newYo);
+						// self.trigger("reset");
 						success && success();
 					},
 					error: function(){

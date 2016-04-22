@@ -113,7 +113,8 @@ function chooseItemTemplate(user, yo){
 	}else {
 		template = DEFAULT_TEMPLATE;
 	}
-	if(yos.indexOf(yo)>2){	// WILL BE UPGRADE CUSTOMERS'S LIMIT 
+	// additional condition
+	if(yos.indexOf(yo)>2){	// WILL BE UPGRADE CUSTOMERS'S LIMIT
 		template = "expired";
 	}
 	return template;
@@ -144,7 +145,7 @@ function settingData(user) {
 	};
 	if (user.get('verified')) {
 		data.verifiedAccountIcon = {
-			visible : true
+			visible: true
 		};
 	}
 
