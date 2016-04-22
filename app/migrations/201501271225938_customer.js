@@ -4,6 +4,7 @@ migration.up = function(db) {
 		"columns": {
 			"id": "TEXT PRIMARY KEY",
 			"accessToken": "TEXT",
+			"availableYoNumber": "INTEGER",
 
 			"provider": "TEXT",
 			"provider_id": "TEXT",

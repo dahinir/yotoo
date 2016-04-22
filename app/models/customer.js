@@ -12,6 +12,7 @@ exports.definition = {
 			// for And server
 			"id": "string",
 			"accessToken": "string",
+			"availableYoNumber": "int",
 
 			// for 3rd party
 			"provider": "string",	// "twitter"
@@ -90,6 +91,9 @@ exports.definition = {
 				  alert("[customer.js] init error");
 				  return;
 				}
+
+				// do you need money?
+				self.set({availableYoNumber:3});
 
 				// for yos
 				var yos = Alloy.createCollection("yo");

@@ -64,19 +64,13 @@ exports.init = function(options) {
 	});
 
 	// yos events to choose item template
-	yos.on("add remove change:unyo change:complete", function(yo, collection, options){
+	yos.on("add change:unyo change:complete", function(yo, collection, options){
 		Ti.API.debug("[userListView.js] yos change or add event. "+ JSON.stringify(yo));
-
-		var changedUser = users.get(yo.get("receiverId"));
-		if( !changedUser ){
-			return;
-		}
-
-		var index = _getIndexByItemId(changedUser.id);
-		var data = $.section.getItemAt(index);
-
-		data.template = chooseItemTemplate(changedUser, yo);
-		$.section.updateItemAt(index, data, {'animated': true});
+		applyItemTemplateWith(yo);
+	});
+	yos.on("remove", function(yo, collection, options){
+		Ti.API.debug("[userListView.js] yos remove event."+ JSON.stringify(yo));
+		applyItemTemplateWith(yos.at(customer.get("availableYoNumber")-1));
 	});
 
 	// refresh controll
@@ -100,6 +94,22 @@ exports.init = function(options) {
 	}
 };	// end of .init()
 
+
+function applyItemTemplateWith(yo){
+	Ti.API.debug("[userListView.js] applyItemTemplateWith ");
+
+	// find user that goes for yo in this list
+	var changedUser = users.get(yo.get("receiverId"));
+	if( !changedUser ){
+		return;
+	}
+
+	var index = _getIndexByItemId(changedUser.id);
+	var data = $.section.getItemAt(index);
+
+	data.template = chooseItemTemplate(changedUser, yo);
+	$.section.updateItemAt(index, data, {'animated': true});
+}
 function chooseItemTemplate(user, yo){
 	var template;
 	if(user.id == customer.get("provider_id")){
@@ -114,7 +124,7 @@ function chooseItemTemplate(user, yo){
 		template = DEFAULT_TEMPLATE;
 	}
 	// additional condition
-	if(yos.indexOf(yo)>2){	// WILL BE UPGRADE CUSTOMERS'S LIMIT
+	if(yos.indexOf(yo) >= customer.get("availableYoNumber")){
 		template = "expired";
 	}
 	return template;
